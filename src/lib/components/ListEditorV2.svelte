@@ -117,6 +117,24 @@
       bulkImportError = "Kunne ikke parse data. Sjekk formatet.";
     }
   }
+
+  // Dynamic font size based on content length (matching FlashCard.svelte)
+  function getFontSize(text: string): string {
+    if (!text) return "2rem";
+    const len = text.length;
+
+    if (len > 50) return "1rem";
+    if (len > 40) return "1.1rem";
+    if (len > 30) return "1.25rem";
+    if (len > 20) return "1.5rem";
+    if (len > 15) return "1.75rem";
+    if (len > 10) return "2rem";
+    if (len > 5) return "2.25rem";
+    if (len > 3) return "2.5rem";
+    if (len > 1) return "2.75rem";
+
+    return "3rem";
+  }
 </script>
 
 <div class="editor-container">
@@ -156,7 +174,6 @@
       <div class="cards-header">
         <h3>Kort ({cards.length})</h3>
         <div class="cards-actions">
-          <button class="add-btn" on:click={addCard}> ➕ Legg til kort </button>
           <button class="bulk-btn" on:click={openBulkImport}>
             📋 Masseopplasting
           </button>
@@ -173,23 +190,29 @@
             <div class="card-item">
               <div class="card-number">{index + 1}</div>
               <div class="card-fields">
-                <div class="field-row">
-                  <label for="front-{index}">Forside</label>
-                  <input
-                    id="front-{index}"
-                    type="text"
-                    bind:value={card.front}
-                    placeholder="ねこ"
-                    class="field-input"
-                  />
-									<label for="back-{index}">Bakside</label>
-                  <input
-										id="back-{index}"	
-                    type="text"
-                    bind:value={card.back}
-                    placeholder="cat"
-                    class="field-input"
-                  />
+                <div class="field-row-main">
+                  <div class="field-group">
+                    <label for="front-{index}">Forside</label>
+                    <textarea
+                      id="front-{index}"
+                      bind:value={card.front}
+                      placeholder="ねこ"
+                      class="field-textarea"
+                      style="font-size: {getFontSize(card.front)}"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label for="back-{index}">Bakside</label>
+                    <textarea
+                      id="back-{index}"
+                      bind:value={card.back}
+                      placeholder="cat"
+                      class="field-textarea"
+                      style="font-size: {getFontSize(card.back)}"
+                      rows="3"
+                    ></textarea>
+                  </div>
                 </div>
                 <div class="field-row">
                   <input
@@ -212,6 +235,11 @@
             </div>
           {/each}
         {/if}
+        
+        <!-- Add card button moved below cards -->
+        <button class="add-card-btn" on:click={addCard}>
+          ➕ Legg til kort
+        </button>
       </div>
     </div>
   </div>
@@ -346,7 +374,6 @@
     flex-wrap: wrap;
   }
 
-  .add-btn,
   .bulk-btn {
     padding: 0.5rem 1rem;
     font-size: 1rem;
@@ -355,24 +382,33 @@
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
-  }
-
-  .add-btn {
-    background: var(--color-accent);
-    color: white;
-  }
-
-  .add-btn:hover {
-    background: var(--color-heading);
-  }
-
-  .bulk-btn {
     background: var(--color-heading);
     color: white;
   }
 
   .bulk-btn:hover {
     background: var(--color-accent);
+  }
+
+  .add-card-btn {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-family: var(--font-heading);
+    border: 2px dashed var(--color-accent);
+    background: transparent;
+    color: var(--color-accent);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .add-card-btn:hover {
+    background: var(--color-accent);
+    color: white;
+    border-style: solid;
+    transform: scale(1.02);
   }
 
   .cards-list {
@@ -436,10 +472,48 @@
     gap: 0.5rem;
   }
 
+  .field-row-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .field-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    margin-left: 0.5rem;
+  }
+
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+  }
+
+  .field-textarea {
+    padding: 0.75rem;
+    border: 2px solid white;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+    resize: vertical;
+    min-height: 80px;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .field-textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(128, 164, 237, 0.1);
   }
 
   .field-input {
@@ -627,9 +701,12 @@
       flex-direction: column;
     }
 
-    .add-btn,
     .bulk-btn {
       width: 100%;
+    }
+
+    .field-row-main {
+      grid-template-columns: 1fr;
     }
 
     .field-row {

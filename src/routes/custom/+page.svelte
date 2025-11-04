@@ -339,7 +339,7 @@
 
 <style>
   .container {
-    --container-padding: 2rem;
+    --container-padding: 3rem;
     min-height: calc(100dvh - (2 * var(--container-padding)));
     padding: var(--container-padding);
     max-width: 1200px;
