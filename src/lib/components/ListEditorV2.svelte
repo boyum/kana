@@ -11,8 +11,6 @@
   let listType: "hiragana" | "katakana" | "mixed" | "custom" =
     list?.type || "custom";
   let cards: CustomFlashCard[] = list?.cards.map((c) => ({ ...c })) || [];
-  let defaultDirection: "front-to-back" | "back-to-front" =
-    list?.defaultDirection || "front-to-back";
 
   let showBulkImport = false;
   let bulkImportText = "";
@@ -58,7 +56,7 @@
       cards: validCards,
       createdAt: list?.createdAt || new Date(),
       updatedAt: new Date(),
-      defaultDirection,
+      defaultDirection: "front-to-back",
     };
 
     onSave(updatedList);
@@ -155,29 +153,17 @@
           class="text-input"
         />
       </div>
-
-      <div class="form-group">
-        <label for="default-direction">Standard retning</label>
-        <select
-          id="default-direction"
-          bind:value={defaultDirection}
-          class="select-input"
-        >
-          <option value="front-to-back">Forside → Bakside</option>
-          <option value="back-to-front">Bakside → Forside</option>
-        </select>
-      </div>
     </div>
 
     <!-- Cards section -->
     <div class="cards-section">
       <div class="cards-header">
         <h3>Kort ({cards.length})</h3>
-        <div class="cards-actions">
+        <!-- <div class="cards-actions">
           <button class="bulk-btn" on:click={openBulkImport}>
             📋 Masseopplasting
           </button>
-        </div>
+        </div> -->
       </div>
 
       <div class="cards-list">
@@ -212,6 +198,14 @@
                       style="font-size: {getFontSize(card.back)}"
                       rows="3"
                     ></textarea>
+                    <!-- <textarea
+                      id="back-{index}"
+                      bind:value={card.back}
+                      placeholder="cat"
+                      class="field-textarea"
+                      style="font-size: {getFontSize(card.back)}"
+                      rows="3"
+                    ></textarea> -->
                   </div>
                 </div>
                 <div class="field-row">
@@ -235,7 +229,7 @@
             </div>
           {/each}
         {/if}
-        
+
         <!-- Add card button moved below cards -->
         <button class="add-card-btn" on:click={addCard}>
           ➕ Legg til kort
@@ -416,7 +410,6 @@
     flex-direction: column;
     gap: 1rem;
     max-height: 500px;
-    overflow-y: auto;
     padding-right: 0.5rem;
   }
 
@@ -470,12 +463,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  .field-row-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    width: 100%;
   }
 
   .field-group {
@@ -703,10 +691,6 @@
 
     .bulk-btn {
       width: 100%;
-    }
-
-    .field-row-main {
-      grid-template-columns: 1fr;
     }
 
     .field-row {

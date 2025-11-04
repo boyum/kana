@@ -214,11 +214,13 @@
 
   {#if lists.length > 0}
     <div class="search-bar">
+      <label for="search" class="visually-hidden">Søk etter lister</label>
       <input
+        id="search"
         type="text"
         bind:value={searchQuery}
-        placeholder="🔍 Søk etter lister..."
         class="search-input"
+        placeholder="🔍 Søk etter lister"
       />
     </div>
   {/if}
@@ -344,6 +346,7 @@
     padding: var(--container-padding);
     max-width: 1200px;
     margin: 0 auto;
+    width: 90%;
   }
 
   header {
@@ -384,6 +387,7 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin: 2rem 0;
   }
 
   .create-btn,
