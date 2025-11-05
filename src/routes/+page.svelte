@@ -1,6 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { handleLinkClick } from "$lib/utils/interaction";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    goto("/hiragana");
+    goto("/katakana");
+  });
 </script>
 
 <svelte:head>
@@ -14,23 +20,26 @@
     <div class="kana-buttons">
       <a
         href="/hiragana"
+        rel="prefetch"
         class="mode-btn"
-        on:pointerdown={(e) => handleLinkClick(e, "/hiragana", goto)}
+        on:pointerdown={e => handleLinkClick(e, "/hiragana", goto)}
       >
         Hiragana&nbsp;あ
       </a>
       <a
         href="/katakana"
+        rel="prefetch"
         class="mode-btn"
-        on:pointerdown={(e) => handleLinkClick(e, "/katakana", goto)}
+        on:pointerdown={e => handleLinkClick(e, "/katakana", goto)}
       >
         Katakana&nbsp;ツ
       </a>
     </div>
     <a
       href="/custom"
+      rel="prefetch"
       class="mode-btn custom"
-      on:pointerdown={(e) => handleLinkClick(e, "/custom", goto)}
+      on:pointerdown={e => handleLinkClick(e, "/custom", goto)}
     >
       ✨ Dine egne flash-kort
     </a>
