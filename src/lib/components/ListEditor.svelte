@@ -116,23 +116,7 @@
     }
   }
 
-  // Dynamic font size based on content length (matching FlashCard.svelte)
-  function getFontSize(text: string): string {
-    if (!text) return "2rem";
-    const len = text.length;
-
-    if (len > 50) return "1rem";
-    if (len > 40) return "1.1rem";
-    if (len > 30) return "1.25rem";
-    if (len > 20) return "1.5rem";
-    if (len > 15) return "1.75rem";
-    if (len > 10) return "2rem";
-    if (len > 5) return "2.25rem";
-    if (len > 3) return "2.5rem";
-    if (len > 1) return "2.75rem";
-
-    return "3rem";
-  }
+  // Fixed font sizing for editor textareas: keep size consistent while editing
 
   // Unified interaction handler for mobile-first approach
   function createInteractionHandler(callback: () => void) {
@@ -203,7 +187,6 @@
                       bind:value={card.front}
                       placeholder="ねこ"
                       class="field-textarea"
-                      style="font-size: {getFontSize(card.front)}"
                       rows="3"
                     ></textarea>
                   </div>
@@ -214,17 +197,9 @@
                       bind:value={card.back}
                       placeholder="cat"
                       class="field-textarea"
-                      style="font-size: {getFontSize(card.back)}"
                       rows="3"
                     ></textarea>
-                    <!-- <textarea
-                      id="back-{index}"
-                      bind:value={card.back}
-                      placeholder="cat"
-                      class="field-textarea"
-                      style="font-size: {getFontSize(card.back)}"
-                      rows="3"
-                    ></textarea> -->
+                    
                   </div>
                 </div>
                 <div class="field-row">
@@ -562,6 +537,7 @@
     outline: none;
     transition: all 0.3s ease;
     font-family: var(--font-body);
+    font-size: 1.5rem;
     resize: vertical;
     min-height: 80px;
     text-align: center;
