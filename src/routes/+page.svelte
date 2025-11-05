@@ -62,8 +62,6 @@
 
   .kana-buttons {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 
     & :first-child {
       border-start-end-radius: 0;
@@ -102,7 +100,7 @@
     }
 
     .mode-btn {
-      padding: 1.5rem 2.5rem;
+      padding: 1.5rem 2rem;
       font-size: 1.5rem;
     }
   }
