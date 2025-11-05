@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
   import FlashCard from "$lib/components/FlashCard.svelte";
   import type { CustomFlashCard } from "$lib/types/customLists";
+  import { handleLinkClick } from "$lib/utils/interaction";
 
   // Props
   export let title: string;
@@ -76,7 +78,7 @@
   function createInteractionHandler(callback: () => void) {
     return (e: PointerEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent) {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           callback();
         }
@@ -101,12 +103,12 @@
 
   onMount(() => {
     // Detect if this is primarily a touch device
-    isTouchDevice = 
-      ('ontouchstart' in window) || 
-      (navigator.maxTouchPoints > 0) ||
+    isTouchDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
       // Check if coarse pointer (touch) is the primary input
-      (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-    
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
   });
@@ -118,15 +120,21 @@
 
 <section>
   <div class="header">
-    <a href={backUrl} class="back-btn">{backText}</a>
+    <a
+      href={backUrl}
+      class="back-btn"
+      on:pointerdown={(e) => handleLinkClick(e, backUrl, goto)}
+    >
+      {backText}
+    </a>
     {#if showTitle}
       <h1>{title}</h1>
     {/if}
     {#if showDirectionToggle || additionalActions.length > 0}
       <div class="header-actions">
         {#if showDirectionToggle}
-          <button 
-            class="action-btn" 
+          <button
+            class="action-btn"
             on:pointerdown={createInteractionHandler(toggleDirection)}
             on:keydown={createInteractionHandler(toggleDirection)}
           >
@@ -136,8 +144,8 @@
           </button>
         {/if}
         {#each additionalActions as action}
-          <button 
-            class="action-btn" 
+          <button
+            class="action-btn"
             on:pointerdown={createInteractionHandler(action.onClick)}
             on:keydown={createInteractionHandler(action.onClick)}
           >
@@ -329,6 +337,7 @@
     white-space: nowrap;
     text-align: center;
     min-width: 100px;
+    font-variant-numeric: tabular-nums;
   }
 
   .hint {

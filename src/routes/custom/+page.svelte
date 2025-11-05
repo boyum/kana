@@ -11,6 +11,7 @@
   import { decodeShareToken } from "$lib/utils/sharing";
   import { saveCustomList } from "$lib/utils/storage";
   import ShareDialog from "$lib/components/ShareDialog.svelte";
+  import { handleLinkClick } from "$lib/utils/interaction";
 
   export let data;
 
@@ -48,7 +49,7 @@
   function createInteractionHandler(callback: () => void) {
     return (e: PointerEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent) {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           callback();
         }
@@ -217,13 +218,19 @@
 
 <div class="container">
   <header>
-    <a href="/" class="back-btn">← Tilbake</a>
+    <a
+      href="/"
+      class="back-btn"
+      on:pointerdown={(e) => handleLinkClick(e, "/", goto)}
+    >
+      ← Tilbake
+    </a>
     <h1>✨ Egendefinerte lister</h1>
   </header>
 
   <div class="toolbar">
-    <button 
-      class="create-btn" 
+    <button
+      class="create-btn"
       on:pointerdown={createInteractionHandler(createNewList)}
       on:keydown={createInteractionHandler(createNewList)}
     >
@@ -270,13 +277,15 @@
           <div class="list-actions">
             <button
               class="action-btn practice"
-              on:pointerdown={createInteractionHandler(() => practiceList(list.id))}
+              on:pointerdown={createInteractionHandler(() =>
+                practiceList(list.id),
+              )}
               on:keydown={createInteractionHandler(() => practiceList(list.id))}
             >
               🎯 Øv
             </button>
-            <button 
-              class="action-btn edit" 
+            <button
+              class="action-btn edit"
               on:pointerdown={createInteractionHandler(() => editList(list.id))}
               on:keydown={createInteractionHandler(() => editList(list.id))}
             >
@@ -284,28 +293,40 @@
             </button>
             <button
               class="action-btn share"
-              on:pointerdown={createInteractionHandler(() => openShareDialog(list.id))}
-              on:keydown={createInteractionHandler(() => openShareDialog(list.id))}
+              on:pointerdown={createInteractionHandler(() =>
+                openShareDialog(list.id),
+              )}
+              on:keydown={createInteractionHandler(() =>
+                openShareDialog(list.id),
+              )}
             >
               🔗 Del
             </button>
             <button
               class="action-btn duplicate"
-              on:pointerdown={createInteractionHandler(() => handleDuplicate(list.id))}
-              on:keydown={createInteractionHandler(() => handleDuplicate(list.id))}
+              on:pointerdown={createInteractionHandler(() =>
+                handleDuplicate(list.id),
+              )}
+              on:keydown={createInteractionHandler(() =>
+                handleDuplicate(list.id),
+              )}
             >
               📋 Dupliser
             </button>
             <button
               class="action-btn export"
-              on:pointerdown={createInteractionHandler(() => handleExport(list.id))}
+              on:pointerdown={createInteractionHandler(() =>
+                handleExport(list.id),
+              )}
               on:keydown={createInteractionHandler(() => handleExport(list.id))}
             >
               💾 Eksporter
             </button>
             <button
               class="action-btn delete"
-              on:pointerdown={createInteractionHandler(() => handleDelete(list.id))}
+              on:pointerdown={createInteractionHandler(() =>
+                handleDelete(list.id),
+              )}
               on:keydown={createInteractionHandler(() => handleDelete(list.id))}
             >
               🗑️ Slett
@@ -327,7 +348,7 @@
       }
     }}
     on:keydown={(e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeImportDialog();
       }
     }}
@@ -335,8 +356,8 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <div 
-      class="modal" 
+    <div
+      class="modal"
       on:pointerdown={(e) => e.stopPropagation()}
       on:keydown={(e) => e.stopPropagation()}
       role="document"

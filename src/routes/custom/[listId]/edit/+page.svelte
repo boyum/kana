@@ -5,6 +5,7 @@
   import ListEditor from "$lib/components/ListEditor.svelte";
   import { getCustomList, saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
+  import { handleLinkClick } from "$lib/utils/interaction";
 
   let listId: string = "";
   let list: CustomList | null = null;
@@ -41,7 +42,13 @@
 
 <div class="container">
   <header>
-    <a href="/custom" class="back-btn">← Tilbake</a>
+    <a
+      href="/custom"
+      class="back-btn"
+      on:pointerdown={(e) => handleLinkClick(e, "/custom", goto)}
+    >
+      ← Tilbake
+    </a>
     <h1>✏️ Rediger liste</h1>
   </header>
 
@@ -54,7 +61,7 @@
 
 <style>
   .container {
-		--container-padding: 2rem;
+    --container-padding: 2rem;
     min-height: calc(100dvh - (2 * var(--container-padding)));
     padding: var(--container-padding);
     max-width: 1200px;
@@ -104,7 +111,7 @@
 
   @media (max-width: 768px) {
     .container {
-			--container-padding: 1rem;
+      --container-padding: 1rem;
     }
 
     h1 {

@@ -3,6 +3,7 @@
   import ListEditor from "$lib/components/ListEditor.svelte";
   import { saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
+  import { handleLinkClick } from "$lib/utils/interaction";
 
   function handleSave(list: CustomList) {
     saveCustomList(list);
@@ -20,7 +21,13 @@
 
 <div class="container">
   <header>
-    <a href="/custom" class="back-btn">← Tilbake</a>
+    <a
+      href="/custom"
+      class="back-btn"
+      on:pointerdown={(e) => handleLinkClick(e, "/custom", goto)}
+    >
+      ← Tilbake
+    </a>
     <h1>➕ Opprett ny liste</h1>
   </header>
 
