@@ -17,7 +17,7 @@
 
   function handleInteraction(e: PointerEvent | KeyboardEvent) {
     if (e instanceof KeyboardEvent) {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         isFlipped = !isFlipped;
       }
@@ -38,9 +38,10 @@
     if (len > 20) return "2.5rem";
     if (len > 15) return "3rem";
     if (len > 10) return "3.5rem";
-    if (len > 5) return "5rem";
-    if (len > 3) return "6rem";
-    if (len > 1) return "8rem";
+    if (len > 5) return "3.75rem";
+    if (len > 3) return "4.5rem";
+    if (len > 2) return "5rem";
+    if (len > 1) return "7rem";
 
     return "10rem";
   }
