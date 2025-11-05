@@ -69,7 +69,7 @@
   }
 
   function practiceList(listId: string) {
-    goto(`/custom/${listId}`);
+    goto(`/egendefinert/${listId}`);
   }
 
   async function handleDelete(listId: string) {
