@@ -52,3 +52,26 @@ export function handleLinkClick(
   e.preventDefault();
   gotoFn(href);
 }
+
+// Utility function to provide random placeholder names for custom lists
+const placeholderNames = [
+  "Japansk ordliste",
+  "Bein i menneskekroppen",
+  "Vanlige franske verb",
+  "Verdens hovedsteder",
+  "Periodesystemets elementer",
+  "Berømte malerier",
+  "Programmeringsspråk",
+  "Historiske hendelser",
+  "Matematiske formler",
+  "Populære filmtitater"
+];
+
+/**
+ * Returns a random placeholder name from the list.
+ * @returns {string} A random placeholder name.
+ */
+export function getRandomPlaceholderName() {
+  const randomIndex = Math.floor(Math.random() * placeholderNames.length);
+  return placeholderNames[randomIndex];
+}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { CustomList, CustomFlashCard } from "$lib/types/customLists";
   import { generateId } from "$lib/utils/storage";
+  import { onMount } from "svelte";
 
   export let list: CustomList | null = null; // null for new list
   export let onSave: (list: CustomList) => void;
@@ -132,6 +133,30 @@
       }
     };
   }
+
+  // Placeholder logic
+  let randomPlaceholder = "";
+
+  function getRandomPlaceholderName() {
+    const placeholders = [
+      "F.eks. 'Daglige fraser'",
+      "F.eks. 'Reiseordbok'",
+      "F.eks. 'Mat og drikke'",
+      "F.eks. 'Huskeliste'",
+      "F.eks. 'Prosjektideer'",
+      "F.eks. 'Norske byer'",
+      "F.eks. 'Historiske datoer'",
+      "F.eks. 'Vanlige verb'",
+      "F.eks. 'Familieord'",
+      "F.eks. 'Dyr på norsk'"
+    ];
+
+    return placeholders[Math.floor(Math.random() * placeholders.length)];
+  }
+
+  onMount(() => {
+    randomPlaceholder = getRandomPlaceholderName();
+  });
 </script>
 
 <div class="editor-container">
@@ -148,7 +173,7 @@
           id="list-name"
           type="text"
           bind:value={listName}
-          placeholder="F.eks. 'Daglige fraser'"
+          placeholder={getRandomPlaceholderName()}
           class="text-input"
         />
       </div>
@@ -278,11 +303,11 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <div 
+    <dialog 
       class="modal" 
       on:pointerdown={(e) => e.stopPropagation()}
       on:keydown={(e) => e.stopPropagation()}
-      role="document"
+      tabindex="-1"
     >
       <h2>📋 Masseopplasting</h2>
       <p class="modal-instruction">
@@ -323,7 +348,7 @@
           Importer
         </button>
       </div>
-    </div>
+    </dialog>
   </div>
 {/if}
 
@@ -370,8 +395,7 @@
     font-size: 1rem;
   }
 
-  .text-input,
-  .select-input {
+  .text-input {
     padding: 0.75rem;
     font-size: 1rem;
     border: 2px solid var(--color-accent);
@@ -381,8 +405,7 @@
     font-family: var(--font-body);
   }
 
-  .text-input:focus,
-  .select-input:focus {
+  .text-input:focus {
     border-color: var(--color-heading);
     box-shadow: 0 0 0 3px rgba(57, 92, 107, 0.1);
   }
@@ -405,28 +428,6 @@
     color: var(--color-heading);
     margin: 0;
     font-size: 1.8rem;
-  }
-
-  .cards-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .bulk-btn {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    font-family: var(--font-body);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: var(--color-heading);
-    color: white;
-  }
-
-  .bulk-btn:hover {
-    background: var(--color-accent);
   }
 
   .add-card-btn {
@@ -630,25 +631,6 @@
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    padding: 1rem;
-  }
-
-  .modal {
-    background: white;
-    border-radius: 30px;
-    padding: 2rem;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  }
-
-  .modal h2 {
-    font-family: var(--font-heading);
-    color: var(--color-heading);
-    margin-top: 0;
-    margin-bottom: 1rem;
   }
 
   .modal-instruction {
@@ -729,26 +711,6 @@
     .cards-header {
       flex-direction: column;
       align-items: stretch;
-    }
-
-    .cards-actions {
-      flex-direction: column;
-    }
-
-    .bulk-btn {
-      width: 100%;
-    }
-
-    .field-row {
-      grid-template-columns: 1fr;
-    }
-
-    .card-item {
-      flex-direction: column;
-    }
-
-    .card-number {
-      padding-top: 0;
     }
 
     .editor-footer {
