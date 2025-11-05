@@ -11,7 +11,7 @@
   let listName = list?.name || "";
   let listType: "hiragana" | "katakana" | "mixed" | "custom" =
     list?.type || "custom";
-  let cards: CustomFlashCard[] = list?.cards.map((c) => ({ ...c })) || [];
+  let cards: CustomFlashCard[] = list?.cards.map(c => ({ ...c })) || [];
 
   let showBulkImport = false;
   let bulkImportText = "";
@@ -46,7 +46,7 @@
     }
 
     const validCards = cards.filter(
-      (card) => card.front.trim() !== "" && card.back.trim() !== "",
+      card => card.front.trim() !== "" && card.back.trim() !== "",
     );
 
     if (validCards.length === 0) {
@@ -135,7 +135,8 @@
     quickAddError = "";
 
     if (!quickAddText.trim()) {
-      quickAddError = "Vennligst skriv inn data i formatet: wordAFront|wordABack";
+      quickAddError =
+        "Vennligst skriv inn data i formatet: wordAFront|wordABack";
       return;
     }
 
@@ -178,7 +179,7 @@
   function createInteractionHandler(callback: () => void) {
     return (e: PointerEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent) {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           callback();
         }
@@ -203,7 +204,7 @@
       "F.eks. 'Historiske datoer'",
       "F.eks. 'Vanlige verb'",
       "F.eks. 'Familieord'",
-      "F.eks. 'Dyr på norsk'"
+      "F.eks. 'Dyr på norsk'",
     ];
 
     return placeholders[Math.floor(Math.random() * placeholders.length)];
@@ -279,7 +280,6 @@
                       class="field-textarea"
                       rows="3"
                     ></textarea>
-                    
                   </div>
                 </div>
                 <div class="field-row">
@@ -297,9 +297,11 @@
                   />
                 </div>
               </div>
-              <button 
-                class="remove-btn" 
-                on:pointerdown={createInteractionHandler(() => removeCard(index))}
+              <button
+                class="remove-btn"
+                on:pointerdown={createInteractionHandler(() =>
+                  removeCard(index),
+                )}
                 on:keydown={createInteractionHandler(() => removeCard(index))}
               >
                 🗑️
@@ -309,8 +311,8 @@
         {/if}
 
         <!-- Add card button moved below cards -->
-        <button 
-          class="add-card-btn" 
+        <button
+          class="add-card-btn"
           on:pointerdown={createInteractionHandler(addCard)}
           on:keydown={createInteractionHandler(addCard)}
         >
@@ -322,35 +324,35 @@
 
   <!-- Footer actions -->
   <div class="editor-footer">
-    <button 
-      class="cancel-btn" 
+    <button
+      class="cancel-btn"
       on:pointerdown={createInteractionHandler(onCancel)}
       on:keydown={createInteractionHandler(onCancel)}
-    > 
-      Avbryt 
+    >
+      Avbryt
     </button>
-    <button 
-      class="save-btn" 
+    <button
+      class="save-btn"
       on:pointerdown={createInteractionHandler(handleSave)}
       on:keydown={createInteractionHandler(handleSave)}
-    > 
-      💾 Lagre liste 
+    >
+      💾 Lagre liste
     </button>
   </div>
 </div>
 
 <!-- Bulk import modal -->
 {#if showBulkImport}
-  <div 
-    class="modal-overlay" 
-    on:pointerdown={(e) => {
+  <div
+    class="modal-overlay"
+    on:pointerdown={e => {
       if (e.target === e.currentTarget && e.isPrimary) {
         e.preventDefault();
         closeBulkImport();
       }
     }}
-    on:keydown={(e) => {
-      if (e.key === 'Escape') {
+    on:keydown={e => {
+      if (e.key === "Escape") {
         closeBulkImport();
       }
     }}
@@ -358,10 +360,10 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <dialog 
-      class="modal" 
-      on:pointerdown={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.stopPropagation()}
+    <dialog
+      class="modal"
+      on:pointerdown={e => e.stopPropagation()}
+      on:keydown={e => e.stopPropagation()}
       tabindex="-1"
     >
       <h2>📋 Masseopplasting</h2>
@@ -388,15 +390,15 @@
       {/if}
 
       <div class="modal-actions">
-        <button 
-          class="cancel-btn" 
+        <button
+          class="cancel-btn"
           on:pointerdown={createInteractionHandler(closeBulkImport)}
           on:keydown={createInteractionHandler(closeBulkImport)}
-        > 
-          Avbryt 
+        >
+          Avbryt
         </button>
-        <button 
-          class="confirm-btn" 
+        <button
+          class="confirm-btn"
           on:pointerdown={createInteractionHandler(handleBulkImport)}
           on:keydown={createInteractionHandler(handleBulkImport)}
         >
@@ -409,32 +411,57 @@
 
 <!-- Quick add modal -->
 {#if showQuickAdd}
-  <div class="modal-overlay" on:pointerdown={(e) => {
-    if (e.target === e.currentTarget && e.isPrimary) {
-      e.preventDefault();
-      closeQuickAdd();
-    }
-  }} on:keydown={(e) => {
-    if (e.key === 'Escape') {
-      closeQuickAdd();
-    }
-  }} role="dialog" aria-modal="true" tabindex="-1">
-    <dialog class="modal" on:pointerdown={(e) => e.stopPropagation()} on:keydown={(e) => e.stopPropagation()} tabindex="-1">
+  <div
+    class="modal-overlay"
+    on:pointerdown={e => {
+      if (e.target === e.currentTarget && e.isPrimary) {
+        e.preventDefault();
+        closeQuickAdd();
+      }
+    }}
+    on:keydown={e => {
+      if (e.key === "Escape") {
+        closeQuickAdd();
+      }
+    }}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+  >
+    <dialog
+      class="modal"
+      on:pointerdown={e => e.stopPropagation()}
+      on:keydown={e => e.stopPropagation()}
+      tabindex="-1"
+    >
       <h2>Rask Legg til</h2>
       <p class="modal-instruction">
         Skriv inn data i formatet:<br />
         <code>wordAFront|wordABack</code>
       </p>
 
-      <textarea bind:value={quickAddText} placeholder="wordAFront|wordABack\nwordBFront|wordBBack" class="bulk-textarea" rows="10"></textarea>
+      <textarea
+        bind:value={quickAddText}
+        placeholder="wordAFront|wordABack\nwordBFront|wordBBack"
+        class="bulk-textarea"
+        rows="10"
+      ></textarea>
 
       {#if quickAddError}
         <p class="error-message">❌ {quickAddError}</p>
       {/if}
 
       <div class="modal-actions">
-        <button class="cancel-btn" on:pointerdown={createInteractionHandler(closeQuickAdd)} on:keydown={createInteractionHandler(closeQuickAdd)}>Avbryt</button>
-        <button class="confirm-btn" on:pointerdown={createInteractionHandler(handleQuickAdd)} on:keydown={createInteractionHandler(handleQuickAdd)}>Legg til</button>
+        <button
+          class="cancel-btn"
+          on:pointerdown={createInteractionHandler(closeQuickAdd)}
+          on:keydown={createInteractionHandler(closeQuickAdd)}>Avbryt</button
+        >
+        <button
+          class="confirm-btn"
+          on:pointerdown={createInteractionHandler(handleQuickAdd)}
+          on:keydown={createInteractionHandler(handleQuickAdd)}>Legg til</button
+        >
       </div>
     </dialog>
   </div>
@@ -543,7 +570,6 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-height: 500px;
     padding-right: 0.5rem;
   }
 
@@ -569,13 +595,14 @@
   }
 
   .card-item {
-    display: flex;
+    display: grid;
     gap: 1rem;
-    align-items: start;
     padding: 1rem;
     background: var(--color-bg-primary);
     border-radius: 20px;
     transition: all 0.3s ease;
+    grid-template-areas: "number fields remove-btn";
+    grid-template-columns: auto 1fr auto;
   }
 
   .card-item:hover {
@@ -583,6 +610,7 @@
   }
 
   .card-number {
+    grid-area: number;
     font-weight: bold;
     color: var(--color-heading);
     font-family: var(--font-heading);
@@ -593,11 +621,11 @@
   }
 
   .card-fields {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     width: 100%;
+    grid-area: fields;
   }
 
   .field-group {
@@ -668,6 +696,7 @@
 
   .remove-btn:hover {
     background: #ff5252;
+    grid-area: remove-btn;
     transform: scale(1.1);
   }
 
@@ -808,6 +837,12 @@
     .cancel-btn,
     .save-btn {
       width: 100%;
+    }
+
+    .card-item {
+      grid-template-areas: "number . remove-btn" "fields fields fields";
+      grid-template-columns: 1fr auto 1fr;
+      grid-template-rows: auto 1fr;
     }
   }
 </style>
