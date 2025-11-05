@@ -8,7 +8,7 @@
    <div class="mode-buttons">
 	   <a href="/hiragana" class="mode-btn">Hiragana</a>
 	   <a href="/katakana" class="mode-btn">Katakana</a>
-	   <a href="/custom" class="mode-btn custom">✨ Egendefinerte lister</a>
+	   <a href="/custom" class="mode-btn custom">✨ Dine egne flash-kort</a>
    </div>
 </section>
 
