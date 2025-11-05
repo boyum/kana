@@ -258,6 +258,7 @@
     box-shadow: 0 6px 15px rgba(57, 92, 107, 0.2);
     cursor: pointer;
     white-space: nowrap;
+    user-select: none;
   }
 
   .back-btn:hover {
@@ -283,6 +284,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    user-select: none;
   }
 
   .action-btn:hover {
@@ -322,6 +324,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 6px 15px rgba(57, 92, 107, 0.2);
+    user-select: none;
   }
 
   .nav-btn:hover:not(:disabled) {
