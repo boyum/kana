@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
-  import ListEditorV2 from "$lib/components/ListEditorV2.svelte";
+  import ListEditor from "$lib/components/ListEditor.svelte";
   import { getCustomList, saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
 
@@ -46,7 +46,7 @@
   </header>
 
   {#if list}
-    <ListEditorV2 {list} onSave={handleSave} onCancel={handleCancel} />
+    <ListEditor {list} onSave={handleSave} onCancel={handleCancel} />
   {:else}
     <p class="loading">Laster...</p>
   {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import ListEditorV2 from "$lib/components/ListEditorV2.svelte";
+  import ListEditor from "$lib/components/ListEditor.svelte";
   import { saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
 
@@ -24,7 +24,7 @@
     <h1>➕ Opprett ny liste</h1>
   </header>
 
-  <ListEditorV2 list={null} onSave={handleSave} onCancel={handleCancel} />
+  <ListEditor list={null} onSave={handleSave} onCancel={handleCancel} />
 </div>
 
 <style>

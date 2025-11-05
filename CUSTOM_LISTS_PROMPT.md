@@ -125,7 +125,7 @@ Replace type selection with list management dashboard:
 - Quick actions per list: Edit, Practice, Duplicate, Delete, Export, **Share**
 - Show "Import from Share Link" button prominently
 
-##### b) **List Creation/Edit Modal** (`src/lib/components/ListEditorV2.svelte` or update existing)
+##### b) **List Creation/Edit Modal** (`src/lib/components/ListEditor.svelte` or update existing)
 
 Enhanced editor features:
 
