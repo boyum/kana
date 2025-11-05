@@ -204,13 +204,13 @@
 <style>
   section {
     --section-padding: 2rem;
-    min-height: calc(100dvh - (2 * var(--section-padding)));
+    min-height: 100dvh;
     padding: var(--section-padding);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 2rem;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
   .header {
@@ -221,6 +221,7 @@
     max-width: 800px;
     gap: 1rem;
     flex-wrap: wrap;
+    flex-shrink: 0;
   }
 
   h1 {
@@ -282,8 +283,9 @@
     align-items: center;
     width: 100%;
     max-width: 400px;
-    min-height: 500px;
-    padding: 1rem;
+    flex: 1;
+    min-height: 0;
+    padding: 0.5rem;
     position: relative;
   }
 
@@ -292,7 +294,8 @@
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    padding: 1rem;
+    padding: 0.5rem;
+    flex-shrink: 0;
   }
 
   .nav-btn {
@@ -332,7 +335,8 @@
     font-size: 0.9rem;
     color: var(--color-heading);
     opacity: 0.7;
-    margin-top: 1rem;
+    margin: 0;
+    flex-shrink: 0;
   }
 
   .empty-state {
@@ -348,17 +352,24 @@
 
   @media (max-width: 720px) {
     section {
-      --section-padding: 1rem;
+      --section-padding: 0.75rem;
+      gap: 0.5rem;
     }
 
     .header {
       flex-direction: column;
       align-items: stretch;
+      flex-shrink: 0;
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 1.75rem;
       text-align: left;
+    }
+
+    .back-btn {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
     }
 
     .header-actions {
@@ -367,22 +378,27 @@
 
     .action-btn {
       width: 100%;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.9rem;
     }
 
     .controls {
       justify-content: space-between;
       gap: 0.5rem;
       width: 100%;
+      padding: 0.25rem;
     }
 
     .progress {
       flex-grow: 1;
+      font-size: 1.2rem;
     }
 
     .nav-btn {
       width: 100%;
       max-width: 250px;
       padding: 0.5rem;
+      font-size: 1.1rem;
     }
   }
 </style>

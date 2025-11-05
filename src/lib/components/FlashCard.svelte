@@ -85,6 +85,7 @@
     width: 100%;
     max-width: 400px;
     height: 500px;
+    max-height: 60vh;
     perspective: 1000px;
     background: transparent;
     border: none;
@@ -190,7 +191,8 @@
   @media (max-width: 720px) {
     .flash-card {
       max-width: 320px;
-      height: 420px;
+      height: 400px;
+      max-height: 50vh;
     }
 
     .card-front,
