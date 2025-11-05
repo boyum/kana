@@ -17,14 +17,14 @@
         class="mode-btn"
         on:pointerdown={(e) => handleLinkClick(e, "/hiragana", goto)}
       >
-        Hiragana あ
+        Hiragana&nbsp;あ
       </a>
       <a
         href="/katakana"
         class="mode-btn"
         on:pointerdown={(e) => handleLinkClick(e, "/katakana", goto)}
       >
-        Katakana ツ
+        Katakana&nbsp;ツ
       </a>
     </div>
     <a
