@@ -45,7 +45,7 @@
     <a
       href="/custom"
       class="back-btn"
-      on:pointerdown={(e) => handleLinkClick(e, "/custom", goto)}
+      on:pointerdown={e => handleLinkClick(e, "/custom", goto)}
     >
       ← Tilbake
     </a>
@@ -64,21 +64,20 @@
     --container-padding: 2rem;
     min-height: calc(100dvh - (2 * var(--container-padding)));
     padding: var(--container-padding);
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
   }
 
   header {
     text-align: center;
     margin-bottom: 2rem;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .back-btn {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-bottom: 1rem;
     padding: 0.5rem 1rem;
     background: var(--color-accent);
     color: white;
@@ -91,7 +90,7 @@
 
   .back-btn:hover {
     background: var(--color-heading);
-    transform: translateY(-50%) scale(1.05);
+    transform: scale(1.05);
   }
 
   h1 {
@@ -116,17 +115,6 @@
 
     h1 {
       font-size: 1.8rem;
-    }
-
-    .back-btn {
-      position: static;
-      transform: none;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-
-    header {
-      text-align: left;
     }
   }
 </style>
