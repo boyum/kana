@@ -120,6 +120,12 @@ button:focus:not(:focus-visible) {
   outline: none;
 }
 
+button,
+a[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @media (min-width: 720px) {
   h1 {
     font-size: 2.4rem;

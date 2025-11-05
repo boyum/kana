@@ -133,6 +133,21 @@
 
     return "3rem";
   }
+
+  // Unified interaction handler for mobile-first approach
+  function createInteractionHandler(callback: () => void) {
+    return (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          callback();
+        }
+      } else if (e instanceof PointerEvent && e.isPrimary) {
+        e.preventDefault();
+        callback();
+      }
+    };
+  }
 </script>
 
 <div class="editor-container">
@@ -160,7 +175,11 @@
       <div class="cards-header">
         <h3>Kort ({cards.length})</h3>
         <!-- <div class="cards-actions">
-          <button class="bulk-btn" on:click={openBulkImport}>
+          <button 
+            class="bulk-btn" 
+            on:pointerdown={createInteractionHandler(openBulkImport)}
+            on:keydown={createInteractionHandler(openBulkImport)}
+          >
             📋 Masseopplasting
           </button>
         </div> -->
@@ -223,7 +242,11 @@
                   />
                 </div>
               </div>
-              <button class="remove-btn" on:click={() => removeCard(index)}>
+              <button 
+                class="remove-btn" 
+                on:pointerdown={createInteractionHandler(() => removeCard(index))}
+                on:keydown={createInteractionHandler(() => removeCard(index))}
+              >
                 🗑️
               </button>
             </div>
@@ -231,7 +254,11 @@
         {/if}
 
         <!-- Add card button moved below cards -->
-        <button class="add-card-btn" on:click={addCard}>
+        <button 
+          class="add-card-btn" 
+          on:pointerdown={createInteractionHandler(addCard)}
+          on:keydown={createInteractionHandler(addCard)}
+        >
           ➕ Legg til kort
         </button>
       </div>
@@ -240,15 +267,48 @@
 
   <!-- Footer actions -->
   <div class="editor-footer">
-    <button class="cancel-btn" on:click={onCancel}> Avbryt </button>
-    <button class="save-btn" on:click={handleSave}> 💾 Lagre liste </button>
+    <button 
+      class="cancel-btn" 
+      on:pointerdown={createInteractionHandler(onCancel)}
+      on:keydown={createInteractionHandler(onCancel)}
+    > 
+      Avbryt 
+    </button>
+    <button 
+      class="save-btn" 
+      on:pointerdown={createInteractionHandler(handleSave)}
+      on:keydown={createInteractionHandler(handleSave)}
+    > 
+      💾 Lagre liste 
+    </button>
   </div>
 </div>
 
 <!-- Bulk import modal -->
 {#if showBulkImport}
-  <div class="modal-overlay" on:click={closeBulkImport}>
-    <div class="modal" on:click|stopPropagation>
+  <div 
+    class="modal-overlay" 
+    on:pointerdown={(e) => {
+      if (e.target === e.currentTarget && e.isPrimary) {
+        e.preventDefault();
+        closeBulkImport();
+      }
+    }}
+    on:keydown={(e) => {
+      if (e.key === 'Escape') {
+        closeBulkImport();
+      }
+    }}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+  >
+    <div 
+      class="modal" 
+      on:pointerdown={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.stopPropagation()}
+      role="document"
+    >
       <h2>📋 Masseopplasting</h2>
       <p class="modal-instruction">
         Lim inn data med ett kort per linje. Format:<br />
@@ -273,8 +333,18 @@
       {/if}
 
       <div class="modal-actions">
-        <button class="cancel-btn" on:click={closeBulkImport}> Avbryt </button>
-        <button class="confirm-btn" on:click={handleBulkImport}>
+        <button 
+          class="cancel-btn" 
+          on:pointerdown={createInteractionHandler(closeBulkImport)}
+          on:keydown={createInteractionHandler(closeBulkImport)}
+        > 
+          Avbryt 
+        </button>
+        <button 
+          class="confirm-btn" 
+          on:pointerdown={createInteractionHandler(handleBulkImport)}
+          on:keydown={createInteractionHandler(handleBulkImport)}
+        >
           Importer
         </button>
       </div>

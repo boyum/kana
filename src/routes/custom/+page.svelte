@@ -44,6 +44,21 @@
     }
   }
 
+  // Unified interaction handler for mobile-first approach
+  function createInteractionHandler(callback: () => void) {
+    return (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          callback();
+        }
+      } else if (e instanceof PointerEvent && e.isPrimary) {
+        e.preventDefault();
+        callback();
+      }
+    };
+  }
+
   function createNewList() {
     goto("/custom/new");
   }
@@ -207,7 +222,11 @@
   </header>
 
   <div class="toolbar">
-    <button class="create-btn" on:click={createNewList}>
+    <button 
+      class="create-btn" 
+      on:pointerdown={createInteractionHandler(createNewList)}
+      on:keydown={createInteractionHandler(createNewList)}
+    >
       ➕ Opprett ny liste
     </button>
   </div>
@@ -251,34 +270,43 @@
           <div class="list-actions">
             <button
               class="action-btn practice"
-              on:click={() => practiceList(list.id)}
+              on:pointerdown={createInteractionHandler(() => practiceList(list.id))}
+              on:keydown={createInteractionHandler(() => practiceList(list.id))}
             >
               🎯 Øv
             </button>
-            <button class="action-btn edit" on:click={() => editList(list.id)}>
+            <button 
+              class="action-btn edit" 
+              on:pointerdown={createInteractionHandler(() => editList(list.id))}
+              on:keydown={createInteractionHandler(() => editList(list.id))}
+            >
               ✏️ Rediger
             </button>
             <button
               class="action-btn share"
-              on:click={() => openShareDialog(list.id)}
+              on:pointerdown={createInteractionHandler(() => openShareDialog(list.id))}
+              on:keydown={createInteractionHandler(() => openShareDialog(list.id))}
             >
               🔗 Del
             </button>
             <button
               class="action-btn duplicate"
-              on:click={() => handleDuplicate(list.id)}
+              on:pointerdown={createInteractionHandler(() => handleDuplicate(list.id))}
+              on:keydown={createInteractionHandler(() => handleDuplicate(list.id))}
             >
               📋 Dupliser
             </button>
             <button
               class="action-btn export"
-              on:click={() => handleExport(list.id)}
+              on:pointerdown={createInteractionHandler(() => handleExport(list.id))}
+              on:keydown={createInteractionHandler(() => handleExport(list.id))}
             >
               💾 Eksporter
             </button>
             <button
               class="action-btn delete"
-              on:click={() => handleDelete(list.id)}
+              on:pointerdown={createInteractionHandler(() => handleDelete(list.id))}
+              on:keydown={createInteractionHandler(() => handleDelete(list.id))}
             >
               🗑️ Slett
             </button>
@@ -292,11 +320,27 @@
 {#if showImportDialog}
   <div
     class="modal-overlay"
-    on:click={closeImportDialog}
+    on:pointerdown={(e) => {
+      if (e.target === e.currentTarget && e.isPrimary) {
+        e.preventDefault();
+        closeImportDialog();
+      }
+    }}
+    on:keydown={(e) => {
+      if (e.key === 'Escape') {
+        closeImportDialog();
+      }
+    }}
     role="dialog"
     aria-modal="true"
+    tabindex="-1"
   >
-    <div class="modal" on:click|stopPropagation role="document">
+    <div 
+      class="modal" 
+      on:pointerdown={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.stopPropagation()}
+      role="document"
+    >
       <h2>📥 Importer liste</h2>
       <p class="modal-instruction">Lim inn delingskoden du har mottatt:</p>
 
@@ -318,14 +362,16 @@
       <div class="modal-actions">
         <button
           class="cancel-btn"
-          on:click={closeImportDialog}
+          on:pointerdown={createInteractionHandler(closeImportDialog)}
+          on:keydown={createInteractionHandler(closeImportDialog)}
           disabled={isImporting}
         >
           Avbryt
         </button>
         <button
           class="confirm-btn"
-          on:click={handleImport}
+          on:pointerdown={createInteractionHandler(handleImport)}
+          on:keydown={createInteractionHandler(handleImport)}
           disabled={isImporting || !importToken.trim()}
         >
           {isImporting ? "Importerer..." : "Importer"}

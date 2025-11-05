@@ -52,16 +52,46 @@
       alert("Kunne ikke kopiere til utklippstavle");
     }
   }
+
+  // Unified interaction handler for mobile-first approach
+  function createInteractionHandler(callback: () => void) {
+    return (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          callback();
+        }
+      } else if (e instanceof PointerEvent && e.isPrimary) {
+        e.preventDefault();
+        callback();
+      }
+    };
+  }
 </script>
 
 <div
   class="modal-overlay"
-  on:click={onClose}
+  on:pointerdown={(e) => {
+    if (e.target === e.currentTarget && e.isPrimary) {
+      e.preventDefault();
+      onClose();
+    }
+  }}
+  on:keydown={(e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  }}
   role="dialog"
   aria-modal="true"
-  on:keydown={(e) => e.key === "Escape" && onClose()}
+  tabindex="-1"
 >
-  <div class="modal" on:click|stopPropagation role="document">
+  <div 
+    class="modal" 
+    on:pointerdown={(e) => e.stopPropagation()}
+    on:keydown={(e) => e.stopPropagation()}
+    role="document"
+  >
     <h2>🔗 Del liste</h2>
     <p class="list-name">"{list.name}"</p>
 
@@ -74,7 +104,11 @@
         <div class="code-box">
           <code>{shareUrl}</code>
         </div>
-        <button class="copy-btn" on:click={copyUrl}>
+        <button 
+          class="copy-btn" 
+          on:pointerdown={createInteractionHandler(copyUrl)}
+          on:keydown={createInteractionHandler(copyUrl)}
+        >
           {copyUrlSuccess ? "✅ Kopiert!" : "📋 Kopier lenke"}
         </button>
       </div>
@@ -85,7 +119,11 @@
         <div class="code-box">
           <code>{shareToken}</code>
         </div>
-        <button class="copy-btn" on:click={copyToken}>
+        <button 
+          class="copy-btn" 
+          on:pointerdown={createInteractionHandler(copyToken)}
+          on:keydown={createInteractionHandler(copyToken)}
+        >
           {copySuccess ? "✅ Kopiert!" : "📋 Kopier kode"}
         </button>
       </div>
@@ -99,7 +137,13 @@
     {/if}
 
     <div class="modal-actions">
-      <button class="close-btn" on:click={onClose}> Lukk </button>
+      <button 
+        class="close-btn" 
+        on:pointerdown={createInteractionHandler(onClose)}
+        on:keydown={createInteractionHandler(onClose)}
+      > 
+        Lukk 
+      </button>
     </div>
   </div>
 </div>

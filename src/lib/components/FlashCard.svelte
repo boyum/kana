@@ -15,8 +15,16 @@
   $: backContent = back || romanization;
   $: hasMetadata = meaning || notes;
 
-  function handleClick() {
-    isFlipped = !isFlipped;
+  function handleInteraction(e: PointerEvent | KeyboardEvent) {
+    if (e instanceof KeyboardEvent) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        isFlipped = !isFlipped;
+      }
+    } else if (e instanceof PointerEvent && e.isPrimary) {
+      e.preventDefault();
+      isFlipped = !isFlipped;
+    }
   }
 
   // Dynamic font size based on content length
@@ -41,7 +49,8 @@
 <button
   class="flash-card"
   class:flipped={isFlipped}
-  on:click={handleClick}
+  on:pointerdown={handleInteraction}
+  on:keydown={handleInteraction}
   in:fade={{ duration: 200, delay: 200 }}
   out:fade={{ duration: 200 }}
 >

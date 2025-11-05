@@ -22,6 +22,7 @@
   let isFlipped = false;
   let direction: "front-to-back" | "back-to-front" = initialDirection;
   let shuffledCards: typeof cards = [];
+  let isTouchDevice = false;
 
   // Initialize shuffled cards
   $: shuffledCards = [...cards].sort(() => Math.random() - 0.5);
@@ -71,7 +72,22 @@
     isFlipped = false;
   }
 
-  // Keyboard handler
+  // Unified interaction handlers
+  function createInteractionHandler(callback: () => void) {
+    return (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          callback();
+        }
+      } else if (e instanceof PointerEvent && e.isPrimary) {
+        e.preventDefault();
+        callback();
+      }
+    };
+  }
+
+  // Keyboard handler for global shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "ArrowRight") {
       nextCard();
@@ -84,6 +100,13 @@
   }
 
   onMount(() => {
+    // Detect if this is primarily a touch device
+    isTouchDevice = 
+      ('ontouchstart' in window) || 
+      (navigator.maxTouchPoints > 0) ||
+      // Check if coarse pointer (touch) is the primary input
+      (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
   });
@@ -102,14 +125,22 @@
     {#if showDirectionToggle || additionalActions.length > 0}
       <div class="header-actions">
         {#if showDirectionToggle}
-          <button class="action-btn" on:click={toggleDirection}>
+          <button 
+            class="action-btn" 
+            on:pointerdown={createInteractionHandler(toggleDirection)}
+            on:keydown={createInteractionHandler(toggleDirection)}
+          >
             🔄 {direction === "front-to-back"
               ? "Forside → Bakside"
               : "Bakside → Forside"}
           </button>
         {/if}
         {#each additionalActions as action}
-          <button class="action-btn" on:click={action.onClick}>
+          <button 
+            class="action-btn" 
+            on:pointerdown={createInteractionHandler(action.onClick)}
+            on:keydown={createInteractionHandler(action.onClick)}
+          >
             {action.label}
           </button>
         {/each}
@@ -146,7 +177,8 @@
       <button
         type="button"
         class="nav-btn"
-        on:click={previousCard}
+        on:pointerdown={createInteractionHandler(previousCard)}
+        on:keydown={createInteractionHandler(previousCard)}
         disabled={currentIndex === 0}
       >
         ← Forrige
@@ -155,14 +187,17 @@
       <button
         type="button"
         class="nav-btn"
-        on:click={nextCard}
+        on:pointerdown={createInteractionHandler(nextCard)}
+        on:keydown={createInteractionHandler(nextCard)}
         disabled={currentIndex === shuffledCards.length - 1}
       >
         Neste →
       </button>
     </div>
 
-    <p class="hint">Tips: Bruk piltastene eller mellomrom for å navigere</p>
+    {#if !isTouchDevice}
+      <p class="hint">Tips: Bruk piltastene eller mellomrom for å navigere</p>
+    {/if}
   {/if}
 </section>
 
