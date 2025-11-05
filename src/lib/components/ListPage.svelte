@@ -1,0 +1,353 @@
+<script lang="ts">
+  import { onMount } from "svelte";
+  import FlashCard from "$lib/components/FlashCard.svelte";
+  import type { CustomFlashCard } from "$lib/types/customLists";
+
+  // Props
+  export let title: string;
+  export let cards: Array<
+    { character?: string; romanization?: string } | CustomFlashCard
+  >;
+  export let backUrl: string = "/";
+  export let backText: string = "← Hjem";
+  export let showDirectionToggle: boolean = false;
+  export let initialDirection: "front-to-back" | "back-to-front" =
+    "front-to-back";
+  export let showTitle: boolean = false;
+  export let additionalActions: Array<{ label: string; onClick: () => void }> =
+    [];
+
+  // State
+  let currentIndex = 0;
+  let isFlipped = false;
+  let direction: "front-to-back" | "back-to-front" = initialDirection;
+  let shuffledCards: typeof cards = [];
+
+  // Initialize shuffled cards
+  $: shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+
+  // Computed values
+  $: currentCard = shuffledCards[currentIndex];
+  $: progress =
+    shuffledCards.length > 0
+      ? `${currentIndex + 1} / ${shuffledCards.length}`
+      : "0 / 0";
+
+  // Handle card content based on type and direction
+  $: isCustomCard = currentCard && "front" in currentCard;
+  $: frontContent = isCustomCard
+    ? direction === "front-to-back"
+      ? (currentCard as CustomFlashCard).front
+      : (currentCard as CustomFlashCard).back
+    : (currentCard as any)?.character || "";
+  $: backContent = isCustomCard
+    ? direction === "front-to-back"
+      ? (currentCard as CustomFlashCard).back
+      : (currentCard as CustomFlashCard).front
+    : (currentCard as any)?.romanization || "";
+  $: meaning = isCustomCard
+    ? (currentCard as CustomFlashCard).meaning
+    : undefined;
+  $: notes = isCustomCard ? (currentCard as CustomFlashCard).notes : undefined;
+
+  // Navigation functions
+  function nextCard() {
+    if (currentIndex < shuffledCards.length - 1) {
+      isFlipped = false;
+      currentIndex++;
+    }
+  }
+
+  function previousCard() {
+    if (currentIndex > 0) {
+      isFlipped = false;
+      currentIndex--;
+    }
+  }
+
+  function toggleDirection() {
+    direction =
+      direction === "front-to-back" ? "back-to-front" : "front-to-back";
+    isFlipped = false;
+  }
+
+  // Keyboard handler
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "ArrowRight") {
+      nextCard();
+    } else if (event.key === "ArrowLeft") {
+      previousCard();
+    } else if (event.key === " ") {
+      event.preventDefault();
+      isFlipped = !isFlipped;
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  });
+</script>
+
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
+
+<section>
+  <div class="header">
+    <a href={backUrl} class="back-btn">{backText}</a>
+    {#if showTitle}
+      <h1>{title}</h1>
+    {/if}
+    {#if showDirectionToggle || additionalActions.length > 0}
+      <div class="header-actions">
+        {#if showDirectionToggle}
+          <button class="action-btn" on:click={toggleDirection}>
+            🔄 {direction === "front-to-back"
+              ? "Forside → Bakside"
+              : "Bakside → Forside"}
+          </button>
+        {/if}
+        {#each additionalActions as action}
+          <button class="action-btn" on:click={action.onClick}>
+            {action.label}
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
+
+  {#if shuffledCards.length === 0}
+    <div class="empty-state">
+      <p>Ingen kort tilgjengelig</p>
+    </div>
+  {:else}
+    <div class="card-container">
+      {#key currentIndex}
+        {#if isCustomCard}
+          <FlashCard
+            front={frontContent}
+            back={backContent}
+            {meaning}
+            {notes}
+            bind:isFlipped
+          />
+        {:else}
+          <FlashCard
+            character={frontContent}
+            romanization={backContent}
+            bind:isFlipped
+          />
+        {/if}
+      {/key}
+    </div>
+
+    <div class="controls">
+      <button
+        type="button"
+        class="nav-btn"
+        on:click={previousCard}
+        disabled={currentIndex === 0}
+      >
+        ← Forrige
+      </button>
+      <span class="progress">{progress}</span>
+      <button
+        type="button"
+        class="nav-btn"
+        on:click={nextCard}
+        disabled={currentIndex === shuffledCards.length - 1}
+      >
+        Neste →
+      </button>
+    </div>
+
+    <p class="hint">Tips: Bruk piltastene eller mellomrom for å navigere</p>
+  {/if}
+</section>
+
+<style>
+  section {
+    --section-padding: 2rem;
+    min-height: calc(100dvh - (2 * var(--section-padding)));
+    padding: var(--section-padding);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-size: 3rem;
+    color: var(--color-heading);
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+
+  .back-btn {
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(57, 92, 107, 0.2);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .back-btn:hover {
+    background: var(--color-heading);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(57, 92, 107, 0.3);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    background: var(--color-heading);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .action-btn:hover {
+    background: var(--color-accent);
+    transform: scale(1.05);
+  }
+
+  .card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    min-height: 500px;
+    padding: 1rem;
+    position: relative;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
+  }
+
+  .nav-btn {
+    padding: 1rem 2rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    background: var(--color-accent);
+    color: white;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(57, 92, 107, 0.2);
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    background: var(--color-heading);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(57, 92, 107, 0.3);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .progress {
+    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    color: var(--color-heading);
+    white-space: nowrap;
+    text-align: center;
+    min-width: 100px;
+  }
+
+  .hint {
+    font-size: 0.9rem;
+    color: var(--color-heading);
+    opacity: 0.7;
+    margin-top: 1rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .empty-state p {
+    font-size: 1.5rem;
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+  }
+
+  @media (max-width: 720px) {
+    section {
+      --section-padding: 1rem;
+    }
+
+    .header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      text-align: left;
+    }
+
+    .header-actions {
+      flex-direction: column;
+    }
+
+    .action-btn {
+      width: 100%;
+    }
+
+    .controls {
+      justify-content: space-between;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .progress {
+      flex-grow: 1;
+    }
+
+    .nav-btn {
+      width: 100%;
+      max-width: 250px;
+      padding: 0.5rem;
+    }
+  }
+</style>
