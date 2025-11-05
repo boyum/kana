@@ -1,13 +1,13 @@
 // JWT-based sharing utilities for custom lists
-import { SignJWT, jwtVerify } from 'jose';
-import type { CustomList, SerializedCustomList } from '$lib/types/customLists';
-import { generateId } from './storage';
+import type { CustomList, SerializedCustomList } from "$lib/types/customLists";
+import { SignJWT, jwtVerify } from "jose";
+import { generateId } from "./storage";
 
 // Secret for JWT - in client-side only apps, this is just for encoding/decoding
 // Not for security since anyone can decode JWTs
-const JWT_SECRET = new TextEncoder().encode('kana-flashcard-sharing-v1');
-const JWT_ISSUER = 'kana-flashcard-app';
-const JWT_AUDIENCE = 'kana-flashcard-users';
+const JWT_SECRET = new TextEncoder().encode("kana-flashcard-sharing-v1");
+const JWT_ISSUER = "kana-flashcard-app";
+const JWT_AUDIENCE = "kana-flashcard-users";
 
 // Helper to serialize list for JWT payload
 function serializeForJWT(list: CustomList): SerializedCustomList {
@@ -24,11 +24,11 @@ function serializeForJWT(list: CustomList): SerializedCustomList {
       notes: card.notes,
       tags: card.tags,
       createdAt: card.createdAt.toISOString(),
-      lastReviewed: card.lastReviewed?.toISOString()
+      lastReviewed: card.lastReviewed?.toISOString(),
     })),
     createdAt: list.createdAt.toISOString(),
     updatedAt: list.updatedAt.toISOString(),
-    defaultDirection: list.defaultDirection
+    defaultDirection: list.defaultDirection,
   };
 }
 
@@ -47,11 +47,11 @@ function deserializeFromJWT(serialized: SerializedCustomList): CustomList {
       notes: card.notes,
       tags: card.tags,
       createdAt: new Date(card.createdAt),
-      lastReviewed: card.lastReviewed ? new Date(card.lastReviewed) : undefined
+      lastReviewed: card.lastReviewed ? new Date(card.lastReviewed) : undefined,
     })),
     createdAt: new Date(serialized.createdAt),
     updatedAt: new Date(serialized.updatedAt),
-    defaultDirection: serialized.defaultDirection
+    defaultDirection: serialized.defaultDirection,
   };
 }
 
@@ -63,19 +63,19 @@ function deserializeFromJWT(serialized: SerializedCustomList): CustomList {
 export async function generateShareToken(list: CustomList): Promise<string> {
   try {
     const serialized = serializeForJWT(list);
-    
+
     const token = await new SignJWT({ list: serialized })
-      .setProtectedHeader({ alg: 'HS256' })
+      .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setIssuer(JWT_ISSUER)
       .setAudience(JWT_AUDIENCE)
-      .setExpirationTime('365d') // Token valid for 1 year
+      .setExpirationTime("365d") // Token valid for 1 year
       .sign(JWT_SECRET);
-    
+
     return token;
   } catch (error) {
-    console.error('Failed to generate share token:', error);
-    throw new Error('Kunne ikke generere delingskode');
+    console.error("Failed to generate share token:", error);
+    throw new Error("Kunne ikke generere delingskode");
   }
 }
 
@@ -88,47 +88,53 @@ export async function decodeShareToken(token: string): Promise<CustomList> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET, {
       issuer: JWT_ISSUER,
-      audience: JWT_AUDIENCE
+      audience: JWT_AUDIENCE,
     });
-    
-    if (!payload.list || typeof payload.list !== 'object') {
-      throw new Error('Invalid token payload');
+
+    if (!payload.list || typeof payload.list !== "object") {
+      throw new Error("Invalid token payload");
     }
-    
+
     const serialized = payload.list as SerializedCustomList;
-    
+
     // Validate structure
-    if (!serialized.name || !serialized.cards || !Array.isArray(serialized.cards)) {
-      throw new Error('Invalid list structure');
+    if (
+      !serialized.name ||
+      !serialized.cards ||
+      !Array.isArray(serialized.cards)
+    ) {
+      throw new Error("Invalid list structure");
     }
-    
+
     // Deserialize and generate new IDs to avoid conflicts
     const list = deserializeFromJWT(serialized);
     list.id = generateId();
     list.createdAt = new Date();
     list.updatedAt = new Date();
-    
+
     // Regenerate card IDs
     list.cards = list.cards.map(card => ({
       ...card,
       id: generateId(),
-      createdAt: new Date()
+      createdAt: new Date(),
     }));
-    
+
     return list;
   } catch (error) {
-    console.error('Failed to decode share token:', error);
-    
+    console.error("Failed to decode share token:", error);
+
     if (error instanceof Error) {
-      if (error.message.includes('expired')) {
-        throw new Error('Delingskoden er utløpt');
+      if (error.message.includes("expired")) {
+        throw new Error("Delingskoden er utløpt");
       }
-      if (error.message.includes('signature')) {
-        throw new Error('Ugyldig delingskode');
+      if (error.message.includes("signature")) {
+        throw new Error("Ugyldig delingskode");
       }
     }
-    
-    throw new Error('Kunne ikke importere liste. Sjekk at delingskoden er gyldig.');
+
+    throw new Error(
+      "Kunne ikke importere liste. Sjekk at delingskoden er gyldig.",
+    );
   }
 }
 
@@ -138,10 +144,13 @@ export async function decodeShareToken(token: string): Promise<CustomList> {
  * @param baseUrl The base URL of the app (e.g., window.location.origin)
  * @returns Promise<string> The shareable URL
  */
-export async function generateShareUrl(list: CustomList, baseUrl: string): Promise<string> {
+export async function generateShareUrl(
+  list: CustomList,
+  baseUrl: string,
+): Promise<string> {
   const token = await generateShareToken(list);
-  const url = new URL('/custom', baseUrl);
-  url.searchParams.set('import', token);
+  const url = new URL("/custom", baseUrl);
+  url.searchParams.set("import", token);
   return url.toString();
 }
 
@@ -153,7 +162,7 @@ export async function generateShareUrl(list: CustomList, baseUrl: string): Promi
 export function extractImportToken(url: string): string | null {
   try {
     const urlObj = new URL(url);
-    return urlObj.searchParams.get('import');
+    return urlObj.searchParams.get("import");
   } catch {
     return null;
   }

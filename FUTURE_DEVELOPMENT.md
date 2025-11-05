@@ -1,4 +1,4 @@
-# Future development 
+# Future development
 
 - Add a difficulty system (beginner: basic characters only, intermediate: includes diacritics, advanced: includes combinations). Combinations should be short words consisting of 2-3 characters. They should be real words with meanings. The word meanings should also be shown on the back of the flashcards.
 - Implement a spaced repetition algorithm to optimize learning. Track user performance on each character and adjust the frequency of reviews accordingly.

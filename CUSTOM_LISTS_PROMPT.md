@@ -43,7 +43,6 @@ You are working on a SvelteKit + TypeScript flash card application for learning 
 1. **As a user, I want to create multiple named custom lists** (e.g., "Common Words", "Food Vocabulary", "Daily Phrases") so I can organize different learning goals separately
 
 2. **As a user, I want each flashcard to support front/back content** (not just character/romanization) so I can create cards like:
-
    - Front: "こんにちは" → Back: "konnichiwa (hello)"
    - Front: "cat" → Back: "ねこ (neko)"
    - Front: "ありがとう" → Back: "arigatou (thank you)"
@@ -103,6 +102,7 @@ Implement complete localStorage utilities in `src/lib/utils/storage.ts`:
 - `importFromShareToken(token: string): CustomList` - Decode JWT and import list
 
 **JWT Sharing Implementation:**
+
 - Use a lightweight JWT library (e.g., `jose` or `jsonwebtoken`) for encoding/decoding
 - JWT payload should contain: list data, creation timestamp, optional expiry
 - No server required - JWT is self-contained and can be shared as a string

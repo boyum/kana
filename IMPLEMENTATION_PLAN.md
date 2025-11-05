@@ -134,12 +134,10 @@ Create a top navigation menu with:
    ```
 
 2. **Slide transition** between cards (optional):
-
    - Use Svelte's built-in transitions
    - `import { fly, fade } from 'svelte/transition';`
 
 3. **Keyboard navigation**:
-
    - Arrow keys for next/previous
    - Space bar to flip card
    - Implement using Svelte's `on:keydown` handlers

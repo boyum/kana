@@ -69,23 +69,23 @@ The app will be running at `http://localhost:5173` 🎉
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the development server with hot reload |
-| `npm run build` | Build the production-ready app |
-| `npm run preview` | Preview the production build locally |
-| `npm run check` | Run TypeScript and Svelte type checking |
-| `npm run check:watch` | Run type checking in watch mode |
-| `npm test` | Run all tests (unit + e2e) |
-| `npm run test:unit` | Run unit tests with Vitest |
-| `npm run test:e2e` | Run end-to-end tests with Playwright |
-| `npm run lint` | Lint the codebase with ESLint |
-| `npm run db:push` | Push database schema changes |
-| `npm run db:generate` | Generate database migrations |
-| `npm run db:migrate` | Run database migrations |
-| `npm run db:studio` | Open Drizzle Studio (database GUI) |
-| `npm run storybook` | Start Storybook for component development |
-| `npm run build-storybook` | Build Storybook for production |
+| Command                   | Description                                  |
+| ------------------------- | -------------------------------------------- |
+| `npm run dev`             | Start the development server with hot reload |
+| `npm run build`           | Build the production-ready app               |
+| `npm run preview`         | Preview the production build locally         |
+| `npm run check`           | Run TypeScript and Svelte type checking      |
+| `npm run check:watch`     | Run type checking in watch mode              |
+| `npm test`                | Run all tests (unit + e2e)                   |
+| `npm run test:unit`       | Run unit tests with Vitest                   |
+| `npm run test:e2e`        | Run end-to-end tests with Playwright         |
+| `npm run lint`            | Lint the codebase with ESLint                |
+| `npm run db:push`         | Push database schema changes                 |
+| `npm run db:generate`     | Generate database migrations                 |
+| `npm run db:migrate`      | Run database migrations                      |
+| `npm run db:studio`       | Open Drizzle Studio (database GUI)           |
+| `npm run storybook`       | Start Storybook for component development    |
+| `npm run build-storybook` | Build Storybook for production               |
 
 ### Project Structure
 

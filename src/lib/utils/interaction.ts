@@ -55,16 +55,16 @@ export function handleLinkClick(
 
 // Utility function to provide random placeholder names for custom lists
 const placeholderNames = [
-  "Japansk ordliste",
-  "Bein i menneskekroppen",
-  "Vanlige franske verb",
-  "Verdens hovedsteder",
-  "Periodesystemets elementer",
-  "Berømte malerier",
-  "Programmeringsspråk",
-  "Historiske hendelser",
-  "Matematiske formler",
-  "Populære filmtitater"
+  "Japanese glossary",
+  "Bones in the human body",
+  "Common French verbs",
+  "World capitals",
+  "Periodic table elements",
+  "Famous paintings",
+  "Programming languages",
+  "Historical events",
+  "Mathematical formulas",
+  "Popular movie quotes",
 ];
 
 /**
