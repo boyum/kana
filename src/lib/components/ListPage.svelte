@@ -129,7 +129,7 @@
     <a
       href={backUrl}
       class="back-btn"
-      on:pointerdown={(e) => handleLinkClick(e, backUrl, goto)}
+      on:pointerdown={e => handleLinkClick(e, backUrl, goto)}
     >
       {backText}
     </a>
@@ -201,10 +201,14 @@
       <button
         type="button"
         class="nav-btn"
-        on:pointerdown={createInteractionHandler(currentIndex === shuffledCards.length - 1 ? restart : nextCard)}
-        on:keydown={createInteractionHandler(currentIndex === shuffledCards.length - 1 ? restart : nextCard)}
+        on:pointerdown={createInteractionHandler(
+          currentIndex === shuffledCards.length - 1 ? restart : nextCard,
+        )}
+        on:keydown={createInteractionHandler(
+          currentIndex === shuffledCards.length - 1 ? restart : nextCard,
+        )}
       >
-        {currentIndex === shuffledCards.length - 1 ? 'Igjen 🔄' : 'Neste →'}
+        {currentIndex === shuffledCards.length - 1 ? "Igjen 🔄" : "Neste →"}
       </button>
     </div>
 
@@ -397,6 +401,11 @@
       width: 100%;
       padding: 0.4rem 0.75rem;
       font-size: 0.9rem;
+    }
+
+    .card-container {
+      max-width: 100%;
+      padding: 0.25rem;
     }
 
     .controls {
