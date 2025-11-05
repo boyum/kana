@@ -17,6 +17,10 @@
   let bulkImportText = "";
   let bulkImportError = "";
 
+  let showQuickAdd = false;
+  let quickAddText = "";
+  let quickAddError = "";
+
   function addCard() {
     cards = [
       ...cards,
@@ -114,6 +118,57 @@
       closeBulkImport();
     } catch (error) {
       bulkImportError = "Kunne ikke parse data. Sjekk formatet.";
+    }
+  }
+
+  function openQuickAdd() {
+    showQuickAdd = true;
+    quickAddText = "";
+    quickAddError = "";
+  }
+
+  function closeQuickAdd() {
+    showQuickAdd = false;
+  }
+
+  function handleQuickAdd() {
+    quickAddError = "";
+
+    if (!quickAddText.trim()) {
+      quickAddError = "Vennligst skriv inn data i formatet: wordAFront|wordABack";
+      return;
+    }
+
+    try {
+      const lines = quickAddText.trim().split("\n");
+      const newCards: CustomFlashCard[] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const parts = line.split("|");
+
+        if (parts.length !== 2) {
+          quickAddError = `Linje ${i + 1}: Ugyldig format. Forventet wordAFront|wordABack`;
+          return;
+        }
+
+        const card: CustomFlashCard = {
+          id: generateId(),
+          front: parts[0].trim(),
+          back: parts[1].trim(),
+          type: listType,
+          createdAt: new Date(),
+        };
+
+        newCards.push(card);
+      }
+
+      cards = [...cards, ...newCards];
+      closeQuickAdd();
+    } catch (error) {
+      quickAddError = "Det oppstod en feil under parsing av dataene.";
     }
   }
 
@@ -347,6 +402,39 @@
         >
           Importer
         </button>
+      </div>
+    </dialog>
+  </div>
+{/if}
+
+<!-- Quick add modal -->
+{#if showQuickAdd}
+  <div class="modal-overlay" on:pointerdown={(e) => {
+    if (e.target === e.currentTarget && e.isPrimary) {
+      e.preventDefault();
+      closeQuickAdd();
+    }
+  }} on:keydown={(e) => {
+    if (e.key === 'Escape') {
+      closeQuickAdd();
+    }
+  }} role="dialog" aria-modal="true" tabindex="-1">
+    <dialog class="modal" on:pointerdown={(e) => e.stopPropagation()} on:keydown={(e) => e.stopPropagation()} tabindex="-1">
+      <h2>Rask Legg til</h2>
+      <p class="modal-instruction">
+        Skriv inn data i formatet:<br />
+        <code>wordAFront|wordABack</code>
+      </p>
+
+      <textarea bind:value={quickAddText} placeholder="wordAFront|wordABack\nwordBFront|wordBBack" class="bulk-textarea" rows="10"></textarea>
+
+      {#if quickAddError}
+        <p class="error-message">❌ {quickAddError}</p>
+      {/if}
+
+      <div class="modal-actions">
+        <button class="cancel-btn" on:pointerdown={createInteractionHandler(closeQuickAdd)} on:keydown={createInteractionHandler(closeQuickAdd)}>Avbryt</button>
+        <button class="confirm-btn" on:pointerdown={createInteractionHandler(handleQuickAdd)} on:keydown={createInteractionHandler(handleQuickAdd)}>Legg til</button>
       </div>
     </dialog>
   </div>
