@@ -2,11 +2,6 @@
   import { goto } from "$app/navigation";
   import { handleLinkClick } from "$lib/utils/interaction";
   import { onMount } from "svelte";
-
-  onMount(() => {
-    goto("/hiragana");
-    goto("/katakana");
-  });
 </script>
 
 <svelte:head>
