@@ -74,6 +74,12 @@
     isFlipped = false;
   }
 
+  function restart() {
+    isFlipped = false;
+    currentIndex = 0;
+    shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+  }
+
   // Unified interaction handlers
   function createInteractionHandler(callback: () => void) {
     return (e: PointerEvent | KeyboardEvent) => {
@@ -195,11 +201,10 @@
       <button
         type="button"
         class="nav-btn"
-        on:pointerdown={createInteractionHandler(nextCard)}
-        on:keydown={createInteractionHandler(nextCard)}
-        disabled={currentIndex === shuffledCards.length - 1}
+        on:pointerdown={createInteractionHandler(currentIndex === shuffledCards.length - 1 ? restart : nextCard)}
+        on:keydown={createInteractionHandler(currentIndex === shuffledCards.length - 1 ? restart : nextCard)}
       >
-        Neste →
+        {currentIndex === shuffledCards.length - 1 ? 'Igjen 🔄' : 'Neste →'}
       </button>
     </div>
 
