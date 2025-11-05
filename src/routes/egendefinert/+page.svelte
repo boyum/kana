@@ -61,11 +61,11 @@
   }
 
   function createNewList() {
-    goto("/custom/new");
+    goto("/egendefinert/new");
   }
 
   function editList(listId: string) {
-    goto(`/custom/${listId}/edit`);
+    goto(`/egendefinert/${listId}/edit`);
   }
 
   function practiceList(listId: string) {

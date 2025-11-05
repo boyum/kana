@@ -18,7 +18,7 @@
 		list = getCustomList(data.listId);
 		if (!list) {
 			alert('Liste ikke funnet');
-			goto('/custom');
+			goto('/egendefinert');
 			return;
 		}
 		direction = list.defaultDirection || 'front-to-back';
@@ -29,7 +29,7 @@
 	<ListPage
 		title={list.name}
 		cards={list.cards || []}
-		backUrl="/custom"
+		backUrl="/egendefinert"
 		backText="← Tilbake"
 		showTitle={true}
 		showDirectionToggle={true}

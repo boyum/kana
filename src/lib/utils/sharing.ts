@@ -149,7 +149,7 @@ export async function generateShareUrl(
   baseUrl: string,
 ): Promise<string> {
   const token = await generateShareToken(list);
-  const url = new URL("/custom", baseUrl);
+  const url = new URL("/egendefinert", baseUrl);
   url.searchParams.set("import", token);
   return url.toString();
 }

@@ -31,10 +31,10 @@
       </a>
     </div>
     <a
-      href="/custom"
+      href="/egendefinert"
       rel="prefetch"
       class="mode-btn custom"
-      on:pointerdown={e => handleLinkClick(e, "/custom", goto)}
+      on:pointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
     >
       ✨ Dine egne flash-kort
     </a>

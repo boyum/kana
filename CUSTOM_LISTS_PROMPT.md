@@ -7,7 +7,7 @@ You are working on a SvelteKit + TypeScript flash card application for learning 
 - **Framework**: SvelteKit with TypeScript
 - **Current Features**:
   - Flash card display for Hiragana and Katakana characters
-  - Basic custom list editor at `/custom` route
+  - Basic custom list editor at `/egendefinert` route
   - ListEditor component with add/remove/save/reset functionality
   - Storage utilities for managing custom lists in localStorage
 - **UI Language**: Norwegian (Bokmål)
@@ -17,7 +17,7 @@ You are working on a SvelteKit + TypeScript flash card application for learning 
 
 ### Existing Files & Components
 
-1. **`src/routes/custom/+page.svelte`**: Type selection page (Hiragana/Katakana) that shows the ListEditor
+1. **`src/routes/egendefinert/+page.svelte`**: Type selection page (Hiragana/Katakana) that shows the ListEditor
 2. **`src/lib/components/ListEditor.svelte`**: Modal editor for adding/removing flashcard pairs
 3. **`src/lib/utils/storage.ts`**: localStorage utilities (needs implementation/verification)
 4. **`src/lib/data/kana.ts`**: Data structure defining `KanaCharacter` interface:
@@ -115,7 +115,7 @@ Consider migration strategy if old data format exists.
 
 Create/update the following components:
 
-##### a) **List Management Page** (`src/routes/custom/+page.svelte`)
+##### a) **List Management Page** (`src/routes/egendefinert/+page.svelte`)
 
 Replace type selection with list management dashboard:
 
@@ -129,14 +129,14 @@ Replace type selection with list management dashboard:
 
 Enhanced editor features:
 
-- **List settings**: Name, type (hiragana/katakana/mixed/custom)
+- **List settings**: Name, type (hiragana/katakana/mixed/egendefinert)
 - **Card editor**: Front/back text inputs, optional meaning field, optional notes
 - **Bulk import**: Paste tab-separated or CSV data (front\tback\tmeaning)
 - **Validation**: Ensure no empty cards, unique IDs
 - **Actions**: Save, Cancel, Delete List
 - **Character count indicator** for list
 
-##### c) **Custom Practice Mode** (`src/routes/custom/[listId]/+page.svelte`)
+##### c) **Custom Practice Mode** (`src/routes/egendefinert/[listId]/+page.svelte`)
 
 New dynamic route for practicing custom lists:
 
@@ -162,7 +162,7 @@ Optional standalone component:
 New component for sharing lists:
 
 - "Copy to Clipboard" button with success feedback
-- Generate shareable URL with token as query parameter (e.g., `/custom/import?token=...`)
+- Generate shareable URL with token as query parameter (e.g., `/egendefinert/import?token=...`)
 - Visual indication when token is copied
 
 ##### f) **Import from Share Dialog** (`src/lib/components/ImportShareDialog.svelte`)
@@ -247,7 +247,7 @@ All new UI elements must use Norwegian:
 
 #### Phase 2: Core Features
 
-1. **Update/create list management dashboard** at `/custom`
+1. **Update/create list management dashboard** at `/egendefinert`
    - List all custom lists
    - Create new list button
    - Delete/duplicate actions
@@ -255,7 +255,7 @@ All new UI elements must use Norwegian:
    - Support for list naming
    - Front/back card editing
    - Optional meaning field
-3. **Create practice route** at `/custom/[listId]`
+3. **Create practice route** at `/egendefinert/[listId]`
    - Load and display cards from specific list
    - Reuse/adapt existing flash card logic
    - Add direction toggle UI (button or switch)
