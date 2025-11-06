@@ -4,7 +4,6 @@ export interface CustomFlashCard {
   id: string; // Unique identifier
   front: string; // Front side content
   back: string; // Back side content
-  type: "hiragana" | "katakana" | "mixed" | "custom";
   meaning?: string; // Optional meaning/translation
   notes?: string; // Optional study notes
   tags?: string[]; // Optional tags for filtering
@@ -26,7 +25,6 @@ export interface SerializedCustomFlashCard {
   id: string;
   front: string;
   back: string;
-  type: "hiragana" | "katakana" | "mixed" | "custom";
   meaning?: string;
   notes?: string;
   tags?: string[];
@@ -37,7 +35,6 @@ export interface SerializedCustomFlashCard {
 export interface SerializedCustomList {
   id: string;
   name: string;
-  type: "hiragana" | "katakana" | "mixed" | "custom";
   cards: SerializedCustomFlashCard[];
   createdAt: string;
   updatedAt: string;

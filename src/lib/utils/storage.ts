@@ -1,6 +1,6 @@
 // Storage utilities for custom lists
+import { exampleLists } from "$lib/data/exampleLists";
 import type { KanaCharacter } from "$lib/data/kana";
-import { hiraganaCharacters, katakanaCharacters } from "$lib/data/kana";
 import type {
   CustomList,
   CustomFlashCard,
@@ -11,6 +11,7 @@ import type {
 const STORAGE_KEY = "kana_custom_lists";
 const OLD_HIRAGANA_KEY = "kana_custom_hiragana";
 const OLD_KATAKANA_KEY = "kana_custom_katakana";
+const EXAMPLE_LISTS_KEY = "kana_example_lists_populated";
 
 // Helper to check if we're in browser environment
 function isBrowser(): boolean {
@@ -79,7 +80,6 @@ function migrateOldData(): void {
           const newList: CustomList = {
             id: generateId(),
             name: "Hiragana (migrert)",
-            type: "hiragana",
             cards: oldCards.map(card => ({
               id: generateId(),
               front: card.character,
@@ -107,7 +107,6 @@ function migrateOldData(): void {
           const newList: CustomList = {
             id: generateId(),
             name: "Katakana (migrert)",
-            type: "katakana",
             cards: oldCards.map(card => ({
               id: generateId(),
               front: card.character,
@@ -142,9 +141,36 @@ function migrateOldData(): void {
   }
 }
 
+// Initialize example lists on first load
+function initializeExampleLists(): void {
+  if (!isBrowser()) return;
+
+  try {
+    const hasBeenPopulated = localStorage.getItem(EXAMPLE_LISTS_KEY);
+    if (hasBeenPopulated) {
+      // Already populated
+      return;
+    }
+
+    const existingLists = getAllCustomLists();
+
+    // Only populate if there are no custom lists
+    if (existingLists.length === 0 && exampleLists.length > 0) {
+      const serialized = exampleLists.map(serializeList);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
+      localStorage.setItem(EXAMPLE_LISTS_KEY, "true");
+
+      console.log(`Initialized ${exampleLists.length} example lists`);
+    }
+  } catch (e) {
+    console.error("Failed to initialize example lists:", e);
+  }
+}
+
 // Initialize and run migration if needed
 if (isBrowser()) {
   migrateOldData();
+  initializeExampleLists();
 }
 
 // Get all custom lists
@@ -220,7 +246,6 @@ export function duplicateCustomList(id: string, newName: string): CustomList {
   const duplicate: CustomList = {
     id: generateId(),
     name: newName,
-    type: original.type,
     cards: original.cards.map(card => ({
       ...card,
       id: generateId(),
@@ -275,75 +300,4 @@ export function importList(jsonString: string): CustomList {
     console.error("Failed to import list:", e);
     throw new Error("Kunne ikke importere liste. Sjekk at formatet er gyldig.");
   }
-}
-
-// Legacy functions for backwards compatibility with existing code
-export function getCustomList_OLD(
-  type: "hiragana" | "katakana",
-): KanaCharacter[] {
-  // Try to find a list of this type
-  const lists = getAllCustomLists();
-  const list = lists.find(l => l.type === type);
-
-  if (list) {
-    return list.cards.map(card => ({
-      character: card.front,
-      romanization: card.back,
-      type: card.type as "hiragana" | "katakana",
-    }));
-  }
-
-  // Return default
-  return type === "hiragana" ? hiraganaCharacters : katakanaCharacters;
-}
-
-export function saveCustomList_OLD(
-  type: "hiragana" | "katakana",
-  cards: KanaCharacter[],
-): void {
-  // This is deprecated but kept for backwards compatibility
-  // Convert to new format
-  const lists = getAllCustomLists();
-  let list = lists.find(l => l.type === type && l.name.includes("(migrert)"));
-
-  if (!list) {
-    list = {
-      id: generateId(),
-      name: `${type === "hiragana" ? "Hiragana" : "Katakana"} (migrert)`,
-      type,
-      cards: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      defaultDirection: "front-to-back",
-    };
-  }
-
-  list.cards = cards.map(card => ({
-    id: generateId(),
-    front: card.character,
-    back: card.romanization,
-    type: card.type,
-    createdAt: new Date(),
-  }));
-
-  saveCustomList(list);
-}
-
-export function resetToDefault(type: "hiragana" | "katakana"): KanaCharacter[] {
-  // Remove the migrated list if it exists
-  const lists = getAllCustomLists();
-  const migratedList = lists.find(
-    l => l.type === type && l.name.includes("(migrert)"),
-  );
-
-  if (migratedList) {
-    deleteCustomList(migratedList.id);
-  }
-
-  return type === "hiragana" ? hiraganaCharacters : katakanaCharacters;
-}
-
-export function hasCustomList(type: "hiragana" | "katakana"): boolean {
-  const lists = getAllCustomLists();
-  return lists.some(l => l.type === type);
 }

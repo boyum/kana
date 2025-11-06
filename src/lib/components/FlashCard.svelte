@@ -32,10 +32,12 @@
     if (!text) return "10rem";
     const len = text.length;
 
-    if (len > 10) return "1rem";
-    if (len > 5) return "2.5rem";
-    if (len > 3) return "3rem";
-    if (len > 2) return "3.5rem";
+    if (len > 40) return "1.5rem";
+    if (len > 20) return "2rem";
+    if (len > 10) return "3rem";
+    if (len > 5) return "3.5rem";
+    if (len > 3) return "4rem";
+    if (len > 2) return "4.5rem";
     if (len > 1) return "6rem";
 
     return "10rem";

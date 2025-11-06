@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import type { CustomList } from "$lib/types/customLists";
 import {
   generateShareToken,
   decodeShareToken,
   generateShareUrl,
   extractImportToken,
 } from "$lib/utils/sharing";
-import type { CustomList } from "$lib/types/customLists";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Sharing functionality - Base62 encoding", () => {
   let testList: CustomList;
@@ -20,7 +20,6 @@ describe("Sharing functionality - Base62 encoding", () => {
           id: "card-1",
           front: "あ",
           back: "a",
-          type: "hiragana",
           meaning: "vowel sound 'a'",
           notes: "First character in hiragana",
           tags: ["vowel", "basic"],
@@ -31,7 +30,6 @@ describe("Sharing functionality - Base62 encoding", () => {
           id: "card-2",
           front: "い",
           back: "i",
-          type: "hiragana",
           meaning: "vowel sound 'i'",
           notes: undefined,
           tags: ["vowel"],
@@ -42,7 +40,6 @@ describe("Sharing functionality - Base62 encoding", () => {
           id: "card-3",
           front: "Custom Front",
           back: "Custom Back",
-          type: "custom",
           meaning: undefined,
           notes: undefined,
           tags: undefined,
@@ -149,7 +146,6 @@ describe("Sharing functionality - Base62 encoding", () => {
 
       expect(decodedCard.front).toBe(originalCard.front);
       expect(decodedCard.back).toBe(originalCard.back);
-      expect(decodedCard.type).toBe(originalCard.type);
       expect(decodedCard.meaning).toBe(originalCard.meaning);
       expect(decodedCard.notes).toBe(originalCard.notes);
       expect(decodedCard.tags).toEqual(originalCard.tags);
@@ -172,7 +168,7 @@ describe("Sharing functionality - Base62 encoding", () => {
       const token = await generateShareToken(testList);
 
       // Wait a tiny bit to ensure timestamp difference
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       const decodedList = await decodeShareToken(token);
 
@@ -193,7 +189,6 @@ describe("Sharing functionality - Base62 encoding", () => {
             id: "card-1",
             front: "Front",
             back: "Back",
-            type: "custom",
             createdAt: new Date(),
           },
         ],
@@ -235,7 +230,6 @@ describe("Sharing functionality - Base62 encoding", () => {
             id: "card-1",
             front: "こんにちは",
             back: "Hello",
-            type: "hiragana",
             meaning: "Greeting 🎌",
             notes: "Common greeting in Japanese",
             createdAt: new Date(),
@@ -358,7 +352,6 @@ describe("Sharing functionality - Base62 encoding", () => {
 
         expect(decodedCard.front).toBe(originalCard.front);
         expect(decodedCard.back).toBe(originalCard.back);
-        expect(decodedCard.type).toBe(originalCard.type);
         expect(decodedCard.meaning).toBe(originalCard.meaning);
         expect(decodedCard.notes).toBe(originalCard.notes);
         expect(decodedCard.tags).toEqual(originalCard.tags);
@@ -372,7 +365,6 @@ describe("Sharing functionality - Base62 encoding", () => {
           id: `card-${i}`,
           front: `Front ${i}`,
           back: `Back ${i}`,
-          type: "custom" as const,
           meaning: `Meaning ${i}`,
           notes: `Notes for card ${i}`,
           tags: [`tag${i}`, "common"],
@@ -447,7 +439,6 @@ describe("Sharing functionality - Base62 encoding", () => {
             id: "long-card",
             front: longContent,
             back: longContent,
-            type: "custom",
             createdAt: new Date(),
           },
         ],
@@ -469,7 +460,6 @@ describe("Sharing functionality - Base62 encoding", () => {
             id: "tagged-card",
             front: "Front",
             back: "Back",
-            type: "custom",
             tags: manyTags,
             createdAt: new Date(),
           },
@@ -490,7 +480,6 @@ describe("Sharing functionality - Base62 encoding", () => {
           id: `card-${i}`,
           front: "Same front for all cards",
           back: "Same back for all cards",
-          type: "custom" as const,
           meaning: "Same meaning",
           notes: "Same notes",
           tags: ["same", "tags"],
