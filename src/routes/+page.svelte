@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { handleLinkClick } from "$lib/utils/interaction";
-  import { onMount } from "svelte";
 </script>
 
 <svelte:head>
@@ -10,7 +9,7 @@
 </svelte:head>
 
 <section>
-  <h1>Velg modus</h1>
+  <h1>Hva vil du øve på?</h1>
   <div class="mode-buttons">
     <div class="kana-buttons">
       <a

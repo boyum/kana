@@ -15,7 +15,6 @@ export interface CustomFlashCard {
 export interface CustomList {
   id: string; // Unique identifier
   name: string; // User-defined list name
-  type: "hiragana" | "katakana" | "mixed" | "custom";
   cards: CustomFlashCard[];
   createdAt: Date;
   updatedAt: Date;

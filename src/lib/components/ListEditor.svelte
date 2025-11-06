@@ -475,7 +475,7 @@
     box-shadow: 0 8px 30px rgba(57, 92, 107, 0.2);
     max-width: 1000px;
     margin: 0 auto;
-    width: 90%;
+    width: calc(100% - 1rem);
   }
 
   .editor-header h2 {

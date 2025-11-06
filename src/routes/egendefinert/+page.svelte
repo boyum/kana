@@ -12,8 +12,7 @@
   import { saveCustomList } from "$lib/utils/storage";
   import ShareDialog from "$lib/components/ShareDialog.svelte";
   import { handleLinkClick } from "$lib/utils/interaction";
-
-  export let data;
+  import CustomListComponent from "$lib/components/CustomList.svelte";
 
   let lists: CustomList[] = [];
   let searchQuery = "";
@@ -45,21 +44,6 @@
     }
   }
 
-  // Unified interaction handler for mobile-first approach
-  function createInteractionHandler(callback: () => void) {
-    return (e: PointerEvent | KeyboardEvent) => {
-      if (e instanceof KeyboardEvent) {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          callback();
-        }
-      } else if (e instanceof PointerEvent && e.isPrimary) {
-        e.preventDefault();
-        callback();
-      }
-    };
-  }
-
   function createNewList() {
     goto("/egendefinert/new");
   }
@@ -73,7 +57,7 @@
   }
 
   async function handleDelete(listId: string) {
-    const list = lists.find((l) => l.id === listId);
+    const list = lists.find(l => l.id === listId);
     if (!list) return;
 
     if (confirm(`Er du sikker på at du vil slette "${list.name}"?`)) {
@@ -87,7 +71,7 @@
   }
 
   async function handleDuplicate(listId: string) {
-    const list = lists.find((l) => l.id === listId);
+    const list = lists.find(l => l.id === listId);
     if (!list) return;
 
     const newName = prompt("Navn på ny liste:", `${list.name} (kopi)`);
@@ -119,7 +103,7 @@
   }
 
   function openShareDialog(listId: string) {
-    const list = lists.find((l) => l.id === listId);
+    const list = lists.find(l => l.id === listId);
     if (list) {
       shareList = list;
       showShareDialog = true;
@@ -166,7 +150,7 @@
       const list = await decodeShareToken(importToken.trim());
 
       // Check if we need to rename
-      const existingNames = lists.map((l) => l.name);
+      const existingNames = lists.map(l => l.name);
       if (existingNames.includes(list.name)) {
         list.name = `${list.name} (importert)`;
       }
@@ -186,29 +170,23 @@
     }
   }
 
-  $: filteredLists = lists.filter((list) =>
+  $: filteredLists = lists.filter(list =>
     list.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  function formatDate(date: Date): string {
-    return new Intl.DateTimeFormat("nb-NO", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(date);
-  }
-
-  function getTypeEmoji(type: string): string {
-    switch (type) {
-      case "hiragana":
-        return "あ";
-      case "katakana":
-        return "ア";
-      case "mixed":
-        return "あア";
-      default:
-        return "📚";
-    }
+  // Unified interaction handlers
+  function createInteractionHandler(callback: () => void) {
+    return (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          callback();
+        }
+      } else if (e instanceof PointerEvent && e.isPrimary) {
+        e.preventDefault();
+        callback();
+      }
+    };
   }
 </script>
 
@@ -221,7 +199,7 @@
     <a
       href="/"
       class="back-btn"
-      on:pointerdown={(e) => handleLinkClick(e, "/", goto)}
+      on:pointerdown={e => handleLinkClick(e, "/", goto)}
     >
       ← Tilbake
     </a>
@@ -263,91 +241,28 @@
       <p class="empty-text">Ingen lister funnet</p>
     </div>
   {:else}
-    <div class="lists-grid">
-      {#each filteredLists as list (list.id)}
-        <div class="list-card">
-          <div class="list-header">
-            <span class="list-icon">{getTypeEmoji(list.type)}</span>
-            <h2 class="list-name">{list.name}</h2>
-          </div>
-          <div class="list-info">
-            <p class="card-count">{list.cards.length} kort</p>
-            <p class="last-updated">Oppdatert: {formatDate(list.updatedAt)}</p>
-          </div>
-          <div class="list-actions">
-            <button
-              class="action-btn practice"
-              on:pointerdown={createInteractionHandler(() =>
-                practiceList(list.id),
-              )}
-              on:keydown={createInteractionHandler(() => practiceList(list.id))}
-            >
-              🎯 Øv
-            </button>
-            <button
-              class="action-btn edit"
-              on:pointerdown={createInteractionHandler(() => editList(list.id))}
-              on:keydown={createInteractionHandler(() => editList(list.id))}
-            >
-              ✏️ Rediger
-            </button>
-            <button
-              class="action-btn share"
-              on:pointerdown={createInteractionHandler(() =>
-                openShareDialog(list.id),
-              )}
-              on:keydown={createInteractionHandler(() =>
-                openShareDialog(list.id),
-              )}
-            >
-              🔗 Del
-            </button>
-            <button
-              class="action-btn duplicate"
-              on:pointerdown={createInteractionHandler(() =>
-                handleDuplicate(list.id),
-              )}
-              on:keydown={createInteractionHandler(() =>
-                handleDuplicate(list.id),
-              )}
-            >
-              📋 Dupliser
-            </button>
-            <button
-              class="action-btn export"
-              on:pointerdown={createInteractionHandler(() =>
-                handleExport(list.id),
-              )}
-              on:keydown={createInteractionHandler(() => handleExport(list.id))}
-            >
-              💾 Eksporter
-            </button>
-            <button
-              class="action-btn delete"
-              on:pointerdown={createInteractionHandler(() =>
-                handleDelete(list.id),
-              )}
-              on:keydown={createInteractionHandler(() => handleDelete(list.id))}
-            >
-              🗑️ Slett
-            </button>
-          </div>
-        </div>
-      {/each}
-    </div>
+    <CustomListComponent
+      lists={filteredLists}
+      onPractice={practiceList}
+      onEdit={editList}
+      onShare={openShareDialog}
+      onDuplicate={handleDuplicate}
+      onExport={handleExport}
+      onDelete={handleDelete}
+    />
   {/if}
 </div>
 
 {#if showImportDialog}
   <div
     class="modal-overlay"
-    on:pointerdown={(e) => {
+    on:pointerdown={e => {
       if (e.target === e.currentTarget && e.isPrimary) {
         e.preventDefault();
         closeImportDialog();
       }
     }}
-    on:keydown={(e) => {
+    on:keydown={e => {
       if (e.key === "Escape") {
         closeImportDialog();
       }
@@ -356,10 +271,11 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <div
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <form
       class="modal"
-      on:pointerdown={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.stopPropagation()}
+      on:pointerdown={e => e.stopPropagation()}
+      on:keydown={e => e.stopPropagation()}
       role="document"
     >
       <h2>📥 Importer liste</h2>
@@ -398,7 +314,7 @@
           {isImporting ? "Importerer..." : "Importer"}
         </button>
       </div>
-    </div>
+    </form>
   </div>
 {/if}
 
@@ -413,7 +329,7 @@
     padding: var(--container-padding);
     max-width: 1200px;
     margin: 0 auto;
-    width: 90%;
+    width: calc(100% - 1rem);
   }
 
   header {
@@ -457,8 +373,7 @@
     margin: 2rem 0;
   }
 
-  .create-btn,
-  .import-btn {
+  .create-btn {
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     font-family: var(--font-heading);
@@ -467,26 +382,12 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(57, 92, 107, 0.2);
-  }
-
-  .create-btn {
     background: var(--color-accent);
     color: white;
   }
 
   .create-btn:hover {
     background: var(--color-heading);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(57, 92, 107, 0.3);
-  }
-
-  .import-btn {
-    background: var(--color-heading);
-    color: white;
-  }
-
-  .import-btn:hover {
-    background: var(--color-accent);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(57, 92, 107, 0.3);
   }
@@ -534,131 +435,6 @@
   .empty-hint {
     font-size: 1.1rem;
     color: var(--color-text);
-  }
-
-  .lists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
-  }
-
-  .list-card {
-    background: white;
-    border-radius: 30px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 20px rgba(57, 92, 107, 0.15);
-    transition: all 0.3s ease;
-    border: 3px solid transparent;
-  }
-
-  .list-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(57, 92, 107, 0.25);
-    border-color: var(--color-accent);
-  }
-
-  .list-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .list-icon {
-    font-size: 2rem;
-  }
-
-  .list-name {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    color: var(--color-heading);
-    margin: 0;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .list-info {
-    margin-bottom: 1rem;
-    color: var(--color-text);
-  }
-
-  .card-count {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin: 0.25rem 0;
-  }
-
-  .last-updated {
-    font-size: 0.9rem;
-    margin: 0.25rem 0;
-    opacity: 0.7;
-  }
-
-  .list-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .action-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    font-family: var(--font-body);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex: 1;
-    min-width: 100px;
-  }
-
-  .action-btn.practice {
-    background: var(--color-accent);
-    color: white;
-  }
-
-  .action-btn.practice:hover {
-    background: #6b8fd6;
-  }
-
-  .action-btn.edit {
-    background: var(--color-heading);
-    color: white;
-  }
-
-  .action-btn.edit:hover {
-    background: #2a4654;
-  }
-
-  .action-btn.share {
-    background: #4caf50;
-    color: white;
-  }
-
-  .action-btn.share:hover {
-    background: #45a049;
-  }
-
-  .action-btn.duplicate,
-  .action-btn.export {
-    background: #e6e1c5;
-    color: var(--color-heading);
-  }
-
-  .action-btn.duplicate:hover,
-  .action-btn.export:hover {
-    background: #d4cfb8;
-  }
-
-  .action-btn.delete {
-    background: #ff6b6b;
-    color: white;
-  }
-
-  .action-btn.delete:hover {
-    background: #ff5252;
   }
 
   /* Modal styles */
@@ -784,18 +560,6 @@
 
     header {
       text-align: left;
-    }
-
-    .lists-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .list-actions {
-      flex-direction: column;
-    }
-
-    .action-btn {
-      min-width: auto;
     }
   }
 </style>
