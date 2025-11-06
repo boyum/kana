@@ -12,12 +12,8 @@
   >;
   export let backUrl: string = "/";
   export let backText: string = "← Hjem";
-  export let showDirectionToggle: boolean = false;
   export let initialDirection: "front-to-back" | "back-to-front" =
     "front-to-back";
-  export let showTitle: boolean = false;
-  export let additionalActions: Array<{ label: string; onClick: () => void }> =
-    [];
 
   // State
   let currentIndex = 0;
@@ -133,33 +129,18 @@
     >
       {backText}
     </a>
-    {#if showTitle}
-      <h1>{title}</h1>
-    {/if}
-    {#if showDirectionToggle || additionalActions.length > 0}
-      <div class="header-actions">
-        {#if showDirectionToggle}
-          <button
-            class="action-btn"
-            on:pointerdown={createInteractionHandler(toggleDirection)}
-            on:keydown={createInteractionHandler(toggleDirection)}
-          >
-            🔄 {direction === "front-to-back"
-              ? "Forside → Bakside"
-              : "Bakside → Forside"}
-          </button>
-        {/if}
-        {#each additionalActions as action}
-          <button
-            class="action-btn"
-            on:pointerdown={createInteractionHandler(action.onClick)}
-            on:keydown={createInteractionHandler(action.onClick)}
-          >
-            {action.label}
-          </button>
-        {/each}
-      </div>
-    {/if}
+
+    <div class="header-actions">
+      <button
+        class="action-btn"
+        on:pointerdown={createInteractionHandler(toggleDirection)}
+        on:keydown={createInteractionHandler(toggleDirection)}
+      >
+        🔄 {direction === "front-to-back"
+          ? "Forside → Bakside"
+          : "Bakside → Forside"}
+      </button>
+    </div>
   </div>
 
   {#if shuffledCards.length === 0}
@@ -241,14 +222,7 @@
     flex-shrink: 0;
   }
 
-  h1 {
-    font-size: 3rem;
-    color: var(--color-heading);
-    margin: 0;
-    flex: 1;
-    text-align: center;
-  }
-
+  .action-btn,
   .back-btn {
     padding: 0.75rem 1.5rem;
     font-family: var(--font-heading);
@@ -265,6 +239,7 @@
     user-select: none;
   }
 
+  .action-btn:hover,
   .back-btn:hover {
     background: var(--color-heading);
     transform: translateY(-3px) scale(1.05);
@@ -275,25 +250,6 @@
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-  }
-
-  .action-btn {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    font-family: var(--font-body);
-    background: var(--color-heading);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  .action-btn:hover {
-    background: var(--color-accent);
-    transform: scale(1.05);
   }
 
   .card-container {
@@ -378,16 +334,11 @@
     }
 
     .header {
-      flex-direction: column;
       align-items: stretch;
       flex-shrink: 0;
     }
 
-    h1 {
-      font-size: 1.75rem;
-      text-align: left;
-    }
-
+    .action-btn,
     .back-btn {
       padding: 0.5rem 1rem;
       font-size: 1rem;
@@ -395,12 +346,6 @@
 
     .header-actions {
       flex-direction: column;
-    }
-
-    .action-btn {
-      width: 100%;
-      padding: 0.4rem 0.75rem;
-      font-size: 0.9rem;
     }
 
     .card-container {

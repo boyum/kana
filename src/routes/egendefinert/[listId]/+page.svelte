@@ -31,8 +31,6 @@
 		cards={list.cards || []}
 		backUrl="/egendefinert"
 		backText="← Tilbake"
-		showTitle={true}
-		showDirectionToggle={true}
 		initialDirection={direction}
 	/>
 {:else}
