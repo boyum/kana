@@ -29,27 +29,119 @@
     }
   }
 
+  // Robust copy function with iOS fallback
+  function fallbackCopyTextToClipboard(text: string): boolean {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Prevent scrolling and make invisible
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.width = "2em";
+    textArea.style.height = "2em";
+    textArea.style.padding = "0";
+    textArea.style.border = "none";
+    textArea.style.outline = "none";
+    textArea.style.boxShadow = "none";
+    textArea.style.background = "transparent";
+    textArea.setAttribute("readonly", "");
+
+    document.body.appendChild(textArea);
+
+    // iOS requires different selection method
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if (isIOS) {
+      const range = document.createRange();
+      range.selectNodeContents(textArea);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      textArea.setSelectionRange(0, 999999);
+    } else {
+      textArea.focus();
+      textArea.select();
+    }
+
+    try {
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textArea);
+      return successful;
+    } catch (err) {
+      console.error("Fallback: Failed to copy", err);
+      document.body.removeChild(textArea);
+      return false;
+    }
+  }
+
   async function copyToken() {
     try {
-      await navigator.clipboard.writeText(shareToken);
-      copySuccess = true;
-      setTimeout(() => {
-        copySuccess = false;
-      }, 2000);
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareToken);
+        copySuccess = true;
+        setTimeout(() => {
+          copySuccess = false;
+        }, 2000);
+      } else {
+        // Fallback for older browsers or iOS issues
+        const success = fallbackCopyTextToClipboard(shareToken);
+        if (success) {
+          copySuccess = true;
+          setTimeout(() => {
+            copySuccess = false;
+          }, 2000);
+        } else {
+          throw new Error("Fallback failed");
+        }
+      }
     } catch (error) {
-      alert("Kunne ikke kopiere til utklippstavle");
+      // Try fallback if modern API fails
+      const success = fallbackCopyTextToClipboard(shareToken);
+      if (success) {
+        copySuccess = true;
+        setTimeout(() => {
+          copySuccess = false;
+        }, 2000);
+      } else {
+        alert("Kunne ikke kopiere til utklippstavle");
+      }
     }
   }
 
   async function copyUrl() {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      copyUrlSuccess = true;
-      setTimeout(() => {
-        copyUrlSuccess = false;
-      }, 2000);
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        copyUrlSuccess = true;
+        setTimeout(() => {
+          copyUrlSuccess = false;
+        }, 2000);
+      } else {
+        // Fallback for older browsers or iOS issues
+        const success = fallbackCopyTextToClipboard(shareUrl);
+        if (success) {
+          copyUrlSuccess = true;
+          setTimeout(() => {
+            copyUrlSuccess = false;
+          }, 2000);
+        } else {
+          throw new Error("Fallback failed");
+        }
+      }
     } catch (error) {
-      alert("Kunne ikke kopiere til utklippstavle");
+      // Try fallback if modern API fails
+      const success = fallbackCopyTextToClipboard(shareUrl);
+      if (success) {
+        copyUrlSuccess = true;
+        setTimeout(() => {
+          copyUrlSuccess = false;
+        }, 2000);
+      } else {
+        alert("Kunne ikke kopiere til utklippstavle");
+      }
     }
   }
 
@@ -57,7 +149,7 @@
   function createInteractionHandler(callback: () => void) {
     return (e: PointerEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent) {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           callback();
         }
@@ -71,14 +163,14 @@
 
 <div
   class="modal-overlay"
-  on:pointerdown={(e) => {
+  on:pointerdown={e => {
     if (e.target === e.currentTarget && e.isPrimary) {
       e.preventDefault();
       onClose();
     }
   }}
-  on:keydown={(e) => {
-    if (e.key === 'Escape') {
+  on:keydown={e => {
+    if (e.key === "Escape") {
       onClose();
     }
   }}
@@ -86,10 +178,10 @@
   aria-modal="true"
   tabindex="-1"
 >
-  <div 
-    class="modal" 
-    on:pointerdown={(e) => e.stopPropagation()}
-    on:keydown={(e) => e.stopPropagation()}
+  <div
+    class="modal"
+    on:pointerdown={e => e.stopPropagation()}
+    on:keydown={e => e.stopPropagation()}
     role="document"
   >
     <h2>🔗 Del liste</h2>
@@ -104,8 +196,8 @@
         <div class="code-box">
           <code>{shareUrl}</code>
         </div>
-        <button 
-          class="copy-btn" 
+        <button
+          class="copy-btn"
           on:pointerdown={createInteractionHandler(copyUrl)}
           on:keydown={createInteractionHandler(copyUrl)}
         >
@@ -119,8 +211,8 @@
         <div class="code-box">
           <code>{shareToken}</code>
         </div>
-        <button 
-          class="copy-btn" 
+        <button
+          class="copy-btn"
           on:pointerdown={createInteractionHandler(copyToken)}
           on:keydown={createInteractionHandler(copyToken)}
         >
@@ -137,12 +229,12 @@
     {/if}
 
     <div class="modal-actions">
-      <button 
-        class="close-btn" 
+      <button
+        class="close-btn"
         on:pointerdown={createInteractionHandler(onClose)}
         on:keydown={createInteractionHandler(onClose)}
-      > 
-        Lukk 
+      >
+        Lukk
       </button>
     </div>
   </div>
