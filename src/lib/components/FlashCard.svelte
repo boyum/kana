@@ -32,16 +32,11 @@
     if (!text) return "10rem";
     const len = text.length;
 
-    if (len > 50) return "1.5rem";
-    if (len > 40) return "1.75rem";
-    if (len > 30) return "2rem";
-    if (len > 20) return "2.5rem";
-    if (len > 15) return "3rem";
-    if (len > 10) return "3.5rem";
-    if (len > 5) return "3.75rem";
-    if (len > 3) return "4.5rem";
-    if (len > 2) return "5rem";
-    if (len > 1) return "7rem";
+    if (len > 10) return "1rem";
+    if (len > 5) return "2.5rem";
+    if (len > 3) return "3rem";
+    if (len > 2) return "3.5rem";
+    if (len > 1) return "6rem";
 
     return "10rem";
   }
@@ -63,8 +58,9 @@
     </div>
     <div class="card-back">
       <div class="back-content">
-        <span class="main-content" style="font-size: {getFontSize(backContent)}"
-          >{backContent}</span
+        <span
+          class="main-content"
+          style="--font-size: {getFontSize(backContent)}">{backContent}</span
         >
         {#if hasMetadata}
           <div class="metadata">
@@ -143,6 +139,7 @@
     word-wrap: break-word;
     text-align: center;
     max-width: 100%;
+    font-size: var(--font-size);
   }
 
   .back-content {
@@ -203,6 +200,10 @@
 
     .metadata {
       font-size: 0.85rem;
+    }
+
+    .main-content {
+      font-size: calc(var(--font-size) * 0.8);
     }
   }
 </style>
