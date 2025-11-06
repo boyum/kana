@@ -8,5 +8,4 @@
   cards={katakanaCharacters}
   backUrl="/"
   backText="← Hjem"
-  showTitle={true}
 />
