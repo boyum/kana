@@ -2,7 +2,13 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import FlashCard from "$lib/components/FlashCard.svelte";
+  import ShuffleSelector from "$lib/components/ShuffleSelector.svelte";
   import type { CustomFlashCard } from "$lib/types/customLists";
+  import type { ShuffleMode } from "$lib/utils/smartShuffle";
+  import {
+    performSmartShuffle,
+    DEFAULT_SMART_SHUFFLE_CONFIG,
+  } from "$lib/utils/smartShuffle";
   import { handleLinkClick } from "$lib/utils/interaction";
 
   // Props
@@ -21,9 +27,31 @@
   let direction: "front-to-back" | "back-to-front" = initialDirection;
   let shuffledCards: typeof cards = [];
   let isTouchDevice = false;
+  let enableSmartShuffle = true;
+  let shuffleMode: ShuffleMode = "balanced";
 
-  // Initialize shuffled cards
-  $: shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+  // Custom cards type guard
+  function isCustomCards(
+    cards: Array<
+      { character?: string; romanization?: string } | CustomFlashCard
+    >
+  ): cards is CustomFlashCard[] {
+    return cards.every((card) => "performance" in card);
+  }
+
+  // Initialize shuffled cards - uses smart shuffle for custom lists
+  $: {
+    if (isCustomCards(cards) && enableSmartShuffle) {
+      shuffledCards = performSmartShuffle(cards, {
+        enableSmartShuffle: true,
+        shuffleMode,
+        maxShuffleSize: 25,
+      });
+    } else {
+      shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+    }
+    currentIndex = 0;
+  }
 
   // Computed values
   $: currentCard = shuffledCards[currentIndex];
@@ -142,6 +170,10 @@
       </button>
     </div>
   </div>
+
+  {#if isCustomCards(cards)}
+    <ShuffleSelector bind:shuffleMode bind:enableSmartShuffle />
+  {/if}
 
   {#if shuffledCards.length === 0}
     <div class="empty-state">
