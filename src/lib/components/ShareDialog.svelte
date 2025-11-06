@@ -178,6 +178,7 @@
   aria-modal="true"
   tabindex="-1"
 >
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="modal"
     on:pointerdown={e => e.stopPropagation()}
@@ -358,16 +359,6 @@
     margin: 0 0 0.5rem 0;
     font-weight: bold;
     color: var(--color-heading);
-  }
-
-  .info-box ul {
-    margin: 0;
-    padding-left: 1.5rem;
-  }
-
-  .info-box li {
-    margin: 0.25rem 0;
-    color: var(--color-text);
   }
 
   .modal-actions {

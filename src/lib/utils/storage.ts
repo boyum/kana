@@ -6,7 +6,10 @@ import type {
   CustomFlashCard,
   SerializedCustomList,
   SerializedCustomFlashCard,
+  CardPerformanceMetrics,
+  SerializedCardPerformanceMetrics,
 } from "$lib/types/customLists";
+import { createEmptyPerformanceMetrics } from "./performance";
 
 const STORAGE_KEY = "kana_custom_lists";
 const OLD_HIRAGANA_KEY = "kana_custom_hiragana";
@@ -25,18 +28,46 @@ export function generateId(): string {
 
 // Serialization helpers
 function serializeCard(card: CustomFlashCard): SerializedCustomFlashCard {
+  const serializedPerformance: SerializedCardPerformanceMetrics = {
+    viewCount: card.performance.viewCount,
+    flipCount: card.performance.flipCount,
+    correctCount: card.performance.correctCount,
+    incorrectCount: card.performance.incorrectCount,
+    totalResponseTimeMs: card.performance.totalResponseTimeMs,
+    fastestResponseMs: card.performance.fastestResponseMs,
+    slowestResponseMs: card.performance.slowestResponseMs,
+    lastReviewedAt: card.performance.lastReviewedAt?.toISOString(),
+    masteryLevel: card.performance.masteryLevel,
+  };
+
   return {
     ...card,
     createdAt: card.createdAt.toISOString(),
     lastReviewed: card.lastReviewed?.toISOString(),
+    performance: serializedPerformance,
   };
 }
 
 function deserializeCard(card: SerializedCustomFlashCard): CustomFlashCard {
+  const deserializedPerformance: CardPerformanceMetrics = {
+    viewCount: card.performance.viewCount,
+    flipCount: card.performance.flipCount,
+    correctCount: card.performance.correctCount,
+    incorrectCount: card.performance.incorrectCount,
+    totalResponseTimeMs: card.performance.totalResponseTimeMs,
+    fastestResponseMs: card.performance.fastestResponseMs,
+    slowestResponseMs: card.performance.slowestResponseMs,
+    lastReviewedAt: card.performance.lastReviewedAt
+      ? new Date(card.performance.lastReviewedAt)
+      : undefined,
+    masteryLevel: card.performance.masteryLevel,
+  };
+
   return {
     ...card,
     createdAt: new Date(card.createdAt),
     lastReviewed: card.lastReviewed ? new Date(card.lastReviewed) : undefined,
+    performance: deserializedPerformance,
   };
 }
 
@@ -84,7 +115,7 @@ function migrateOldData(): void {
               id: generateId(),
               front: card.character,
               back: card.romanization,
-              type: "hiragana",
+              performance: createEmptyPerformanceMetrics(),
               createdAt: new Date(),
             })),
             createdAt: new Date(),
@@ -111,7 +142,7 @@ function migrateOldData(): void {
               id: generateId(),
               front: card.character,
               back: card.romanization,
-              type: "katakana",
+              performance: createEmptyPerformanceMetrics(),
               createdAt: new Date(),
             })),
             createdAt: new Date(),
@@ -250,6 +281,7 @@ export function duplicateCustomList(id: string, newName: string): CustomList {
       ...card,
       id: generateId(),
       createdAt: new Date(),
+      performance: createEmptyPerformanceMetrics(), // Reset performance metrics for duplicated cards
     })),
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -287,11 +319,12 @@ export function importList(jsonString: string): CustomList {
     list.createdAt = new Date();
     list.updatedAt = new Date();
 
-    // Regenerate card IDs
+    // Regenerate card IDs and reset performance metrics
     list.cards = list.cards.map(card => ({
       ...card,
       id: generateId(),
       createdAt: new Date(),
+      performance: createEmptyPerformanceMetrics(), // Reset performance for imported cards
     }));
 
     saveCustomList(list);

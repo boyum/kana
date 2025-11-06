@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { CustomList, CustomFlashCard } from "$lib/types/customLists";
+  import { createEmptyPerformanceMetrics } from "$lib/utils/performance";
   import { generateId } from "$lib/utils/storage";
   import { onMount } from "svelte";
 
@@ -9,8 +10,6 @@
 
   // Initialize or use existing list
   let listName = list?.name || "";
-  let listType: "hiragana" | "katakana" | "mixed" | "custom" =
-    list?.type || "custom";
   let cards: CustomFlashCard[] = list?.cards.map(c => ({ ...c })) || [];
 
   let showBulkImport = false;
@@ -28,8 +27,8 @@
         id: generateId(),
         front: "",
         back: "",
-        type: listType,
         createdAt: new Date(),
+        performance: createEmptyPerformanceMetrics(),
       },
     ];
   }
@@ -57,7 +56,6 @@
     const updatedList: CustomList = {
       id: list?.id || generateId(),
       name: listName.trim(),
-      type: listType,
       cards: validCards,
       createdAt: list?.createdAt || new Date(),
       updatedAt: new Date(),
@@ -105,10 +103,10 @@
           id: generateId(),
           front: parts[0].trim(),
           back: parts[1].trim(),
-          type: listType,
           meaning: parts[2]?.trim(),
           notes: parts[3]?.trim(),
           createdAt: new Date(),
+          performance: createEmptyPerformanceMetrics(),
         };
 
         newCards.push(card);
@@ -159,8 +157,8 @@
           id: generateId(),
           front: parts[0].trim(),
           back: parts[1].trim(),
-          type: listType,
           createdAt: new Date(),
+          performance: createEmptyPerformanceMetrics(),
         };
 
         newCards.push(card);

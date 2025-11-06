@@ -1,9 +1,15 @@
 // Base62 encoding utilities for custom lists sharing
-import type { CustomList, SerializedCustomList } from "$lib/types/customLists";
+import type {
+  CustomFlashCard,
+  CustomList,
+  SerializedCustomList,
+} from "$lib/types/customLists";
+import { createEmptyPerformanceMetrics } from "./performance";
 import { generateId } from "./storage";
 
 // Base62 character set (URL-safe, no special encoding needed)
-const BASE62_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
+const BASE62_CHARS =
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
 
 /**
  * Convert a byte array to base62 string
@@ -11,23 +17,23 @@ const BASE62_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv
 function bytesToBase62(bytes: Uint8Array): string {
   let result = "";
   let num = BigInt(0);
-  
+
   // Convert bytes to a big integer
   for (let i = 0; i < bytes.length; i++) {
     num = (num << BigInt(8)) | BigInt(bytes[i]);
   }
-  
+
   // Convert to base62
   if (num === BigInt(0)) {
     return BASE62_CHARS[0];
   }
-  
+
   while (num > BigInt(0)) {
     const remainder = Number(num % BigInt(62));
     result = BASE62_CHARS[remainder] + result;
     num = num / BigInt(62);
   }
-  
+
   return result;
 }
 
@@ -36,7 +42,7 @@ function bytesToBase62(bytes: Uint8Array): string {
  */
 function base62ToBytes(str: string): Uint8Array {
   let num = BigInt(0);
-  
+
   // Convert base62 string to big integer
   for (let i = 0; i < str.length; i++) {
     const char = str[i];
@@ -46,14 +52,14 @@ function base62ToBytes(str: string): Uint8Array {
     }
     num = num * BigInt(62) + BigInt(value);
   }
-  
+
   // Convert big integer to bytes
   const bytes: number[] = [];
   while (num > BigInt(0)) {
     bytes.unshift(Number(num & BigInt(0xff)));
     num = num >> BigInt(8);
   }
-  
+
   return new Uint8Array(bytes.length > 0 ? bytes : [0]);
 }
 
@@ -63,28 +69,26 @@ function base62ToBytes(str: string): Uint8Array {
 async function compressData(data: string): Promise<Uint8Array> {
   const encoder = new TextEncoder();
   const input = encoder.encode(data);
-  
+
   // Use browser's native compression
   const stream = new ReadableStream({
     start(controller) {
       controller.enqueue(input);
       controller.close();
-    }
+    },
   });
-  
-  const compressedStream = stream.pipeThrough(
-    new CompressionStream("gzip")
-  );
-  
+
+  const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
+
   const chunks: Uint8Array[] = [];
   const reader = compressedStream.getReader();
-  
+
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
   }
-  
+
   // Combine all chunks
   const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
   const result = new Uint8Array(totalLength);
@@ -93,7 +97,7 @@ async function compressData(data: string): Promise<Uint8Array> {
     result.set(chunk, offset);
     offset += chunk.length;
   }
-  
+
   return result;
 }
 
@@ -105,22 +109,22 @@ async function decompressData(compressed: Uint8Array): Promise<string> {
     start(controller) {
       controller.enqueue(compressed);
       controller.close();
-    }
+    },
   });
-  
+
   const decompressedStream = stream.pipeThrough(
-    new DecompressionStream("gzip")
+    new DecompressionStream("gzip"),
   );
-  
+
   const chunks: Uint8Array[] = [];
   const reader = decompressedStream.getReader();
-  
+
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
   }
-  
+
   // Combine all chunks and decode
   const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
   const result = new Uint8Array(totalLength);
@@ -129,13 +133,13 @@ async function decompressData(compressed: Uint8Array): Promise<string> {
     result.set(chunk, offset);
     offset += chunk.length;
   }
-  
+
   const decoder = new TextDecoder();
   return decoder.decode(result);
 }
 
 // Helper to serialize list for sharing
-function serializeList(list: CustomList): Omit<SerializedCustomList, 'type'> {
+function serializeListForSharing(list: CustomList) {
   return {
     id: list.id,
     name: list.name,
@@ -143,12 +147,22 @@ function serializeList(list: CustomList): Omit<SerializedCustomList, 'type'> {
       id: card.id,
       front: card.front,
       back: card.back,
-      type: card.type,
       meaning: card.meaning,
       notes: card.notes,
       tags: card.tags,
       createdAt: card.createdAt.toISOString(),
       lastReviewed: card.lastReviewed?.toISOString(),
+      performance: {
+        viewCount: card.performance.viewCount,
+        flipCount: card.performance.flipCount,
+        correctCount: card.performance.correctCount,
+        incorrectCount: card.performance.incorrectCount,
+        totalResponseTimeMs: card.performance.totalResponseTimeMs,
+        fastestResponseMs: card.performance.fastestResponseMs,
+        slowestResponseMs: card.performance.slowestResponseMs,
+        lastReviewedAt: card.performance.lastReviewedAt?.toISOString(),
+        masteryLevel: card.performance.masteryLevel,
+      },
     })),
     createdAt: list.createdAt.toISOString(),
     updatedAt: list.updatedAt.toISOString(),
@@ -157,21 +171,27 @@ function serializeList(list: CustomList): Omit<SerializedCustomList, 'type'> {
 }
 
 // Helper to deserialize list from shared data
-function deserializeList(serialized: Partial<SerializedCustomList>): CustomList {
+function deserializeListFromSharing(
+  serialized: Partial<SerializedCustomList>,
+): CustomList {
   return {
     id: serialized.id!,
     name: serialized.name!,
-    cards: (serialized.cards || []).map(card => ({
-      id: card.id,
-      front: card.front,
-      back: card.back,
-      type: card.type,
-      meaning: card.meaning,
-      notes: card.notes,
-      tags: card.tags,
-      createdAt: new Date(card.createdAt),
-      lastReviewed: card.lastReviewed ? new Date(card.lastReviewed) : undefined,
-    })),
+    cards: (serialized.cards || []).map(
+      (card): CustomFlashCard => ({
+        id: card.id,
+        front: card.front,
+        back: card.back,
+        meaning: card.meaning,
+        notes: card.notes,
+        tags: card.tags,
+        createdAt: new Date(card.createdAt),
+        lastReviewed: card.lastReviewed
+          ? new Date(card.lastReviewed)
+          : undefined,
+        performance: createEmptyPerformanceMetrics(),
+      }),
+    ),
     createdAt: new Date(serialized.createdAt!),
     updatedAt: new Date(serialized.updatedAt!),
     defaultDirection: serialized.defaultDirection,
@@ -185,15 +205,15 @@ function deserializeList(serialized: Partial<SerializedCustomList>): CustomList 
  */
 export async function generateShareToken(list: CustomList): Promise<string> {
   try {
-    const serialized = serializeList(list);
+    const serialized = serializeListForSharing(list);
     const json = JSON.stringify(serialized);
-    
+
     // Compress the JSON data
     const compressed = await compressData(json);
-    
+
     // Encode to base62 (URL-safe)
     const token = bytesToBase62(compressed);
-    
+
     return token;
   } catch (error) {
     console.error("Failed to generate share token:", error);
@@ -210,12 +230,12 @@ export async function decodeShareToken(token: string): Promise<CustomList> {
   try {
     // Decode from base62
     const compressed = base62ToBytes(token);
-    
+
     // Decompress
     const json = await decompressData(compressed);
-    
+
     // Parse JSON
-    const serialized = JSON.parse(json) as Partial<SerializedCustomList>;
+    const serialized = JSON.parse(json) as Record<string, unknown>;
 
     // Validate structure
     if (
@@ -227,16 +247,17 @@ export async function decodeShareToken(token: string): Promise<CustomList> {
     }
 
     // Deserialize and generate new IDs to avoid conflicts
-    const list = deserializeList(serialized);
+    const list = deserializeListFromSharing(serialized);
     list.id = generateId();
     list.createdAt = new Date();
     list.updatedAt = new Date();
 
-    // Regenerate card IDs
+    // Regenerate card IDs and reset performance
     list.cards = list.cards.map(card => ({
       ...card,
       id: generateId(),
       createdAt: new Date(),
+      performance: createEmptyPerformanceMetrics(),
     }));
 
     return list;

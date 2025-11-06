@@ -9,23 +9,75 @@
   export let meaning: string = "";
   export let notes: string = "";
   export let isFlipped: boolean = false;
+  export let cardId: string = ""; // For tracking which card this is
+  export let onPerformanceRecorded: ((data: CardPerformanceData) => void) | undefined = undefined;
+
+  // Performance tracking
+  interface CardPerformanceData {
+    cardId: string;
+    responseTimeMs: number;
+    flipCount: number;
+    wasCorrect: boolean;
+  }
+
+  let cardShowTime: number = 0;
+  let flipCountThisSession: number = 0;
+  let performanceRecorded: boolean = false;
 
   // Use front/back if provided, otherwise fall back to character/romanization
   $: frontContent = front || character;
   $: backContent = back || romanization;
   $: hasMetadata = meaning || notes;
 
+  // Record when card is shown
+  function onCardShown() {
+    cardShowTime = Date.now();
+    flipCountThisSession = 0;
+    performanceRecorded = false;
+  }
+
+  // Track each flip and record performance on first flip
   function handleInteraction(e: PointerEvent | KeyboardEvent) {
+    let shouldFlip = false;
+
     if (e instanceof KeyboardEvent) {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        isFlipped = !isFlipped;
+        shouldFlip = true;
       }
     } else if (e instanceof PointerEvent && e.isPrimary) {
       e.preventDefault();
+      shouldFlip = true;
+    }
+
+    if (shouldFlip) {
+      flipCountThisSession += 1;
+
+      // Record performance on first flip (first interaction with this card)
+      if (!performanceRecorded && cardShowTime > 0 && onPerformanceRecorded) {
+        const responseTimeMs = Date.now() - cardShowTime;
+        const wasCorrect = responseTimeMs < 5000 && flipCountThisSession === 1;
+
+        onPerformanceRecorded({
+          cardId,
+          responseTimeMs,
+          flipCount: flipCountThisSession,
+          wasCorrect,
+        });
+
+        performanceRecorded = true;
+      }
+
       isFlipped = !isFlipped;
     }
   }
+
+  // Lifecycle: record time when component mounts
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    onCardShown();
+  });
 
   // Dynamic font size based on content length
   function getFontSize(text: string): string {

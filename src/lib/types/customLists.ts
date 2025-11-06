@@ -1,5 +1,21 @@
 // Type definitions for custom lists functionality
 
+/**
+ * Performance metrics for individual cards
+ * Used to calculate difficulty, mastery level, and determine review priority
+ */
+export interface CardPerformanceMetrics {
+  viewCount: number; // Total times this card has been viewed
+  flipCount: number; // Total times user flipped to see the back
+  correctCount: number; // Number of times answered "correctly" (quickly without flips)
+  incorrectCount: number; // Number of times user struggled (slow or multiple flips)
+  totalResponseTimeMs: number; // Sum of all response times in milliseconds
+  fastestResponseMs?: number; // Fastest time to respond
+  slowestResponseMs?: number; // Slowest time to respond
+  lastReviewedAt?: Date; // Timestamp of last practice
+  masteryLevel: number; // 0-100 score based on performance
+}
+
 export interface CustomFlashCard {
   id: string; // Unique identifier
   front: string; // Front side content
@@ -9,6 +25,7 @@ export interface CustomFlashCard {
   tags?: string[]; // Optional tags for filtering
   createdAt: Date;
   lastReviewed?: Date;
+  performance: CardPerformanceMetrics; // Performance tracking data
 }
 
 export interface CustomList {
@@ -21,6 +38,18 @@ export interface CustomList {
 }
 
 // For serialization/deserialization
+export interface SerializedCardPerformanceMetrics {
+  viewCount: number;
+  flipCount: number;
+  correctCount: number;
+  incorrectCount: number;
+  totalResponseTimeMs: number;
+  fastestResponseMs?: number;
+  slowestResponseMs?: number;
+  lastReviewedAt?: string;
+  masteryLevel: number;
+}
+
 export interface SerializedCustomFlashCard {
   id: string;
   front: string;
@@ -30,6 +59,7 @@ export interface SerializedCustomFlashCard {
   tags?: string[];
   createdAt: string;
   lastReviewed?: string;
+  performance: SerializedCardPerformanceMetrics;
 }
 
 export interface SerializedCustomList {

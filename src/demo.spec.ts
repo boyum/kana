@@ -1,4 +1,5 @@
 import type { CustomList } from "$lib/types/customLists";
+import { createEmptyPerformanceMetrics } from "$lib/utils/performance";
 import {
   generateShareToken,
   decodeShareToken,
@@ -25,6 +26,7 @@ describe("Sharing functionality - Base62 encoding", () => {
           tags: ["vowel", "basic"],
           createdAt: new Date("2024-01-01T00:00:00.000Z"),
           lastReviewed: new Date("2024-01-02T00:00:00.000Z"),
+          performance: createEmptyPerformanceMetrics(),
         },
         {
           id: "card-2",
@@ -35,6 +37,7 @@ describe("Sharing functionality - Base62 encoding", () => {
           tags: ["vowel"],
           createdAt: new Date("2024-01-01T00:00:00.000Z"),
           lastReviewed: undefined,
+          performance: createEmptyPerformanceMetrics(),
         },
         {
           id: "card-3",
@@ -44,6 +47,7 @@ describe("Sharing functionality - Base62 encoding", () => {
           notes: undefined,
           tags: undefined,
           createdAt: new Date("2024-01-01T00:00:00.000Z"),
+          performance: createEmptyPerformanceMetrics(),
         },
       ],
       createdAt: new Date("2024-01-01T00:00:00.000Z"),
@@ -190,6 +194,7 @@ describe("Sharing functionality - Base62 encoding", () => {
             front: "Front",
             back: "Back",
             createdAt: new Date(),
+            performance: createEmptyPerformanceMetrics(),
           },
         ],
         createdAt: new Date(),
@@ -233,6 +238,7 @@ describe("Sharing functionality - Base62 encoding", () => {
             meaning: "Greeting 🎌",
             notes: "Common greeting in Japanese",
             createdAt: new Date(),
+            performance: createEmptyPerformanceMetrics(),
           },
         ],
       };
@@ -369,6 +375,7 @@ describe("Sharing functionality - Base62 encoding", () => {
           notes: `Notes for card ${i}`,
           tags: [`tag${i}`, "common"],
           createdAt: new Date(),
+          performance: createEmptyPerformanceMetrics(),
         })),
       };
 
@@ -440,6 +447,7 @@ describe("Sharing functionality - Base62 encoding", () => {
             front: longContent,
             back: longContent,
             createdAt: new Date(),
+            performance: createEmptyPerformanceMetrics(),
           },
         ],
       };
@@ -462,6 +470,7 @@ describe("Sharing functionality - Base62 encoding", () => {
             back: "Back",
             tags: manyTags,
             createdAt: new Date(),
+            performance: createEmptyPerformanceMetrics(),
           },
         ],
       };
@@ -484,6 +493,7 @@ describe("Sharing functionality - Base62 encoding", () => {
           notes: "Same notes",
           tags: ["same", "tags"],
           createdAt: new Date("2024-01-01"),
+          performance: createEmptyPerformanceMetrics(),
         })),
       };
 

@@ -1,4 +1,5 @@
 import type { CustomList } from "$lib/types/customLists";
+import { createEmptyPerformanceMetrics } from "$lib/utils/performance";
 import { generateId } from "$lib/utils/storage";
 
 // Helper function to create example lists with consistent structure
@@ -21,10 +22,10 @@ function createExampleList(
       id: generateId(),
       front: card.front,
       back: card.back,
-      type: "custom",
       notes: card.notes,
       tags: card.tags,
       createdAt: now,
+      performance: createEmptyPerformanceMetrics(),
     })),
     createdAt: now,
     updatedAt: now,
