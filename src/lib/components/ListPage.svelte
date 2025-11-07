@@ -41,7 +41,7 @@
 
   // Initialize shuffled cards - uses smart shuffle for custom lists
   $: {
-    if (isCustomCards(cards) && enableSmartShuffle) {
+    if (isCustomCards(cards) /*&& enableSmartShuffle*/) {
       shuffledCards = performSmartShuffle(cards, {
         enableSmartShuffle: true,
         shuffleMode,
@@ -171,9 +171,9 @@
     </div>
   </div>
 
-  {#if isCustomCards(cards)}
+  <!-- {#if isCustomCards(cards)}
     <ShuffleSelector bind:shuffleMode bind:enableSmartShuffle />
-  {/if}
+  {/if} -->
 
   {#if shuffledCards.length === 0}
     <div class="empty-state">
