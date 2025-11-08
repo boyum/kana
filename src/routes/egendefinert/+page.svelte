@@ -214,6 +214,14 @@
     >
       ➕ Opprett ny liste
     </button>
+    <a
+      href="/importer"
+      rel="prefetch"
+      class="import-btn"
+      on:pointerdown={e => handleLinkClick(e, "/importer", goto)}
+    >
+      📚 Importer lister
+    </a>
   </div>
 
   {#if lists.length > 0}
@@ -370,10 +378,12 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 1rem;
     margin: 2rem 0;
   }
 
-  .create-btn {
+  .create-btn,
+  .import-btn {
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     font-family: var(--font-heading);
@@ -384,12 +394,23 @@
     box-shadow: 0 4px 15px rgba(57, 92, 107, 0.2);
     background: var(--color-accent);
     color: white;
+    text-decoration: none;
+    display: inline-block;
   }
 
-  .create-btn:hover {
+  .create-btn:hover,
+  .import-btn:hover {
     background: var(--color-heading);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(57, 92, 107, 0.3);
+  }
+
+  .import-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .import-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   }
 
   .search-bar {

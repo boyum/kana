@@ -1,5 +1,4 @@
 // Storage utilities for custom lists
-import { exampleLists } from "$lib/data/exampleLists";
 import type { KanaCharacter } from "$lib/data/kana";
 import type {
   CustomList,
@@ -14,7 +13,6 @@ import { createEmptyPerformanceMetrics } from "./performance";
 const STORAGE_KEY = "kana_custom_lists";
 const OLD_HIRAGANA_KEY = "kana_custom_hiragana";
 const OLD_KATAKANA_KEY = "kana_custom_katakana";
-const EXAMPLE_LISTS_KEY = "kana_example_lists_populated";
 
 // Helper to check if we're in browser environment
 function isBrowser(): boolean {
@@ -172,36 +170,9 @@ function migrateOldData(): void {
   }
 }
 
-// Initialize example lists on first load
-function initializeExampleLists(): void {
-  if (!isBrowser()) return;
-
-  try {
-    const hasBeenPopulated = localStorage.getItem(EXAMPLE_LISTS_KEY);
-    if (hasBeenPopulated) {
-      // Already populated
-      return;
-    }
-
-    const existingLists = getAllCustomLists();
-
-    // Only populate if there are no custom lists
-    if (existingLists.length === 0 && exampleLists.length > 0) {
-      const serialized = exampleLists.map(serializeList);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
-      localStorage.setItem(EXAMPLE_LISTS_KEY, "true");
-
-      console.log(`Initialized ${exampleLists.length} example lists`);
-    }
-  } catch (e) {
-    console.error("Failed to initialize example lists:", e);
-  }
-}
-
 // Initialize and run migration if needed
 if (isBrowser()) {
   migrateOldData();
-  initializeExampleLists();
 }
 
 // Get all custom lists
@@ -333,4 +304,30 @@ export function importList(jsonString: string): CustomList {
     console.error("Failed to import list:", e);
     throw new Error("Kunne ikke importere liste. Sjekk at formatet er gyldig.");
   }
+}
+
+// Import an example list into user's custom lists
+export function importExampleList(exampleList: CustomList): CustomList {
+  const imported: CustomList = {
+    id: generateId(),
+    name: exampleList.name,
+    cards: exampleList.cards.map(card => ({
+      ...card,
+      id: generateId(),
+      createdAt: new Date(),
+      performance: createEmptyPerformanceMetrics(),
+    })),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    defaultDirection: exampleList.defaultDirection,
+  };
+
+  saveCustomList(imported);
+  return imported;
+}
+
+// Check if a list with the same name already exists
+export function listNameExists(name: string): boolean {
+  const lists = getAllCustomLists();
+  return lists.some(list => list.name === name);
 }
