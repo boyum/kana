@@ -6,6 +6,7 @@
   import { getCustomList, saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
   import { handleLinkClick } from "$lib/utils/interaction";
+  import BackButton from "$lib/components/BackButton.svelte";
 
   let listId: string = "";
   let list: CustomList | null = null;
@@ -42,13 +43,7 @@
 
 <div class="container">
   <header>
-    <a
-      href="/egendefinert"
-      class="back-btn"
-      on:pointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
-    >
-      ← Tilbake
-    </a>
+    <BackButton url="/egendefinert" />
     <h1>✏️ Rediger liste</h1>
   </header>
 

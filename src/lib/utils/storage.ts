@@ -275,7 +275,7 @@ export function exportList(id: string): string {
 }
 
 // Import list from JSON string
-export function importList(jsonString: string): CustomList {
+export function importJsonAsList(jsonString: string): CustomList {
   try {
     const serialized: SerializedCustomList = JSON.parse(jsonString);
 
@@ -306,12 +306,11 @@ export function importList(jsonString: string): CustomList {
   }
 }
 
-// Import an example list into user's custom lists
-export function importExampleList(exampleList: CustomList): CustomList {
+export function addList(list: CustomList): CustomList {
   const imported: CustomList = {
+    ...list,
     id: generateId(),
-    name: exampleList.name,
-    cards: exampleList.cards.map(card => ({
+    cards: list.cards.map(card => ({
       ...card,
       id: generateId(),
       createdAt: new Date(),
@@ -319,7 +318,6 @@ export function importExampleList(exampleList: CustomList): CustomList {
     })),
     createdAt: new Date(),
     updatedAt: new Date(),
-    defaultDirection: exampleList.defaultDirection,
   };
 
   saveCustomList(imported);

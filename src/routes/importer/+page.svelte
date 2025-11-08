@@ -2,14 +2,11 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import type { CustomList } from "$lib/types/customLists";
-  import {
-    getAllCustomLists,
-    importExampleList,
-  } from "$lib/utils/storage";
+  import { getAllCustomLists, addList } from "$lib/utils/storage";
   import { handleLinkClick } from "$lib/utils/interaction";
   import ImportableList from "$lib/components/ImportableList.svelte";
   import { exampleLists } from "$lib/data/exampleLists.js";
-
+  import BackButton from "$lib/components/BackButton.svelte";
 
   let importedListNames: Set<string> = new Set();
   let searchQuery = "";
@@ -40,8 +37,8 @@
         list.cards.some(
           card =>
             card.front.toLowerCase().includes(query) ||
-            card.back.toLowerCase().includes(query)
-        )
+            card.back.toLowerCase().includes(query),
+        ),
     );
   }
 
@@ -60,13 +57,13 @@
     try {
       if (importedListNames.has(selectedListForImport.name)) {
         const userChoice = await askForDuplicateAction(
-          selectedListForImport.name
+          selectedListForImport.name,
         );
 
         if (userChoice === "rename") {
           const newName = prompt(
             "Nytt navn for listen:",
-            `${selectedListForImport.name} (2)`
+            `${selectedListForImport.name} (2)`,
           );
           if (!newName) {
             isImporting = false;
@@ -79,7 +76,7 @@
         }
       }
 
-      const importedList = importExampleList(selectedListForImport);
+      const importedList = addList(selectedListForImport);
       updateImportedListNames();
       successMessage = `"${selectedListForImport.name}" er nå importert!`;
 
@@ -98,7 +95,7 @@
 
   async function askForDuplicateAction(name: string): Promise<string> {
     const choice = confirm(
-      `En liste med navn "${name}" finnes allerede.\n\nVelg OK for å gi den nytt navn, eller Avbryt for å hoppe over.`
+      `En liste med navn "${name}" finnes allerede.\n\nVelg OK for å gi den nytt navn, eller Avbryt for å hoppe over.`,
     );
     return choice ? "rename" : "cancel";
   }
@@ -124,12 +121,7 @@
 
 <div class="importer-container">
   <header class="importer-header">
-    <button
-      class="back-btn"
-      on:pointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
-    >
-      ← Tilbake
-    </button>
+    <BackButton url="/egendefinert" />
     <h1>Importer Lister</h1>
   </header>
 
@@ -163,7 +155,13 @@
 
   {#if showImportDialog && selectedListForImport}
     <div class="modal-overlay" role="presentation" on:click={cancelImport}>
-      <div class="modal-content" role="alertdialog" aria-modal="true" tabindex="0" on:keydown|self={e => e.key === 'Escape' && cancelImport()}>
+      <div
+        class="modal-content"
+        role="alertdialog"
+        aria-modal="true"
+        tabindex="0"
+        on:keydown|self={e => e.key === "Escape" && cancelImport()}
+      >
         <h2>Importer "{selectedListForImport.name}"?</h2>
         <p class="modal-info">
           Denne listen inneholder {selectedListForImport.cards.length} kort.

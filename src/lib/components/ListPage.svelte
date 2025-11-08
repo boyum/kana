@@ -1,15 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
   import FlashCard from "$lib/components/FlashCard.svelte";
-  import ShuffleSelector from "$lib/components/ShuffleSelector.svelte";
   import type { CustomFlashCard } from "$lib/types/customLists";
   import type { ShuffleMode } from "$lib/utils/smartShuffle";
-  import {
-    performSmartShuffle,
-    DEFAULT_SMART_SHUFFLE_CONFIG,
-  } from "$lib/utils/smartShuffle";
-  import { handleLinkClick } from "$lib/utils/interaction";
+  import { performSmartShuffle } from "$lib/utils/smartShuffle";
+  import BackButton from "./BackButton.svelte";
 
   // Props
   export let title: string;
@@ -34,9 +29,9 @@
   function isCustomCards(
     cards: Array<
       { character?: string; romanization?: string } | CustomFlashCard
-    >
+    >,
   ): cards is CustomFlashCard[] {
-    return cards.every((card) => "performance" in card);
+    return cards.every(card => "performance" in card);
   }
 
   // Initialize shuffled cards - uses smart shuffle for custom lists
@@ -150,13 +145,7 @@
 
 <section>
   <div class="header">
-    <a
-      href={backUrl}
-      class="back-btn"
-      on:pointerdown={e => handleLinkClick(e, backUrl, goto)}
-    >
-      {backText}
-    </a>
+    <BackButton url={backUrl} text={backText} />
 
     <div class="header-actions">
       <button
@@ -254,8 +243,7 @@
     flex-shrink: 0;
   }
 
-  .action-btn,
-  .back-btn {
+  .action-btn {
     padding: 0.75rem 1.5rem;
     font-family: var(--font-heading);
     font-size: 1.25rem;
@@ -269,13 +257,6 @@
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
-  }
-
-  .action-btn:hover,
-  .back-btn:hover {
-    background: var(--color-heading);
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 10px 25px rgba(57, 92, 107, 0.3);
   }
 
   .header-actions {
@@ -370,8 +351,7 @@
       flex-shrink: 0;
     }
 
-    .action-btn,
-    .back-btn {
+    .action-btn {
       padding: 0.5rem 1rem;
       font-size: 1rem;
     }

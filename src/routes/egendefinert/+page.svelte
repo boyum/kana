@@ -13,6 +13,7 @@
   import ShareDialog from "$lib/components/ShareDialog.svelte";
   import { handleLinkClick } from "$lib/utils/interaction";
   import CustomListComponent from "$lib/components/CustomList.svelte";
+  import BackButton from "$lib/components/BackButton.svelte";
 
   let lists: CustomList[] = [];
   let searchQuery = "";
@@ -115,13 +116,6 @@
     shareList = null;
   }
 
-  function openImportDialog() {
-    showImportDialog = true;
-    importToken = "";
-    importError = "";
-    importSuccess = false;
-  }
-
   function closeImportDialog() {
     showImportDialog = false;
     importToken = "";
@@ -196,13 +190,7 @@
 
 <div class="container">
   <header>
-    <a
-      href="/"
-      class="back-btn"
-      on:pointerdown={e => handleLinkClick(e, "/", goto)}
-    >
-      ← Tilbake
-    </a>
+    <BackButton />
     <h1>✨ Egendefinerte lister</h1>
   </header>
 
@@ -348,23 +336,6 @@
     margin-bottom: 2rem;
     position: relative;
     text-align: center;
-  }
-
-  .back-btn {
-    transform: translateY(-50%);
-    padding: 0.5rem 1rem;
-    background: var(--color-accent);
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    font-family: var(--font-heading);
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-  }
-
-  .back-btn:hover {
-    background: var(--color-heading);
-    transform: translateY(-50%) scale(1.05);
   }
 
   h1 {

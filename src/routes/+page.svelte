@@ -97,15 +97,6 @@
     box-shadow: 0 12px 30px rgba(57, 92, 107, 0.3);
   }
 
-  .mode-btn.importer {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
-
-  .mode-btn.importer:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    transform: translateY(-5px) scale(1.05);
-  }
-
   @media (max-width: 720px) {
     h1 {
       font-size: 3rem;
