@@ -99,8 +99,8 @@
 <button
   class="flash-card"
   class:flipped={isFlipped}
-  on:pointerdown={handleInteraction}
-  on:keydown={handleInteraction}
+  onpointerdown={handleInteraction}
+  onkeydown={handleInteraction}
   in:fade={{ duration: 200, delay: 200 }}
   out:fade={{ duration: 200 }}
 >

@@ -1,29 +1,36 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
+  import { goto, replaceState } from "$app/navigation";
+  import BackButton from "$lib/components/BackButton.svelte";
+  import CustomListComponent from "$lib/components/CustomList.svelte";
+  import ImportableList from "$lib/components/ImportableList.svelte";
+  import ShareDialog from "$lib/components/ShareDialog.svelte";
   import type { CustomList } from "$lib/types/customLists";
+  import { addIndexToName } from "$lib/utils/addIndexToName";
+  import { handleLinkClick } from "$lib/utils/interaction";
+  import { decodeShareToken } from "$lib/utils/sharing";
   import {
-    getAllCustomLists,
     deleteCustomList,
     duplicateCustomList,
     exportList,
+    getAllCustomLists,
+    saveCustomList,
   } from "$lib/utils/storage";
-  import { decodeShareToken } from "$lib/utils/sharing";
-  import { saveCustomList } from "$lib/utils/storage";
-  import ShareDialog from "$lib/components/ShareDialog.svelte";
-  import { handleLinkClick } from "$lib/utils/interaction";
-  import CustomListComponent from "$lib/components/CustomList.svelte";
-  import BackButton from "$lib/components/BackButton.svelte";
+  import { onMount } from "svelte";
 
-  let lists: CustomList[] = [];
-  let searchQuery = "";
-  let showImportDialog = false;
-  let showShareDialog = false;
-  let shareList: CustomList | null = null;
-  let importToken = "";
-  let importError = "";
-  let importSuccess = false;
-  let isImporting = false;
+  let lists: CustomList[] = $state([]);
+  let searchQuery = $state("");
+  let showShareDialog = $state(false);
+  let shareList: CustomList | null = $state(null);
+  let importError: string | null = $state(null);
+  let importSuccess = $state(false);
+  let isImporting = $state(false);
+
+  let listFromSearchParam: CustomList | null = $state(null);
+  let filteredLists = $derived(
+    lists.filter(list =>
+      list.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
+  );
 
   onMount(() => {
     loadLists();
@@ -36,12 +43,10 @@
 
   async function checkForImportToken() {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("import");
+    const token = urlParams.get("import")?.trim();
 
     if (token) {
-      importToken = token;
-      showImportDialog = true;
-      await handleImport();
+      listFromSearchParam = await decodeShareToken(token);
     }
   }
 
@@ -117,22 +122,18 @@
   }
 
   function closeImportDialog() {
-    showImportDialog = false;
-    importToken = "";
-    importError = "";
-    importSuccess = false;
+    listFromSearchParam = null;
 
     // Remove import parameter from URL
     if (window.location.search.includes("import=")) {
       const url = new URL(window.location.href);
       url.searchParams.delete("import");
-      window.history.replaceState({}, "", url.toString());
+      replaceState(url.toString(), {});
     }
   }
 
   async function handleImport() {
-    if (!importToken.trim()) {
-      importError = "Vennligst lim inn en delingskode";
+    if (listFromSearchParam == null) {
       return;
     }
 
@@ -141,15 +142,14 @@
     importSuccess = false;
 
     try {
-      const list = await decodeShareToken(importToken.trim());
-
-      // Check if we need to rename
       const existingNames = lists.map(l => l.name);
-      if (existingNames.includes(list.name)) {
-        list.name = `${list.name} (importert)`;
-      }
 
-      saveCustomList(list);
+      listFromSearchParam.name = addIndexToName(
+        existingNames,
+        listFromSearchParam.name,
+      );
+
+      saveCustomList(listFromSearchParam);
       loadLists();
       importSuccess = true;
 
@@ -163,10 +163,6 @@
       isImporting = false;
     }
   }
-
-  $: filteredLists = lists.filter(list =>
-    list.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   // Unified interaction handlers
   function createInteractionHandler(callback: () => void) {
@@ -197,8 +193,8 @@
   <div class="toolbar">
     <button
       class="create-btn"
-      on:pointerdown={createInteractionHandler(createNewList)}
-      on:keydown={createInteractionHandler(createNewList)}
+      onpointerdown={createInteractionHandler(createNewList)}
+      onkeydown={createInteractionHandler(createNewList)}
     >
       ➕ Opprett ny liste
     </button>
@@ -206,7 +202,7 @@
       href="/importer"
       rel="prefetch"
       class="import-btn"
-      on:pointerdown={e => handleLinkClick(e, "/importer", goto)}
+      onpointerdown={e => handleLinkClick(e, "/importer", goto)}
     >
       📚 Importer lister
     </a>
@@ -249,16 +245,16 @@
   {/if}
 </div>
 
-{#if showImportDialog}
+{#if listFromSearchParam}
   <div
     class="modal-overlay"
-    on:pointerdown={e => {
+    onpointerdown={e => {
       if (e.target === e.currentTarget && e.isPrimary) {
         e.preventDefault();
         closeImportDialog();
       }
     }}
-    on:keydown={e => {
+    onkeydown={e => {
       if (e.key === "Escape") {
         closeImportDialog();
       }
@@ -270,19 +266,18 @@
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <form
       class="modal"
-      on:pointerdown={e => e.stopPropagation()}
-      on:keydown={e => e.stopPropagation()}
+      onpointerdown={e => e.stopPropagation()}
+      onkeydown={e => e.stopPropagation()}
       role="document"
     >
-      <h2>📥 Importer liste</h2>
-      <p class="modal-instruction">Lim inn delingskoden du har mottatt:</p>
+      <h2>📥 Legg til en ny liste</h2>
 
-      <textarea
-        bind:value={importToken}
-        placeholder="Lim inn delingskode her..."
-        class="import-textarea"
-        rows="6"
-      ></textarea>
+      <ImportableList
+        list={listFromSearchParam}
+        onImport={handleImport}
+        onCancel={closeImportDialog}
+        isImported={isImporting}
+      />
 
       {#if importError}
         <p class="error-message">❌ {importError}</p>
@@ -291,25 +286,6 @@
       {#if importSuccess}
         <p class="success-message">✅ Liste importert!</p>
       {/if}
-
-      <div class="modal-actions">
-        <button
-          class="cancel-btn"
-          on:pointerdown={createInteractionHandler(closeImportDialog)}
-          on:keydown={createInteractionHandler(closeImportDialog)}
-          disabled={isImporting}
-        >
-          Avbryt
-        </button>
-        <button
-          class="confirm-btn"
-          on:pointerdown={createInteractionHandler(handleImport)}
-          on:keydown={createInteractionHandler(handleImport)}
-          disabled={isImporting || !importToken.trim()}
-        >
-          {isImporting ? "Importerer..." : "Importer"}
-        </button>
-      </div>
     </form>
   </div>
 {/if}
@@ -460,27 +436,6 @@
     margin-bottom: 1rem;
   }
 
-  .modal-instruction {
-    margin-bottom: 1rem;
-    color: var(--color-text);
-  }
-
-  .import-textarea {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-family: var(--font-mono);
-    border: 2px solid var(--color-accent);
-    border-radius: 15px;
-    resize: vertical;
-    outline: none;
-    margin-bottom: 1rem;
-  }
-
-  .import-textarea:focus {
-    border-color: var(--color-heading);
-  }
-
   .error-message {
     color: #ff5252;
     font-weight: bold;
@@ -493,47 +448,6 @@
     margin: 0.5rem 0;
   }
 
-  .modal-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-  }
-
-  .cancel-btn,
-  .confirm-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-family: var(--font-heading);
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .cancel-btn {
-    background: #ddd;
-    color: #333;
-  }
-
-  .cancel-btn:hover:not(:disabled) {
-    background: #ccc;
-  }
-
-  .confirm-btn {
-    background: var(--color-accent);
-    color: white;
-  }
-
-  .confirm-btn:hover:not(:disabled) {
-    background: var(--color-heading);
-  }
-
-  .confirm-btn:disabled,
-  .cancel-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   @media (max-width: 768px) {
     .container {
       --container-padding: 1rem;
@@ -541,13 +455,6 @@
 
     h1 {
       font-size: 2rem;
-    }
-
-    .back-btn {
-      position: static;
-      transform: none;
-      display: inline-block;
-      margin-bottom: 1rem;
     }
 
     header {

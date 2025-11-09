@@ -28,18 +28,21 @@ Users can now **select their preferred shuffle mode** when practicing custom lis
 ## The Three Modes
 
 ### 🎲 Balansert (Balanced) - Default
+
 - **Weight:** 1.0x - 1.8x based on mastery
 - **Best For:** All-around practice
 - **Card Mix:** ~30% hard, ~30% medium, ~40% easy
 - **Feel:** Confident but still learning
 
 ### 🧠 Mestring fokusert (Mastery-Focused)
+
 - **Weight:** 1.0x - 2.5x based on mastery
 - **Best For:** Maintenance and confidence
 - **Card Mix:** Heavy repetition of known cards
 - **Feel:** Very confident, smooth session
 
 ### ⚙️ Utfordring først (Challenge-First)
+
 - **Weight:** 0.5x - 1.2x (inverted based on mastery)
 - **Best For:** Learning weak areas
 - **Card Mix:** Focus on difficult cards
@@ -48,6 +51,7 @@ Users can now **select their preferred shuffle mode** when practicing custom lis
 ## How to Use
 
 ### For Custom Lists
+
 1. Open a custom list for practice
 2. See the Shuffle Selector at the top
 3. **Choose a mode** by clicking the button
@@ -55,6 +59,7 @@ Users can now **select their preferred shuffle mode** when practicing custom lis
 5. Start practicing!
 
 ### For Built-In Lists (Hiragana/Katakana)
+
 - Still use regular shuffle for now
 - Future enhancement coming in Phase 4
 
@@ -73,11 +78,12 @@ src/lib/components/
 ✅ **Instant Reshuffle** - Changes apply immediately  
 ✅ **Responsive Design** - Works on desktop, tablet, mobile  
 ✅ **Keyboard Accessible** - Full keyboard navigation  
-✅ **Beautiful UI** - Matches project design system  
+✅ **Beautiful UI** - Matches project design system
 
 ## Technical Details
 
 ### Component Tree
+
 ```
 ListPage
   ├── ShuffleSelector (NEW)
@@ -89,11 +95,13 @@ ListPage
 ```
 
 ### Data Flow
+
 ```
 User clicks mode → State updates → Cards reshuffle → New order displayed
 ```
 
 ### Smart Shuffle Integration
+
 - Uses `performSmartShuffle()` from utility
 - Only for custom lists (type guard: `isCustomCards()`)
 - Falls back to random shuffle if disabled or for built-in lists
@@ -102,7 +110,7 @@ User clicks mode → State updates → Cards reshuffle → New order displayed
 
 ⚡ **Instant** - Reshuffle happens in <1ms  
 💾 **No Storage** - All in-memory operations  
-📊 **No Network** - Pure client-side algorithm  
+📊 **No Network** - Pure client-side algorithm
 
 ## Browser Support
 
@@ -114,6 +122,7 @@ User clicks mode → State updates → Cards reshuffle → New order displayed
 ## Example User Journeys
 
 ### Journey 1: Building Confidence
+
 ```
 1. Opens "Spanish Vocabulary" list
 2. Sees Balanced mode (default)
@@ -124,6 +133,7 @@ User clicks mode → State updates → Cards reshuffle → New order displayed
 ```
 
 ### Journey 2: Focused Learning
+
 ```
 1. Opens "Math Terminology" list
 2. Changes to Challenge-First mode
@@ -142,6 +152,7 @@ User clicks mode → State updates → Cards reshuffle → New order displayed
 ## What's Next? (Phase 3+)
 
 🔮 **Future Features:**
+
 - Save preferred mode to localStorage
 - Session statistics (which mode works best)
 - Achievements for different modes

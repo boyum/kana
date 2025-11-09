@@ -195,7 +195,7 @@ Potential enhancement for session tracking (Phase 2 extension):
   <option value="challenge-first">Challenge First</option>
 </select>
 
-<button on:click={() => shuffledCards = performSmartShuffle(cards, shuffleConfig)}>
+<button onclick={() => shuffledCards = performSmartShuffle(cards, shuffleConfig)}>
   🔀 Smart Shuffle
 </button>
 ```

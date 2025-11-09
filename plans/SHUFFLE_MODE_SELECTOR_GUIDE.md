@@ -21,18 +21,21 @@ When you enable "🔀 Smart stokking" (Smart Shuffle), the app uses intelligent 
 ### Shuffle Modes (When Smart Shuffle is Enabled)
 
 **Balansert (Balanced) - Default**
+
 - Weight range: 1.0x - 1.8x
 - Best for: Maintaining all skills while building confidence
 - Distribution: 30% hard cards, 30% medium, 40% easy
 - Use when: You want a balanced, engaging session
 
 **Mestring fokusert (Mastery-Focused)**
+
 - Weight range: 1.0x - 2.5x
 - Best for: Confidence building and skill maintenance
 - Distribution: More repetition of cards you already know
 - Use when: You want to boost your confidence or maintain mastery
 
 **Utfordring først (Challenge-First)**
+
 - Weight range: 0.5x - 1.2x (inverted)
 - Best for: Focused improvement on weak areas
 - Distribution: More cards you find challenging
@@ -71,12 +74,14 @@ ListPage.svelte (Practice page)
 ### Smart Shuffle Integration
 
 When smart shuffle is enabled:
+
 1. Cards are passed to `performSmartShuffle()` function
 2. Each card gets a weight based on mastery level and selected mode
 3. Weighted cards are shuffled using Fisher-Yates algorithm
 4. Up to 25 cards are returned for the session
 
 When smart shuffle is disabled:
+
 1. Cards are shuffled using simple random sort
 2. Works for both custom lists and built-in lists
 3. Behavior matches pre-Phase 2 implementation
@@ -84,6 +89,7 @@ When smart shuffle is disabled:
 ### Built-In Lists
 
 For Hiragana/Katakana built-in lists:
+
 - ShuffleSelector is hidden (only appears for custom lists)
 - Regular shuffle is always used
 - Future Phase 4 work will convert these to custom list format
@@ -104,6 +110,7 @@ For Hiragana/Katakana built-in lists:
 ### Example Scenario
 
 **User Path:**
+
 ```
 1. Opens "Japanese Foods" custom list
 2. ShuffleSelector shows with "Smart stokking" enabled, "Balansert" selected
@@ -148,6 +155,7 @@ For Hiragana/Katakana built-in lists:
 ## Future Enhancements
 
 Potential improvements for Phase 3+:
+
 - Save user's preferred shuffle mode to localStorage
 - Display statistics after session (which shuffle mode was most effective)
 - Advanced filtering before shuffle (only review difficult cards)

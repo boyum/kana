@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import FlashCard from "$lib/components/FlashCard.svelte";
   import type { CustomFlashCard } from "$lib/types/customLists";
   import type { ShuffleMode } from "$lib/utils/smartShuffle";
   import { performSmartShuffle } from "$lib/utils/smartShuffle";
+  import { onMount } from "svelte";
   import BackButton from "./BackButton.svelte";
+  import Button from "./Button.svelte";
 
   // Props
   export let title: string;
@@ -148,15 +149,13 @@
     <BackButton url={backUrl} text={backText} />
 
     <div class="header-actions">
-      <button
-        class="action-btn"
-        on:pointerdown={createInteractionHandler(toggleDirection)}
-        on:keydown={createInteractionHandler(toggleDirection)}
-      >
-        🔄 {direction === "front-to-back"
-          ? "Forside → Bakside"
-          : "Bakside → Forside"}
-      </button>
+      <Button
+        onPointerDown={createInteractionHandler(toggleDirection)}
+        onKeyDown={createInteractionHandler(toggleDirection)}
+        text={direction === "front-to-back"
+          ? "Forside ➡️ Bakside"
+          : "Forside ⬅️ Bakside"}
+      />
     </div>
   </div>
 
@@ -241,22 +240,6 @@
     gap: 1rem;
     flex-wrap: wrap;
     flex-shrink: 0;
-  }
-
-  .action-btn {
-    padding: 0.75rem 1.5rem;
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    background: var(--color-accent);
-    color: white;
-    border-radius: 50px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(57, 92, 107, 0.2);
-    cursor: pointer;
-    white-space: nowrap;
-    user-select: none;
   }
 
   .header-actions {
@@ -349,11 +332,6 @@
     .header {
       align-items: stretch;
       flex-shrink: 0;
-    }
-
-    .action-btn {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
     }
 
     .header-actions {

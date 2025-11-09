@@ -39,6 +39,7 @@ supabase/
 ## Creating New Tables
 
 1. **Option A: Write SQL directly**
+
    ```bash
    # Create: supabase/migrations/20250109120000_my_feature.sql
    create table public.my_table (

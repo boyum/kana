@@ -1,5 +1,6 @@
 <script lang="ts">
   export let onPointerDown: ((event: PointerEvent) => void) | null = null;
+  export let onKeyDown: ((event: KeyboardEvent) => void) | null = null;
   export let onClick: ((event: MouseEvent) => void) | null = null;
   export let text: string;
 </script>
@@ -9,6 +10,7 @@
   class="button"
   on:pointerdown={onPointerDown}
   on:click={onClick}
+  on:keydown={onKeyDown}
 >
   {text}
 </button>
@@ -33,5 +35,12 @@
     background: var(--color-heading);
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 10px 25px rgba(57, 92, 107, 0.3);
+  }
+
+  @media (max-width: 48rem) {
+    .button {
+      padding: 0.6rem 1rem;
+      font-size: 0.95rem;
+    }
   }
 </style>

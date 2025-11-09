@@ -25,6 +25,7 @@ npm run supabase:start
 ```
 
 This will:
+
 - Start a local Postgres database (requires Docker - see Docker-free alternative below)
 - Run all migrations
 - Start the Studio UI at http://127.0.0.1:54323
@@ -127,16 +128,13 @@ This creates [src/lib/types/database.types.ts](src/lib/types/database.types.ts) 
 Use it like:
 
 ```typescript
-import type { Database } from '$lib/types/database.types';
-import { createClient } from '@supabase/supabase-js';
+import type { Database } from "$lib/types/database.types";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient<Database>(url, key);
 
 // Now you get full autocomplete!
-const { data } = await supabase
-  .from('lists')
-  .select('*')
-  .single();
+const { data } = await supabase.from("lists").select("*").single();
 ```
 
 ## Using Supabase in Your Code
@@ -145,24 +143,28 @@ const { data } = await supabase
 
 ```typescript
 // src/routes/+page.svelte
-import { supabase } from '$lib/supabase';
+import { supabase } from "$lib/supabase";
 
 // Query data
 const { data, error } = await supabase
-  .from('lists')
-  .select('*')
-  .eq('is_public', true);
+  .from("lists")
+  .select("*")
+  .eq("is_public", true);
 
 // Real-time subscriptions
 supabase
-  .channel('lists')
-  .on('postgres_changes', {
-    event: '*',
-    schema: 'public',
-    table: 'lists'
-  }, (payload) => {
-    console.log('Change received!', payload);
-  })
+  .channel("lists")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "lists",
+    },
+    payload => {
+      console.log("Change received!", payload);
+    },
+  )
   .subscribe();
 ```
 
@@ -170,13 +172,11 @@ supabase
 
 ```typescript
 // src/routes/api/lists/+server.ts
-import { supabaseAdmin } from '$lib/supabase.server';
+import { supabaseAdmin } from "$lib/supabase.server";
 
 export async function GET({ request }) {
   // Using admin client (bypasses RLS)
-  const { data } = await supabaseAdmin
-    .from('lists')
-    .select('*');
+  const { data } = await supabaseAdmin.from("lists").select("*");
 
   return json(data);
 }
@@ -187,18 +187,16 @@ export async function GET({ request }) {
 For operations that should respect Row Level Security:
 
 ```typescript
-import { createServerClient } from '$lib/supabase.server';
+import { createServerClient } from "$lib/supabase.server";
 
 export async function GET({ cookies }) {
-  const token = cookies.get('access_token');
-  const refresh = cookies.get('refresh_token');
+  const token = cookies.get("access_token");
+  const refresh = cookies.get("refresh_token");
 
   const supabase = createServerClient(token, refresh);
 
   // This respects RLS policies
-  const { data } = await supabase
-    .from('lists')
-    .select('*');
+  const { data } = await supabase.from("lists").select("*");
 }
 ```
 
@@ -207,6 +205,7 @@ export async function GET({ cookies }) {
 Access the local Supabase Studio at http://127.0.0.1:54323
 
 Features:
+
 - Table Editor: View and edit data
 - SQL Editor: Run queries
 - Database: View schema
@@ -240,12 +239,14 @@ npm run supabase:types
 ### Version Control
 
 All of these are version controlled (commit them):
+
 - `supabase/config.toml` - Supabase configuration
 - `supabase/migrations/*.sql` - Database schema
 - `supabase/seed.sql` - Test data
 - `.env.local` - Local development credentials (safe defaults)
 
 Do NOT commit:
+
 - `.env` - Production credentials
 - `supabase/.temp/` - Temporary files (already gitignored)
 
@@ -265,6 +266,7 @@ That's it! All migrations and seeds apply automatically.
 Supabase local development works completely offline once the Docker images are downloaded. All data is stored locally.
 
 No internet connection required for:
+
 - Database operations
 - Auth (local auth server)
 - Storage (local files)
@@ -275,6 +277,7 @@ No internet connection required for:
 ### "Cannot connect to Docker"
 
 If you don't have Docker installed:
+
 1. Install Docker Desktop: https://www.docker.com/products/docker-desktop
 2. Or use the cloud option (see Docker-Free Development above)
 
@@ -330,6 +333,7 @@ npm run dev
 Your app is already configured for Vercel with `@sveltejs/adapter-vercel`.
 
 Set environment variables in Vercel:
+
 - `PUBLIC_SUPABASE_URL`
 - `PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`

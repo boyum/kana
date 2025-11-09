@@ -3,7 +3,6 @@
   import ListEditor from "$lib/components/ListEditor.svelte";
   import { saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
-  import { handleLinkClick } from "$lib/utils/interaction";
   import BackButton from "$lib/components/BackButton.svelte";
 
   function handleSave(list: CustomList) {
@@ -44,26 +43,6 @@
     position: relative;
   }
 
-  .back-btn {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0.5rem 1rem;
-    background: var(--color-accent);
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-  }
-
-  .back-btn:hover {
-    background: var(--color-heading);
-    transform: translateY(-50%) scale(1.05);
-  }
-
   h1 {
     font-family: var(--font-heading);
     font-size: 2.5rem;
@@ -78,13 +57,6 @@
 
     h1 {
       font-size: 1.8rem;
-    }
-
-    .back-btn {
-      position: static;
-      transform: none;
-      display: inline-block;
-      margin-bottom: 1rem;
     }
 
     header {

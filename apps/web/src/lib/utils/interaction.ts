@@ -27,7 +27,7 @@ export function createInteractionHandlers(callback: () => void) {
 /**
  * Creates a pointer event handler for internal link navigation.
  * This prevents the 300ms delay on mobile devices.
- * Note: This should be used with on:pointerdown on <a> tags alongside the href attribute.
+ * Note: This should be used with onpointerdown on <a> tags alongside the href attribute.
  * The href attribute is kept for accessibility, SEO, and when modifier keys are used.
  *
  * @param e - The pointer event

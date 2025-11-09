@@ -71,23 +71,6 @@
     align-items: center;
   }
 
-  .back-btn {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background: var(--color-accent);
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-  }
-
-  .back-btn:hover {
-    background: var(--color-heading);
-    transform: scale(1.05);
-  }
-
   h1 {
     font-family: var(--font-heading);
     font-size: 2.5rem;

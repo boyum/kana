@@ -95,6 +95,7 @@ sops -d .secrets.env > .env
 ```
 
 For Vercel/Netlify/other platforms:
+
 1. Add `SOPS_AGE_KEY` to environment variables
 2. In build command, decrypt secrets before build
 3. Or manually copy decrypted values to platform's env var UI

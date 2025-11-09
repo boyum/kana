@@ -3,27 +3,32 @@
 ## What's Been Configured
 
 ### 1. Dependencies Installed
+
 - `@supabase/supabase-js` - Supabase client library
 - `supabase` CLI - Local development tools
 
 ### 2. Files Created
 
 #### Configuration
+
 - [.env.local](.env.local) - Local development credentials (safe to commit)
 - [.env](.env) - Production credentials template (gitignored)
 - [.env.example](.env.example) - Example configuration
 
 #### Supabase Client
+
 - [src/lib/supabase.ts](src/lib/supabase.ts) - Browser client
 - [src/lib/supabase.server.ts](src/lib/supabase.server.ts) - Server-side client
 - [src/lib/supabase-helpers.ts](src/lib/supabase-helpers.ts) - Helper functions
 
 #### Database
+
 - [supabase/config.toml](supabase/config.toml) - Supabase configuration
 - [supabase/migrations/20250109000000_initial_schema.sql](supabase/migrations/20250109000000_initial_schema.sql) - Example schema
 - [supabase/seed.sql](supabase/seed.sql) - Test data
 
 #### Documentation
+
 - [SUPABASE.md](SUPABASE.md) - Complete setup guide
 - [supabase/README.md](supabase/README.md) - Quick reference
 
@@ -100,36 +105,43 @@ Try this in a Svelte component:
 ## Development Workflow
 
 ### Daily Development
+
 1. `npm run supabase:start` (once)
 2. `npm run dev`
 3. Code away!
 
 ### After Schema Changes
+
 1. Create/edit migration in `supabase/migrations/`
 2. `npm run supabase:reset`
 3. `npm run supabase:types`
 
 ### Working Offline
+
 Once Docker images are downloaded, everything works offline!
 
 ## Key Features
 
 ### ✅ Offline-First
+
 - Local Postgres database
 - No internet required after initial setup
 - All data stored locally
 
 ### ✅ Type-Safe
+
 - Generate TypeScript types from schema
 - Full autocomplete in IDE
 - Catch errors at compile time
 
 ### ✅ Team-Friendly
+
 - All config in version control
 - New devs: clone + `supabase:start` + done
 - Consistent across team
 
 ### ✅ Production-Ready
+
 - Same code works locally and in production
 - Easy deploy to Supabase Cloud
 - Environment-based configuration
@@ -144,6 +156,7 @@ Once Docker images are downloaded, everything works offline!
 ## Example Schema
 
 The initial migration includes:
+
 - `profiles` table (user profiles)
 - `lists` table (example collections)
 - Row Level Security policies

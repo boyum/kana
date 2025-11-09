@@ -55,7 +55,7 @@
           <button
             class="mode-btn"
             class:active={shuffleMode === mode.value}
-            on:click={() => handleShuffleModeChange(mode.value)}
+            onclick={() => handleShuffleModeChange(mode.value)}
             title={mode.description}
           >
             <span class="icon">{mode.icon}</span>

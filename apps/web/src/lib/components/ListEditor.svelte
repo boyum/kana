@@ -240,8 +240,8 @@
         <!-- <div class="cards-actions">
           <button 
             class="bulk-btn" 
-            on:pointerdown={createInteractionHandler(openBulkImport)}
-            on:keydown={createInteractionHandler(openBulkImport)}
+            onpointerdown={createInteractionHandler(openBulkImport)}
+            onkeydown={createInteractionHandler(openBulkImport)}
           >
             📋 Masseopplasting
           </button>
@@ -297,10 +297,10 @@
               </div>
               <button
                 class="remove-btn"
-                on:pointerdown={createInteractionHandler(() =>
+                onpointerdown={createInteractionHandler(() =>
                   removeCard(index),
                 )}
-                on:keydown={createInteractionHandler(() => removeCard(index))}
+                onkeydown={createInteractionHandler(() => removeCard(index))}
               >
                 🗑️
               </button>
@@ -311,8 +311,8 @@
         <!-- Add card button moved below cards -->
         <button
           class="add-card-btn"
-          on:pointerdown={createInteractionHandler(addCard)}
-          on:keydown={createInteractionHandler(addCard)}
+          onpointerdown={createInteractionHandler(addCard)}
+          onkeydown={createInteractionHandler(addCard)}
         >
           ➕ Legg til kort
         </button>
@@ -324,15 +324,15 @@
   <div class="editor-footer">
     <button
       class="cancel-btn"
-      on:pointerdown={createInteractionHandler(onCancel)}
-      on:keydown={createInteractionHandler(onCancel)}
+      onpointerdown={createInteractionHandler(onCancel)}
+      onkeydown={createInteractionHandler(onCancel)}
     >
       Avbryt
     </button>
     <button
       class="save-btn"
-      on:pointerdown={createInteractionHandler(handleSave)}
-      on:keydown={createInteractionHandler(handleSave)}
+      onpointerdown={createInteractionHandler(handleSave)}
+      onkeydown={createInteractionHandler(handleSave)}
     >
       💾 Lagre liste
     </button>
@@ -343,13 +343,13 @@
 {#if showBulkImport}
   <div
     class="modal-overlay"
-    on:pointerdown={e => {
+    onpointerdown={e => {
       if (e.target === e.currentTarget && e.isPrimary) {
         e.preventDefault();
         closeBulkImport();
       }
     }}
-    on:keydown={e => {
+    onkeydown={e => {
       if (e.key === "Escape") {
         closeBulkImport();
       }
@@ -360,8 +360,8 @@
   >
     <dialog
       class="modal"
-      on:pointerdown={e => e.stopPropagation()}
-      on:keydown={e => e.stopPropagation()}
+      onpointerdown={e => e.stopPropagation()}
+      onkeydown={e => e.stopPropagation()}
       tabindex="-1"
     >
       <h2>📋 Masseopplasting</h2>
@@ -390,15 +390,15 @@
       <div class="modal-actions">
         <button
           class="cancel-btn"
-          on:pointerdown={createInteractionHandler(closeBulkImport)}
-          on:keydown={createInteractionHandler(closeBulkImport)}
+          onpointerdown={createInteractionHandler(closeBulkImport)}
+          onkeydown={createInteractionHandler(closeBulkImport)}
         >
           Avbryt
         </button>
         <button
           class="confirm-btn"
-          on:pointerdown={createInteractionHandler(handleBulkImport)}
-          on:keydown={createInteractionHandler(handleBulkImport)}
+          onpointerdown={createInteractionHandler(handleBulkImport)}
+          onkeydown={createInteractionHandler(handleBulkImport)}
         >
           Importer
         </button>
@@ -411,13 +411,13 @@
 {#if showQuickAdd}
   <div
     class="modal-overlay"
-    on:pointerdown={e => {
+    onpointerdown={e => {
       if (e.target === e.currentTarget && e.isPrimary) {
         e.preventDefault();
         closeQuickAdd();
       }
     }}
-    on:keydown={e => {
+    onkeydown={e => {
       if (e.key === "Escape") {
         closeQuickAdd();
       }
@@ -428,8 +428,8 @@
   >
     <dialog
       class="modal"
-      on:pointerdown={e => e.stopPropagation()}
-      on:keydown={e => e.stopPropagation()}
+      onpointerdown={e => e.stopPropagation()}
+      onkeydown={e => e.stopPropagation()}
       tabindex="-1"
     >
       <h2>Rask Legg til</h2>
@@ -452,13 +452,13 @@
       <div class="modal-actions">
         <button
           class="cancel-btn"
-          on:pointerdown={createInteractionHandler(closeQuickAdd)}
-          on:keydown={createInteractionHandler(closeQuickAdd)}>Avbryt</button
+          onpointerdown={createInteractionHandler(closeQuickAdd)}
+          onkeydown={createInteractionHandler(closeQuickAdd)}>Avbryt</button
         >
         <button
           class="confirm-btn"
-          on:pointerdown={createInteractionHandler(handleQuickAdd)}
-          on:keydown={createInteractionHandler(handleQuickAdd)}>Legg til</button
+          onpointerdown={createInteractionHandler(handleQuickAdd)}
+          onkeydown={createInteractionHandler(handleQuickAdd)}>Legg til</button
         >
       </div>
     </dialog>

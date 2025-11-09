@@ -16,7 +16,7 @@
         href="/hiragana"
         rel="prefetch"
         class="mode-btn"
-        on:pointerdown={e => handleLinkClick(e, "/hiragana", goto)}
+        onpointerdown={e => handleLinkClick(e, "/hiragana", goto)}
       >
         Hiragana&nbsp;あ
       </a>
@@ -24,7 +24,7 @@
         href="/katakana"
         rel="prefetch"
         class="mode-btn"
-        on:pointerdown={e => handleLinkClick(e, "/katakana", goto)}
+        onpointerdown={e => handleLinkClick(e, "/katakana", goto)}
       >
         Katakana&nbsp;ツ
       </a>
@@ -33,7 +33,7 @@
       href="/egendefinert"
       rel="prefetch"
       class="mode-btn custom"
-      on:pointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
+      onpointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
     >
       ✨ Dine egne flash-kort
     </a>

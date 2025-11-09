@@ -52,10 +52,10 @@
 <div class="list-card">
   <button
     class="menu-btn"
-    on:pointerdown={createInteractionHandler(() => {
+    onpointerdown={createInteractionHandler(() => {
       showDialog = true;
     })}
-    on:keydown={createInteractionHandler(() => {
+    onkeydown={createInteractionHandler(() => {
       showDialog = true;
     })}
     aria-label="Flere handlinger"
@@ -72,15 +72,15 @@
   <div class="list-actions">
     <button
       class="action-btn practice"
-      on:pointerdown={createInteractionHandler(() => onPractice(list.id))}
-      on:keydown={createInteractionHandler(() => onPractice(list.id))}
+      onpointerdown={createInteractionHandler(() => onPractice(list.id))}
+      onkeydown={createInteractionHandler(() => onPractice(list.id))}
     >
       🎯 Øv
     </button>
     <button
       class="action-btn share"
-      on:pointerdown={createInteractionHandler(() => onShare(list.id))}
-      on:keydown={createInteractionHandler(() => onShare(list.id))}
+      onpointerdown={createInteractionHandler(() => onShare(list.id))}
+      onkeydown={createInteractionHandler(() => onShare(list.id))}
     >
       🔗 Del
     </button>
@@ -92,8 +92,8 @@
   <dialog
     bind:this={dialogElement}
     class="dialog"
-    on:pointerdown={e => e.stopPropagation()}
-    on:keydown={e => {
+    onpointerdown={e => e.stopPropagation()}
+    onkeydown={e => {
       if (e.key === "Escape") {
         e.preventDefault();
         showDialog = false;
@@ -105,10 +105,10 @@
     <div class="dialog-actions">
       <button
         class="dialog-btn edit"
-        on:pointerdown={createInteractionHandler(() =>
+        onpointerdown={createInteractionHandler(() =>
           handleDialogAction(onEdit),
         )}
-        on:keydown={createInteractionHandler(() =>
+        onkeydown={createInteractionHandler(() =>
           handleDialogAction(onEdit),
         )}
       >
@@ -116,10 +116,10 @@
       </button>
       <button
         class="dialog-btn duplicate"
-        on:pointerdown={createInteractionHandler(() =>
+        onpointerdown={createInteractionHandler(() =>
           handleDialogAction(onDuplicate),
         )}
-        on:keydown={createInteractionHandler(() =>
+        onkeydown={createInteractionHandler(() =>
           handleDialogAction(onDuplicate),
         )}
       >
@@ -127,10 +127,10 @@
       </button>
       <button
         class="dialog-btn export"
-        on:pointerdown={createInteractionHandler(() =>
+        onpointerdown={createInteractionHandler(() =>
           handleDialogAction(onExport),
         )}
-        on:keydown={createInteractionHandler(() =>
+        onkeydown={createInteractionHandler(() =>
           handleDialogAction(onExport),
         )}
       >
@@ -138,10 +138,10 @@
       </button>
       <button
         class="dialog-btn delete"
-        on:pointerdown={createInteractionHandler(() =>
+        onpointerdown={createInteractionHandler(() =>
           handleDialogAction(onDelete),
         )}
-        on:keydown={createInteractionHandler(() =>
+        onkeydown={createInteractionHandler(() =>
           handleDialogAction(onDelete),
         )}
       >
@@ -149,10 +149,10 @@
       </button>
       <button
         class="dialog-btn cancel"
-        on:pointerdown={createInteractionHandler(() => {
+        onpointerdown={createInteractionHandler(() => {
           showDialog = false;
         })}
-        on:keydown={createInteractionHandler(() => {
+        onkeydown={createInteractionHandler(() => {
           showDialog = false;
         })}
       >

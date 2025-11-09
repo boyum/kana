@@ -3,7 +3,6 @@
   import { goto } from "$app/navigation";
   import type { CustomList } from "$lib/types/customLists";
   import { getAllCustomLists, addList } from "$lib/utils/storage";
-  import { handleLinkClick } from "$lib/utils/interaction";
   import ImportableList from "$lib/components/ImportableList.svelte";
   import { exampleLists } from "$lib/data/exampleLists.js";
   import BackButton from "$lib/components/BackButton.svelte";
@@ -217,22 +216,6 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 2rem;
-  }
-
-  .back-btn {
-    padding: 0.5rem 1rem;
-    background: none;
-    border: 2px solid var(--color-accent, #395c6b);
-    color: var(--color-accent, #395c6b);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-
-  .back-btn:hover {
-    background: var(--color-accent, #395c6b);
-    color: white;
   }
 
   h1 {

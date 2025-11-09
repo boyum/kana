@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { CustomList } from "$lib/types/customLists";
   import { generateShareToken, generateShareUrl } from "$lib/utils/sharing";
+  import { onMount } from "svelte";
 
   export let list: CustomList;
   export let onClose: () => void;
@@ -163,13 +163,13 @@
 
 <div
   class="modal-overlay"
-  on:pointerdown={e => {
+  onpointerdown={e => {
     if (e.target === e.currentTarget && e.isPrimary) {
       e.preventDefault();
       onClose();
     }
   }}
-  on:keydown={e => {
+  onkeydown={e => {
     if (e.key === "Escape") {
       onClose();
     }
@@ -181,43 +181,24 @@
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="modal"
-    on:pointerdown={e => e.stopPropagation()}
-    on:keydown={e => e.stopPropagation()}
+    onpointerdown={e => e.stopPropagation()}
+    onkeydown={e => e.stopPropagation()}
     role="document"
   >
-    <h2>🔗 Del liste</h2>
-    <p class="list-name">"{list.name}"</p>
+    <h2>🔗 Del listen {list.name}</h2>
 
     {#if isGenerating}
       <p class="loading">Genererer delingskode...</p>
     {:else}
       <div class="share-section">
         <h3>Delingslenke</h3>
-        <p class="instruction">Del denne lenken med andre:</p>
-        <div class="code-box">
-          <code>{shareUrl}</code>
-        </div>
+
         <button
           class="copy-btn"
-          on:pointerdown={createInteractionHandler(copyUrl)}
-          on:keydown={createInteractionHandler(copyUrl)}
+          onpointerdown={createInteractionHandler(copyUrl)}
+          onkeydown={createInteractionHandler(copyUrl)}
         >
           {copyUrlSuccess ? "✅ Kopiert!" : "📋 Kopier lenke"}
-        </button>
-      </div>
-
-      <div class="share-section">
-        <h3>Delingskode</h3>
-        <p class="instruction">Eller del denne koden:</p>
-        <div class="code-box">
-          <code>{shareToken}</code>
-        </div>
-        <button
-          class="copy-btn"
-          on:pointerdown={createInteractionHandler(copyToken)}
-          on:keydown={createInteractionHandler(copyToken)}
-        >
-          {copySuccess ? "✅ Kopiert!" : "📋 Kopier kode"}
         </button>
       </div>
 
@@ -232,8 +213,8 @@
     <div class="modal-actions">
       <button
         class="close-btn"
-        on:pointerdown={createInteractionHandler(onClose)}
-        on:keydown={createInteractionHandler(onClose)}
+        onpointerdown={createInteractionHandler(onClose)}
+        onkeydown={createInteractionHandler(onClose)}
       >
         Lukk
       </button>
@@ -275,13 +256,6 @@
     font-size: 2rem;
   }
 
-  .list-name {
-    font-size: 1.2rem;
-    color: var(--color-text);
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-
   .loading {
     text-align: center;
     padding: 2rem;
@@ -303,30 +277,6 @@
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
-  }
-
-  .instruction {
-    margin-bottom: 1rem;
-    color: var(--color-text);
-  }
-
-  .code-box {
-    background: white;
-    border: 2px solid var(--color-accent);
-    border-radius: 15px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-height: 150px;
-    overflow-y: auto;
-  }
-
-  .code-box code {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: var(--color-text);
   }
 
   .copy-btn {
@@ -391,10 +341,6 @@
 
     h2 {
       font-size: 1.5rem;
-    }
-
-    .code-box {
-      font-size: 0.8rem;
     }
   }
 </style>
