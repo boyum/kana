@@ -6,25 +6,45 @@
   import { onMount } from "svelte";
   import BackButton from "./BackButton.svelte";
   import Button from "./Button.svelte";
+  import { configStore } from "$lib/stores/config.svelte";
 
   // Props
-  export let title: string;
-  export let cards: Array<
-    { character?: string; romanization?: string } | CustomFlashCard
-  >;
-  export let backUrl: string = "/";
-  export let backText: string = "← Hjem";
-  export let initialDirection: "front-to-back" | "back-to-front" =
-    "front-to-back";
+  interface Props {
+    title: string;
+    cards: Array<
+      { character?: string; romanization?: string } | CustomFlashCard
+    >;
+    backUrl?: string;
+    backText?: string;
+    initialDirection?: "front-to-back" | "back-to-front";
+  }
+
+  let {
+    title,
+    cards,
+    backUrl = "/",
+    backText = "← Hjem",
+    initialDirection = configStore.defaultDirection,
+  }: Props = $props();
 
   // State
-  let currentIndex = 0;
-  let isFlipped = false;
-  let direction: "front-to-back" | "back-to-front" = initialDirection;
-  let shuffledCards: typeof cards = [];
-  let isTouchDevice = false;
-  let enableSmartShuffle = true;
-  let shuffleMode: ShuffleMode = "balanced";
+  let currentIndex = $state(0);
+  let isFlipped = $state(false);
+  let direction = $state<"front-to-back" | "back-to-front">(initialDirection);
+  let shuffledCards = $state<typeof cards>([]);
+  let isTouchDevice = $state(false);
+
+  // Get default values from config store
+  let enableSmartShuffle = $state(configStore.enableSmartShuffle);
+  let shuffleMode = $state<ShuffleMode>(configStore.defaultShuffleMode);
+  let maxShuffleSize = $state(configStore.maxShuffleSize);
+
+  // Update local state when config changes
+  $effect(() => {
+    enableSmartShuffle = configStore.enableSmartShuffle;
+    shuffleMode = configStore.defaultShuffleMode;
+    maxShuffleSize = configStore.maxShuffleSize;
+  });
 
   // Custom cards type guard
   function isCustomCards(
@@ -36,42 +56,49 @@
   }
 
   // Initialize shuffled cards - uses smart shuffle for custom lists
-  $: {
-    if (isCustomCards(cards) /*&& enableSmartShuffle*/) {
+  $effect(() => {
+    if (isCustomCards(cards) && enableSmartShuffle) {
       shuffledCards = performSmartShuffle(cards, {
-        enableSmartShuffle: true,
+        enableSmartShuffle,
         shuffleMode,
-        maxShuffleSize: 25,
+        maxShuffleSize,
       });
     } else {
       shuffledCards = [...cards].sort(() => Math.random() - 0.5);
     }
     currentIndex = 0;
-  }
+  });
 
   // Computed values
-  $: currentCard = shuffledCards[currentIndex];
-  $: progress =
+  const currentCard = $derived(shuffledCards[currentIndex]);
+  const progress = $derived(
     shuffledCards.length > 0
       ? `${currentIndex + 1} / ${shuffledCards.length}`
-      : "0 / 0";
+      : "0 / 0"
+  );
 
   // Handle card content based on type and direction
-  $: isCustomCard = currentCard && "front" in currentCard;
-  $: frontContent = isCustomCard
-    ? direction === "front-to-back"
-      ? (currentCard as CustomFlashCard).front
-      : (currentCard as CustomFlashCard).back
-    : (currentCard as any)?.character || "";
-  $: backContent = isCustomCard
-    ? direction === "front-to-back"
-      ? (currentCard as CustomFlashCard).back
-      : (currentCard as CustomFlashCard).front
-    : (currentCard as any)?.romanization || "";
-  $: meaning = isCustomCard
-    ? (currentCard as CustomFlashCard).meaning
-    : undefined;
-  $: notes = isCustomCard ? (currentCard as CustomFlashCard).notes : undefined;
+  const isCustomCard = $derived(currentCard && "front" in currentCard);
+  const frontContent = $derived(
+    isCustomCard
+      ? direction === "front-to-back"
+        ? (currentCard as CustomFlashCard).front
+        : (currentCard as CustomFlashCard).back
+      : (currentCard as any)?.character || ""
+  );
+  const backContent = $derived(
+    isCustomCard
+      ? direction === "front-to-back"
+        ? (currentCard as CustomFlashCard).back
+        : (currentCard as CustomFlashCard).front
+      : (currentCard as any)?.romanization || ""
+  );
+  const meaning = $derived(
+    isCustomCard ? (currentCard as CustomFlashCard).meaning : undefined
+  );
+  const notes = $derived(
+    isCustomCard ? (currentCard as CustomFlashCard).notes : undefined
+  );
 
   // Navigation functions
   function nextCard() {

@@ -1,12 +1,26 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { handleLinkClick } from "$lib/utils/interaction";
+  import ConfigModal from "$lib/components/ConfigModal.svelte";
+
+  let isConfigOpen = $state(false);
 </script>
 
 <svelte:head>
   <title>Kana</title>
   <meta name="description" content="Lær Hiragana og Katakana med flash cards" />
 </svelte:head>
+
+<button
+  class="config-button"
+  onclick={() => (isConfigOpen = true)}
+  aria-label="Åpne innstillinger"
+  title="Innstillinger"
+>
+  ⚙️
+</button>
+
+<ConfigModal bind:isOpen={isConfigOpen} />
 
 <section>
   <h1>Hva vil du øve på?</h1>
@@ -41,6 +55,32 @@
 </section>
 
 <style>
+  .config-button {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+    background: var(--color-accent);
+    color: white;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(57, 92, 107, 0.3);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .config-button:hover {
+    background: var(--color-heading);
+    transform: translateY(-3px) scale(1.1) rotate(90deg);
+    box-shadow: 0 12px 30px rgba(57, 92, 107, 0.4);
+  }
+
   section {
     display: flex;
     flex-direction: column;
@@ -98,6 +138,14 @@
   }
 
   @media (max-width: 720px) {
+    .config-button {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      top: 1rem;
+      right: 1rem;
+    }
+
     h1 {
       font-size: 3rem;
     }
