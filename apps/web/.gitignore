@@ -1,0 +1,7 @@
+.svelte-kit
+build
+coverage
+test-results
+playwright-report
+storybook-static
+node_modules

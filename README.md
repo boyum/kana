@@ -21,6 +21,18 @@ Kana is a flashcard-based learning app designed to help you master the Japanese 
 - 🌐 **Multilingual** - Available in Norwegian and English
 - 📱 **Responsive Design** - Works beautifully on desktop and mobile
 
+## 📦 Monorepo Structure
+
+This project is organized as a Turborepo monorepo:
+
+```
+kana/
+├── apps/
+│   └── web/          # Main SvelteKit application
+├── packages/         # Shared packages (for future use)
+└── turbo.json        # Turborepo configuration
+```
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -48,44 +60,63 @@ Make sure you have the following installed:
 3. **Set up the database** (if needed)
 
    ```bash
+   cd apps/web
    npm run db:push
+   cd ../..
    ```
 
-4. **Start the development server**
+### Development
 
-   ```bash
-   npm run dev
-   ```
+Run the development server from the root:
 
-   Or open the app in your browser automatically:
+```bash
+npm run dev
+```
 
-   ```bash
-   npm run dev -- --open
-   ```
+This will start the SvelteKit development server at http://localhost:5173
 
-The app will be running at `http://localhost:5173` 🎉
+### Building
+
+Build all apps from the root:
+
+```bash
+npm run build
+```
+
+### Other Commands
+
+- `npm run lint` - Lint all packages
+- `npm run test` - Run tests in all packages
+- `npm run check` - Type check all packages
+- `npm run format:check` - Check code formatting
+- `npm run format:fix` - Fix code formatting
+
+### Working with the Web App
+
+To run commands specifically for the web app:
+
+```bash
+cd apps/web
+npm run dev           # Start dev server
+npm run build         # Build for production
+npm run db:studio     # Open Drizzle Studio
+npm run storybook     # Start Storybook
+```
+
+## 🎮 Using the App
+
+Once the development server is running, the app will be available at `http://localhost:5173` 🎉
+
+### Features Overview
+
+1. **Practice Hiragana** - Navigate to `/hiragana` to practice hiragana characters
+2. **Practice Katakana** - Navigate to `/katakana` to practice katakana characters
+3. **Custom Lists** - Create your own study sets at `/egendefinert`
+4. **Import Lists** - Import shared lists from the community at `/importer`
 
 ## 🛠️ Development
 
-### Available Scripts
-
-| Command                   | Description                                  |
-| ------------------------- | -------------------------------------------- |
-| `npm run dev`             | Start the development server with hot reload |
-| `npm run build`           | Build the production-ready app               |
-| `npm run preview`         | Preview the production build locally         |
-| `npm run check`           | Run TypeScript and Svelte type checking      |
-| `npm run check:watch`     | Run type checking in watch mode              |
-| `npm test`                | Run all tests (unit + e2e)                   |
-| `npm run test:unit`       | Run unit tests with Vitest                   |
-| `npm run test:e2e`        | Run end-to-end tests with Playwright         |
-| `npm run lint`            | Lint the codebase with ESLint                |
-| `npm run db:push`         | Push database schema changes                 |
-| `npm run db:generate`     | Generate database migrations                 |
-| `npm run db:migrate`      | Run database migrations                      |
-| `npm run db:studio`       | Open Drizzle Studio (database GUI)           |
-| `npm run storybook`       | Start Storybook for component development    |
-| `npm run build-storybook` | Build Storybook for production               |
+This monorepo uses Turborepo for efficient builds and caching. All commands run from the root automatically execute in the appropriate workspace.
 
 ### Project Structure
 

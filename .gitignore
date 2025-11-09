@@ -6,8 +6,14 @@ node_modules
 .vercel
 .netlify
 .wrangler
-/.svelte-kit
-/build
+.svelte-kit
+build
+.turbo
+
+# Monorepo
+apps/**/.svelte-kit
+apps/**/build
+packages/**/dist
 
 # OS
 .DS_Store
