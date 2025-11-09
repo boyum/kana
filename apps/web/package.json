@@ -19,13 +19,20 @@
     "prepare": "svelte-kit sync || echo ''",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:reset": "supabase db reset",
+    "supabase:studio": "supabase studio open",
+    "supabase:types": "supabase gen types typescript --local > src/lib/types/database.types.ts",
     "test": "npm run test:unit -- --run && npm run test:e2e",
     "test:e2e": "playwright test",
     "test:unit": "vitest"
   },
   "prettier": "prettier-config",
   "dependencies": {
-    "@node-rs/argon2": "^2.0.2"
+    "@node-rs/argon2": "^2.0.2",
+    "@supabase/supabase-js": "^2.80.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.2",
@@ -59,6 +66,7 @@
     "prettier": "^3.6.2",
     "prettier-config": "github:boyum/prettier-config",
     "storybook": "^10.0.4",
+    "supabase": "^2.54.11",
     "svelte": "^5.41.0",
     "svelte-check": "^4.3.3",
     "typescript": "^5.9.3",
