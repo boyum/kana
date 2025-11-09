@@ -152,10 +152,11 @@
       <Button
         onPointerDown={createInteractionHandler(toggleDirection)}
         onKeyDown={createInteractionHandler(toggleDirection)}
-        text={direction === "front-to-back"
+      >
+        {direction === "front-to-back"
           ? "Forside ➡️ Bakside"
           : "Forside ⬅️ Bakside"}
-      />
+      </Button>
     </div>
   </div>
 

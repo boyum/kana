@@ -7,4 +7,6 @@
   export let url: string = "/";
 </script>
 
-<Link {url} onPointerDown={event => handleLinkClick(event, url, goto)} {text} />
+<Link {url} onPointerDown={event => handleLinkClick(event, url, goto)}>
+  {text}
+</Link>

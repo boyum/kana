@@ -1,8 +1,10 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
+
   export let onPointerDown: ((event: PointerEvent) => void) | null = null;
   export let onKeyDown: ((event: KeyboardEvent) => void) | null = null;
   export let onClick: ((event: MouseEvent) => void) | null = null;
-  export let text: string;
+  export let children: Snippet;
 </script>
 
 <button
@@ -12,7 +14,7 @@
   on:click={onClick}
   on:keydown={onKeyDown}
 >
-  {text}
+  {@render children()}
 </button>
 
 <style>

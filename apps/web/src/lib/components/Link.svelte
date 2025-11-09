@@ -1,7 +1,9 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
+
   export let onPointerDown: ((event: PointerEvent) => void) | null = null;
   export let onClick: ((event: MouseEvent) => void) | null = null;
-  export let text: string;
+  export let children: Snippet;
   export let url: string;
 </script>
 
@@ -12,7 +14,7 @@
   on:pointerdown={onPointerDown}
   on:click={onClick}
 >
-  {text}
+  {@render children()}
 </a>
 
 <style>

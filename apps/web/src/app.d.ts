@@ -3,6 +3,11 @@
 declare global {
   namespace App {
     interface Locals {
+      supabase: import("@supabase/ssr").SupabaseClient;
+      safeGetSession: () => Promise<{
+        session: import("@supabase/supabase-js").Session | null;
+        user: import("@supabase/supabase-js").User | null;
+      }>;
       user: import("$lib/server/auth").SessionValidationResult["user"];
       session: import("$lib/server/auth").SessionValidationResult["session"];
     }
