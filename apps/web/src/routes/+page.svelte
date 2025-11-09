@@ -2,20 +2,21 @@
   import { goto } from "$app/navigation";
   import { handleLinkClick } from "$lib/utils/interaction";
   import ConfigModal from "$lib/components/ConfigModal.svelte";
+  import * as m from "$lib/paraglide/messages";
 
   let isConfigOpen = $state(false);
 </script>
 
 <svelte:head>
-  <title>Kana</title>
-  <meta name="description" content="Lær Hiragana og Katakana med flash cards" />
+  <title>{m.app_title()}</title>
+  <meta name="description" content={m.app_description()} />
 </svelte:head>
 
 <button
   class="config-button"
   onclick={() => (isConfigOpen = true)}
-  aria-label="Åpne innstillinger"
-  title="Innstillinger"
+  aria-label={m.settings_button_label()}
+  title={m.settings_title()}
 >
   ⚙️
 </button>
@@ -23,7 +24,7 @@
 <ConfigModal bind:isOpen={isConfigOpen} />
 
 <section>
-  <h1>Hva vil du øve på?</h1>
+  <h1>{m.homepage_heading()}</h1>
   <div class="mode-buttons">
     <div class="kana-buttons">
       <a
@@ -32,7 +33,7 @@
         class="mode-btn"
         onpointerdown={e => handleLinkClick(e, "/hiragana", goto)}
       >
-        Hiragana&nbsp;あ
+        {m.hiragana()}&nbsp;あ
       </a>
       <a
         href="/katakana"
@@ -40,7 +41,7 @@
         class="mode-btn"
         onpointerdown={e => handleLinkClick(e, "/katakana", goto)}
       >
-        Katakana&nbsp;ツ
+        {m.katakana()}&nbsp;ツ
       </a>
     </div>
     <a
@@ -49,7 +50,7 @@
       class="mode-btn custom"
       onpointerdown={e => handleLinkClick(e, "/egendefinert", goto)}
     >
-      ✨ Dine egne flash-kort
+      ✨ {m.custom_flashcards()}
     </a>
   </div>
 </section>

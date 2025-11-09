@@ -1,8 +1,0 @@
-creation_rules:
-  # Default rule for all files
-  - path_regex: \.secrets\.(yaml|yml|json|env)$
-    age: age1p457szg3ukxh0nnhu08pr8nqcw6jk8hq8qhs5a3rkkj8w7uqtuwqc4tr38
-
-  # Alternative: encrypt all files in secrets/ directory
-  - path_regex: secrets/.*\.(yaml|yml|json|env)$
-    age: age1p457szg3ukxh0nnhu08pr8nqcw6jk8hq8qhs5a3rkkj8w7uqtuwqc4tr38

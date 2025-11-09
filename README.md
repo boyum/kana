@@ -16,10 +16,17 @@ Kana is a flashcard-based learning app designed to help you master the Japanese 
 - 🎴 **Interactive Flashcards** - Flip cards to test your knowledge
 - ✨ **Custom Lists** - Build and organize your own study materials
 - 🔗 **Share & Import** - Share your custom lists with friends or the community
-- 💾 **Export Lists** - Download your lists as JSON files
+- 💾 **Export/Import Data** - Download and backup all your data as JSON files
 - 📋 **Duplicate Lists** - Copy and modify existing lists
+- 🎯 **Smart Shuffling** - Advanced shuffling algorithms with multiple modes:
+  - **Balanced** - Even distribution of cards
+  - **Mastery-focused** - Prioritize cards you know well
+  - **Challenge-first** - Focus on difficult cards
+- ⚙️ **Configurable Settings** - Customize shuffle modes, card direction, and more
+- 🔄 **Flexible Card Direction** - Study front-to-back or back-to-front
 - 🌐 **Multilingual** - Available in Norwegian and English
 - 📱 **Responsive Design** - Works beautifully on desktop and mobile
+- 🔒 **Secure Storage** - User data and configuration stored in Supabase
 
 ## 📦 Monorepo Structure
 
@@ -28,10 +35,28 @@ This project is organized as a Turborepo monorepo:
 ```
 kana/
 ├── apps/
-│   └── web/          # Main SvelteKit application
-├── packages/         # Shared packages (for future use)
+│   ├── web/          # Main SvelteKit application
+│   └── admin/        # Admin dashboard (separate app)
+├── packages/
+│   └── db-services/  # Shared database services
 └── turbo.json        # Turborepo configuration
 ```
+
+### Admin Dashboard
+
+Kana includes a separate admin application for managing public custom lists:
+
+- **Location**: `apps/admin/`
+- **Purpose**: Manage example lists, promote user lists, moderate content
+- **Access**: Requires admin role in database
+- **Setup Guide**: See [ADMIN_SETUP.md](./ADMIN_SETUP.md)
+
+Admin features:
+- View all lists in the system
+- Promote user lists to example status
+- Publish/unpublish lists
+- Delete lists
+- Search and filter capabilities
 
 ## 🚀 Getting Started
 
@@ -57,10 +82,22 @@ Make sure you have the following installed:
    npm install
    ```
 
-3. **Set up the database** (if needed)
+3. **Set up environment variables**
+
+   Create a `.env` file in `apps/web/` with your Supabase credentials:
+
+   ```bash
+   SUPABASE_URL=your-supabase-url
+   PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+4. **Set up the database** (if needed)
+
+   For local development with Supabase:
 
    ```bash
    cd apps/web
+   npm run supabase:start
    npm run db:push
    cd ../..
    ```
@@ -97,10 +134,12 @@ To run commands specifically for the web app:
 
 ```bash
 cd apps/web
-npm run dev           # Start dev server
-npm run build         # Build for production
-npm run db:studio     # Open Drizzle Studio
-npm run storybook     # Start Storybook
+npm run dev              # Start dev server
+npm run build            # Build for production
+npm run db:studio        # Open Drizzle Studio
+npm run storybook        # Start Storybook
+npm run supabase:studio  # Open Supabase Studio
+npm run supabase:status  # Check Supabase status
 ```
 
 ## 🎮 Using the App
@@ -113,6 +152,12 @@ Once the development server is running, the app will be available at `http://loc
 2. **Practice Katakana** - Navigate to `/katakana` to practice katakana characters
 3. **Custom Lists** - Create your own study sets at `/egendefinert`
 4. **Import Lists** - Import shared lists from the community at `/importer`
+5. **Settings** - Access the settings modal from any page to:
+   - Configure smart shuffling options
+   - Set default card direction
+   - Change language preferences
+   - Export/import your data
+   - Manage local storage
 
 ## 🛠️ Development
 
@@ -142,23 +187,71 @@ kana/
 
 ### Tech Stack
 
-- **Framework**: [SvelteKit](https://kit.svelte.dev/) - Fast, modern web framework
+- **Framework**: [SvelteKit](https://kit.svelte.dev/) with Svelte 5 - Fast, modern web framework
 - **Language**: [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- **Database**: [Drizzle ORM](https://orm.drizzle.team/) with LibSQL
-- **Authentication**: [@oslojs/crypto](https://oslo.js.org/)
+- **Database**: [Supabase](https://supabase.com/) - PostgreSQL database with real-time capabilities
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - Type-safe SQL toolkit
+- **Secrets Management**: [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- **Authentication**: [Supabase Auth](https://supabase.com/docs/guides/auth) with GitHub OAuth
 - **Testing**:
   - [Vitest](https://vitest.dev/) - Unit testing
   - [Playwright](https://playwright.dev/) - E2E testing
 - **UI Components**: [Storybook](https://storybook.js.org/)
 - **i18n**: [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs)
 - **Styling**: Native CSS with CSS variables
+- **Build Tool**: [Vite](https://vitejs.dev/) & [Turborepo](https://turbo.build/)
 - **Deployment**: [Vercel](https://vercel.com/)
+
+### Secrets Management with Vercel
+
+This project uses [Vercel Environment Variables](https://vercel.com/docs/environment-variables) for managing secrets securely.
+
+#### Local Development
+
+1. Create `.env.development.local` in the root directory:
+
+   ```bash
+   cp .env.example .env.development.local
+   ```
+
+2. Fill in your Supabase credentials:
+
+   ```env
+   SUPABASE_URL=https://your-project.supabase.co
+   PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   ```
+
+#### Production Deployment
+
+Set environment variables in the Vercel dashboard:
+1. Go to Project Settings → Environment Variables
+2. Add all required variables
+3. Deploy or redeploy your application
+
+For detailed instructions, see [VERCEL_SECRETS.md](./VERCEL_SECRETS.md).
+
+**Note**: Never commit `.env.development.local` or any files containing secrets to the repository.
 
 ### Database Management
 
-This project uses Drizzle ORM with LibSQL. Here's how to manage your database:
+This project uses Drizzle ORM with Supabase (PostgreSQL). Here's how to manage your database:
+
+#### Local Development with Supabase
 
 ```bash
+cd apps/web
+
+# Start Supabase locally (requires Docker)
+npm run supabase:start
+
+# Check Supabase status
+npm run supabase:status
+
+# Open Supabase Studio (visual database editor)
+npm run supabase:studio
+
 # Push schema changes to the database
 npm run db:push
 
@@ -168,8 +261,17 @@ npm run db:generate
 # Run migrations
 npm run db:migrate
 
-# Open Drizzle Studio (visual database editor)
+# Open Drizzle Studio (alternative visual database editor)
 npm run db:studio
+
+# Reset database to initial state
+npm run supabase:reset
+
+# Stop Supabase
+npm run supabase:stop
+
+# Generate TypeScript types from Supabase schema
+npm run supabase:types
 ```
 
 ### Running Tests

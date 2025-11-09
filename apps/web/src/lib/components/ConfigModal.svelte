@@ -7,6 +7,7 @@
     getStorageInfo,
     formatBytes,
   } from "$lib/utils/configStorage";
+  import * as m from "$lib/paraglide/messages";
 
   interface Props {
     isOpen?: boolean;
@@ -26,18 +27,18 @@
   let importError = $state<string | null>(null);
   let importSuccess = $state(false);
 
-  const shuffleModes: Array<{ value: ShuffleMode; label: string; icon: string }> = [
-    { value: "balanced", label: "Balansert", icon: "⚖️" },
-    { value: "mastery-focused", label: "Mestringsfokusert", icon: "🎯" },
-    { value: "challenge-first", label: "Utfordrende først", icon: "🔥" },
-  ];
+  const shuffleModes = $derived<Array<{ value: ShuffleMode; label: string; icon: string }>>([
+    { value: "balanced", label: m.shuffle_mode_balanced(), icon: "⚖️" },
+    { value: "mastery-focused", label: m.shuffle_mode_mastery_focused(), icon: "🎯" },
+    { value: "challenge-first", label: m.shuffle_mode_challenge_first(), icon: "🔥" },
+  ]);
 
   const maxSizes = [10, 25, 50, 100];
 
-  const directions: Array<{ value: Direction; label: string }> = [
-    { value: "front-to-back", label: "Forside → Bakside" },
-    { value: "back-to-front", label: "Bakside → Forside" },
-  ];
+  const directions = $derived<Array<{ value: Direction; label: string }>>([
+    { value: "front-to-back", label: m.direction_front_to_back() },
+    { value: "back-to-front", label: m.direction_back_to_front() },
+  ]);
 
   const languages: Array<{ value: Language; label: string }> = [
     { value: "nb", label: "Norsk (Bokmål)" },
@@ -102,7 +103,7 @@
         window.location.reload();
       }, 1500);
     } catch (error) {
-      importError = error instanceof Error ? error.message : "Kunne ikke importere data";
+      importError = error instanceof Error ? error.message : m.import_error();
       importSuccess = false;
     }
 
@@ -141,24 +142,24 @@
   >
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="config-title">⚙️ Innstillinger</h2>
-        <button class="close-btn" onclick={handleClose} aria-label="Lukk innstillinger">
+        <h2 id="config-title">⚙️ {m.settings_title()}</h2>
+        <button class="close-btn" onclick={handleClose} aria-label={m.close_settings()}>
           ✕
         </button>
       </div>
 
       <div class="modal-body">
         <section class="config-section">
-          <h3>🎴 Sofistikert stokking</h3>
+          <h3>🎴 {m.smart_shuffle_section_title()}</h3>
 
           <label class="toggle-label">
             <input type="checkbox" bind:checked={enableSmartShuffle} />
-            <span>Aktiver sofistikert stokking</span>
+            <span>{m.enable_smart_shuffle()}</span>
           </label>
 
           {#if enableSmartShuffle}
             <div class="setting-group">
-              <p class="setting-label">Standard modus:</p>
+              <p class="setting-label">{m.default_mode()}:</p>
               <div class="mode-buttons">
                 {#each shuffleModes as mode}
                   <button
@@ -174,10 +175,10 @@
             </div>
 
             <div class="setting-group">
-              <label class="setting-label" for="max-size">Maks kort per økt:</label>
+              <label class="setting-label" for="max-size">{m.max_cards_per_session()}:</label>
               <select id="max-size" bind:value={maxShuffleSize}>
                 {#each maxSizes as size}
-                  <option value={size}>{size} kort</option>
+                  <option value={size}>{m.cards_count({ count: size })}</option>
                 {/each}
               </select>
             </div>
@@ -186,9 +187,9 @@
 
         <!-- Direction -->
         <section class="config-section">
-          <h3>🔄 Retning</h3>
+          <h3>🔄 {m.direction_section_title()}</h3>
           <div class="setting-group">
-            <label class="setting-label" for="direction">Standard retning:</label>
+            <label class="setting-label" for="direction">{m.default_direction()}:</label>
             <select id="direction" bind:value={defaultDirection}>
               {#each directions as dir}
                 <option value={dir.value}>{dir.label}</option>
@@ -199,7 +200,7 @@
 
         <!-- Language -->
         <section class="config-section">
-          <h3>🌐 Språk / Language</h3>
+          <h3>🌐 {m.language_section_title()}</h3>
           <div class="setting-group">
             <select id="language" bind:value={language}>
               {#each languages as lang}
@@ -211,15 +212,15 @@
 
         <!-- Data Management -->
         <section class="config-section">
-          <h3>📊 Data</h3>
+          <h3>📊 {m.data_section_title()}</h3>
 
           <div class="data-buttons">
             <button class="data-btn" onclick={handleExport}>
-              📥 Eksporter data
+              📥 {m.export_data()}
             </button>
 
             <label class="data-btn import-btn">
-              📤 Importer data
+              📤 {m.import_data()}
               <input
                 type="file"
                 accept=".json"
@@ -230,17 +231,17 @@
 
             {#if !showResetConfirm}
               <button class="data-btn danger" onclick={() => (showResetConfirm = true)}>
-                🗑️ Nullstill all data
+                🗑️ {m.reset_all_data()}
               </button>
             {:else}
               <div class="reset-confirm">
-                <p>Er du sikker? Dette kan ikke angres!</p>
+                <p>{m.reset_confirm_message()}</p>
                 <div class="reset-actions">
                   <button class="data-btn danger" onclick={handleResetConfirm}>
-                    Ja, nullstill
+                    {m.yes_reset()}
                   </button>
                   <button class="data-btn" onclick={() => (showResetConfirm = false)}>
-                    Avbryt
+                    {m.cancel()}
                   </button>
                 </div>
               </div>
@@ -252,11 +253,11 @@
           {/if}
 
           {#if importSuccess}
-            <p class="success-message">✅ Data importert! Laster inn på nytt...</p>
+            <p class="success-message">✅ {m.data_imported_success()}</p>
           {/if}
 
           <div class="storage-info">
-            <p>Lagring: {formatBytes(storageInfo.used)} / {formatBytes(storageInfo.total)}</p>
+            <p>{m.storage_used({ used: formatBytes(storageInfo.used), total: formatBytes(storageInfo.total) })}</p>
             <div class="storage-bar">
               <div class="storage-fill" style="width: {Math.min(storageInfo.percentage, 100)}%"></div>
             </div>
@@ -265,17 +266,17 @@
 
         <!-- About -->
         <section class="config-section">
-          <h3>ℹ️ Om appen</h3>
-          <p class="version">Versjon: 1.0.0</p>
+          <h3>ℹ️ {m.about_section_title()}</h3>
+          <p class="version">{m.version({ version: "1.0.0" })}</p>
         </section>
       </div>
 
       <div class="modal-footer">
         <button class="footer-btn cancel" onclick={handleClose}>
-          Avbryt
+          {m.cancel()}
         </button>
         <button class="footer-btn save" onclick={handleSave}>
-          💾 Lagre
+          💾 {m.save()}
         </button>
       </div>
     </div>

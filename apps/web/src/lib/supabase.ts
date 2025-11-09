@@ -1,10 +1,10 @@
 import {
-  PUBLIC_SUPABASE_URL,
+  SUPABASE_URL,
   PUBLIC_SUPABASE_ANON_KEY,
 } from "$env/static/public";
 import { createClient } from "@supabase/supabase-js";
 
-if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
+if (!SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
   throw new Error("Missing Supabase environment variables");
 }
 
@@ -13,7 +13,7 @@ if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
  * Uses the anonymous key which is safe to expose in the browser
  */
 export const supabase = createClient(
-  PUBLIC_SUPABASE_URL,
+  SUPABASE_URL,
   PUBLIC_SUPABASE_ANON_KEY,
   {
     auth: {

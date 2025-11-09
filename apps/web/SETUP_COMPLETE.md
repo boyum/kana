@@ -63,7 +63,7 @@ This requires Docker. First time will take a few minutes.
 2. Get credentials from Project Settings → API
 3. Update [.env](.env):
    ```env
-   PUBLIC_SUPABASE_URL=https://yourproject.supabase.co
+   SUPABASE_URL=https://yourproject.supabase.co
    PUBLIC_SUPABASE_ANON_KEY=your-key-here
    SUPABASE_SERVICE_ROLE_KEY=your-key-here
    ```

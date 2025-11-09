@@ -59,7 +59,7 @@ If you prefer not to use Docker, you can:
 2. Get your credentials from Project Settings → API
 3. Update [.env](.env) with your production credentials:
    ```env
-   PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_URL=https://your-project.supabase.co
    PUBLIC_SUPABASE_ANON_KEY=your-anon-key
    SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    ```
@@ -334,7 +334,7 @@ Your app is already configured for Vercel with `@sveltejs/adapter-vercel`.
 
 Set environment variables in Vercel:
 
-- `PUBLIC_SUPABASE_URL`
+- `SUPABASE_URL`
 - `PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 

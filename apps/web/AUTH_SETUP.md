@@ -34,7 +34,7 @@ For local development, add your GitHub credentials to `.env.local`:
 
 ```bash
 # Supabase Local Development (already configured)
-PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_URL=http://127.0.0.1:54321
 PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
@@ -89,7 +89,7 @@ Visit `http://127.0.0.1:3000` and you should see the login page with options to:
 Create a `.env` file for production (never commit this):
 
 ```bash
-PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_URL=https://your-project-id.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 

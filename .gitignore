@@ -24,11 +24,7 @@ Thumbs.db
 .env.*
 !.env.example
 !.env.test
-!.env.local
-
-# SOPS - Keep encrypted secrets in git, but never commit keys
-.sops/
-!.sops.yaml
+.env.local
 
 # Vite
 vite.config.js.timestamp-*
