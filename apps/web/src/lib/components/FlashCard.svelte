@@ -10,7 +10,9 @@
   export let notes: string = "";
   export let isFlipped: boolean = false;
   export let cardId: string = ""; // For tracking which card this is
-  export let onPerformanceRecorded: ((data: CardPerformanceData) => void) | undefined = undefined;
+  export let onPerformanceRecorded:
+    | ((data: CardPerformanceData) => void)
+    | undefined = undefined;
 
   // Performance tracking
   interface CardPerformanceData {
@@ -82,12 +84,18 @@
   // Dynamic font size based on content length
   function getFontSize(text: string): string {
     if (!text) return "10rem";
-    const len = text.length;
+    const lengthOfLongestWord = Math.max(
+      ...text.split(/[\s-.]/).map(word => word.length),
+    );
+
+    const len = lengthOfLongestWord;
 
     if (len > 40) return "1.5rem";
     if (len > 20) return "2rem";
     if (len > 10) return "3rem";
+    if (len > 7) return "3.25rem";
     if (len > 5) return "3.5rem";
+    if (len > 4) return "3.66rem";
     if (len > 3) return "4rem";
     if (len > 2) return "4.5rem";
     if (len > 1) return "6rem";
@@ -145,6 +153,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    text-wrap: pretty;
   }
 
   .card-inner {
