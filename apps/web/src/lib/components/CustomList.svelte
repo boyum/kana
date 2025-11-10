@@ -10,6 +10,9 @@
   export let onDuplicate: (listId: string) => void;
   export let onExport: (listId: string) => void;
   export let onDelete: (listId: string) => void;
+
+  export let multiSelectMode: boolean = false;
+  export let selectedListIds: Set<string> = new Set();
 </script>
 
 <div class="lists-grid">
@@ -22,6 +25,8 @@
       onDuplicate={onDuplicate}
       onExport={onExport}
       onDelete={onDelete}
+      multiSelectMode={multiSelectMode}
+      isSelected={selectedListIds.has(list.id)}
     />
   {/each}
 </div>

@@ -10,6 +10,9 @@
   export let onExport: (listId: string) => void;
   export let onDelete: (listId: string) => void;
 
+  export let multiSelectMode: boolean = false;
+  export let isSelected: boolean = false;
+
   let showDialog = false;
 
   // Unified interaction handlers
@@ -49,19 +52,31 @@
   }
 </script>
 
-<div class="list-card">
-  <button
-    class="menu-btn"
-    onpointerdown={createInteractionHandler(() => {
-      showDialog = true;
-    })}
-    onkeydown={createInteractionHandler(() => {
-      showDialog = true;
-    })}
-    aria-label="Flere handlinger"
-  >
-    ⋯
-  </button>
+<div class="list-card" class:selected={isSelected && multiSelectMode}>
+  {#if multiSelectMode}
+    <div class="checkbox-container">
+      <input
+        type="checkbox"
+        checked={isSelected}
+        onchange={() => onPractice(list.id)}
+        class="list-checkbox"
+        aria-label={`Velg ${list.name}`}
+      />
+    </div>
+  {:else}
+    <button
+      class="menu-btn"
+      onpointerdown={createInteractionHandler(() => {
+        showDialog = true;
+      })}
+      onkeydown={createInteractionHandler(() => {
+        showDialog = true;
+      })}
+      aria-label="Flere handlinger"
+    >
+      ⋯
+    </button>
+  {/if}
   <div class="list-header">
     <h2 class="list-name">{list.name}</h2>
   </div>
@@ -69,22 +84,24 @@
     <p class="card-count">{list.cards.length} kort</p>
     <p class="last-updated">Oppdatert: {formatDate(list.updatedAt)}</p>
   </div>
-  <div class="list-actions">
-    <button
-      class="action-btn practice"
-      onpointerdown={createInteractionHandler(() => onPractice(list.id))}
-      onkeydown={createInteractionHandler(() => onPractice(list.id))}
-    >
-      🎯 Øv
-    </button>
-    <button
-      class="action-btn share"
-      onpointerdown={createInteractionHandler(() => onShare(list.id))}
-      onkeydown={createInteractionHandler(() => onShare(list.id))}
-    >
-      🔗 Del
-    </button>
-  </div>
+  {#if !multiSelectMode}
+    <div class="list-actions">
+      <button
+        class="action-btn practice"
+        onpointerdown={createInteractionHandler(() => onPractice(list.id))}
+        onkeydown={createInteractionHandler(() => onPractice(list.id))}
+      >
+        🎯 Øv
+      </button>
+      <button
+        class="action-btn share"
+        onpointerdown={createInteractionHandler(() => onShare(list.id))}
+        onkeydown={createInteractionHandler(() => onShare(list.id))}
+      >
+        🔗 Del
+      </button>
+    </div>
+  {/if}
 </div>
 
 <!-- Actions Dialog -->
@@ -177,6 +194,24 @@
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(57, 92, 107, 0.25);
     border-color: var(--color-accent);
+  }
+
+  .list-card.selected {
+    border-color: var(--color-accent);
+    background: linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%);
+  }
+
+  .checkbox-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .list-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--color-accent);
   }
 
   .menu-btn {

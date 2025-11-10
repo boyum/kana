@@ -26,6 +26,10 @@
   let isImporting = $state(false);
 
   let listFromSearchParam: CustomList | null = $state(null);
+
+  // Multi-select state
+  let multiSelectMode = $state(false);
+  let selectedListIds = $state<Set<string>>(new Set());
   let filteredLists = $derived(
     lists.filter(list =>
       list.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -59,7 +63,42 @@
   }
 
   function practiceList(listId: string) {
-    goto(`/egendefinert/${listId}`);
+    if (multiSelectMode) {
+      toggleListSelection(listId);
+    } else {
+      goto(`/egendefinert/${listId}`);
+    }
+  }
+
+  function toggleMultiSelectMode() {
+    multiSelectMode = !multiSelectMode;
+    if (!multiSelectMode) {
+      selectedListIds = new Set();
+    }
+  }
+
+  function toggleListSelection(listId: string) {
+    const newSet = new Set(selectedListIds);
+    if (newSet.has(listId)) {
+      newSet.delete(listId);
+    } else {
+      newSet.add(listId);
+    }
+    selectedListIds = newSet;
+  }
+
+  function practiceSelectedLists() {
+    if (selectedListIds.size < 2) {
+      alert("Velg minst 2 lister for å øve");
+      return;
+    }
+    const ids = Array.from(selectedListIds).join(",");
+    goto(`/egendefinert/combined?ids=${ids}`);
+  }
+
+  function cancelMultiSelect() {
+    multiSelectMode = false;
+    selectedListIds = new Set();
   }
 
   async function handleDelete(listId: string) {
@@ -206,6 +245,15 @@
     >
       📚 Importer lister
     </a>
+    {#if lists.length >= 2}
+      <button
+        class="multi-select-btn"
+        onpointerdown={createInteractionHandler(toggleMultiSelectMode)}
+        onkeydown={createInteractionHandler(toggleMultiSelectMode)}
+      >
+        {multiSelectMode ? "✖️ Avbryt" : "☑️ Velg flere"}
+      </button>
+    {/if}
   </div>
 
   {#if lists.length > 0}
@@ -241,7 +289,26 @@
       onDuplicate={handleDuplicate}
       onExport={handleExport}
       onDelete={handleDelete}
+      multiSelectMode={multiSelectMode}
+      selectedListIds={selectedListIds}
     />
+  {/if}
+
+  {#if multiSelectMode && selectedListIds.size >= 2}
+    <div class="multi-select-actions">
+      <div class="action-content">
+        <span class="selected-count">
+          {selectedListIds.size} lister valgt
+        </span>
+        <button
+          class="practice-selected-btn"
+          onpointerdown={createInteractionHandler(practiceSelectedLists)}
+          onkeydown={createInteractionHandler(practiceSelectedLists)}
+        >
+          🎯 Øv valgte lister
+        </button>
+      </div>
+    </div>
   {/if}
 </div>
 
@@ -358,6 +425,77 @@
 
   .import-btn:hover {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  }
+
+  .multi-select-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-family: var(--font-heading);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(57, 92, 107, 0.2);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .multi-select-btn:hover {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(57, 92, 107, 0.3);
+  }
+
+  .multi-select-actions {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: white;
+    border-radius: 30px;
+    padding: 1rem 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border: 3px solid var(--color-accent);
+  }
+
+  .action-content {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .selected-count {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-heading);
+    font-weight: bold;
+  }
+
+  .practice-selected-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-family: var(--font-heading);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--color-accent);
+    color: white;
+    box-shadow: 0 4px 10px rgba(57, 92, 107, 0.3);
+  }
+
+  .practice-selected-btn:hover {
+    background: var(--color-heading);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(57, 92, 107, 0.4);
   }
 
   .search-bar {
