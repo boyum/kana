@@ -48,5 +48,18 @@
   "feature_spaced_repetition": "Learn Hiragana and Katakana with spaced repetition",
   "feature_custom_lists": "Create and share custom vocabulary lists",
   "feature_progress_tracking": "Track your learning progress",
-  "feature_smart_shuffle": "Smart shuffle algorithm for better retention"
+  "feature_smart_shuffle": "Smart shuffle algorithm for better retention",
+  "progress_title": "Progress",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "cards_reviewed": "Cards Reviewed",
+  "accuracy": "Accuracy",
+  "total_time": "Total Time",
+  "sessions": "Sessions",
+  "avg_response_time": "Avg Response",
+  "daily_activity": "Daily Activity",
+  "mastery_distribution": "Mastery Distribution",
+  "recent_sessions": "Recent Sessions",
+  "no_progress_data": "No progress data yet",
+  "start_practicing_hint": "Start practicing to see your progress!"
 }
