@@ -7,6 +7,7 @@ export type ShuffleMode = "balanced" | "mastery-focused" | "challenge-first";
 export type Direction = "front-to-back" | "back-to-front";
 export type Language = "en" | "nb";
 export type Theme = "light" | "dark" | "auto";
+export type DisplayMode = "flip" | "dual-side";
 
 export interface AppConfig {
   // Smart Shuffle Settings
@@ -16,6 +17,9 @@ export interface AppConfig {
 
   // Default Direction
   defaultDirection: Direction;
+
+  // Display Mode
+  displayMode: DisplayMode;
 
   // Language
   language: Language;
@@ -36,6 +40,7 @@ const DEFAULT_CONFIG: AppConfig = {
   defaultShuffleMode: "balanced",
   maxShuffleSize: 25,
   defaultDirection: "front-to-back",
+  displayMode: "flip",
   language: "nb",
   theme: "light",
   reducedMotion: false,
@@ -148,6 +153,10 @@ class ConfigStore {
 
   get defaultDirection(): Direction {
     return this.config.defaultDirection;
+  }
+
+  get displayMode(): DisplayMode {
+    return this.config.displayMode;
   }
 
   get language(): Language {

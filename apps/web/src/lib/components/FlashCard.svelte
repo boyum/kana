@@ -13,6 +13,7 @@
   export let onPerformanceRecorded:
     | ((data: CardPerformanceData) => void)
     | undefined = undefined;
+  export let displayMode: "flip" | "dual-side" = "flip"; // Display mode
 
   // Performance tracking
   interface CardPerformanceData {
@@ -104,40 +105,77 @@
   }
 </script>
 
-<button
-  class="flash-card"
-  class:flipped={isFlipped}
-  onpointerdown={handleInteraction}
-  onkeydown={handleInteraction}
-  in:fade={{ duration: 200, delay: 200 }}
-  out:fade={{ duration: 200 }}
->
-  <div class="card-inner">
-    <div class="card-front">
-      <span class="content" style="font-size: {getFontSize(frontContent)}"
-        >{frontContent}</span
-      >
-    </div>
-    <div class="card-back">
-      <div class="back-content">
-        <span
-          class="main-content"
-          style="--font-size: {getFontSize(backContent)}">{backContent}</span
+{#if displayMode === "dual-side"}
+  <div
+    class="flash-card dual-side"
+    in:fade={{ duration: 200, delay: 200 }}
+    out:fade={{ duration: 200 }}
+  >
+    <div class="dual-side-inner">
+      <div class="dual-side-section front-section">
+        <div class="section-label">Front</div>
+        <span class="content" style="font-size: {getFontSize(frontContent)}"
+          >{frontContent}</span
         >
-        {#if hasMetadata}
-          <div class="metadata">
-            {#if meaning}
-              <p class="meaning">📖 {meaning}</p>
-            {/if}
-            {#if notes}
-              <p class="notes">💡 {notes}</p>
-            {/if}
-          </div>
-        {/if}
+      </div>
+      <div class="dual-side-divider"></div>
+      <div class="dual-side-section back-section">
+        <div class="section-label">Back</div>
+        <div class="back-content">
+          <span
+            class="main-content"
+            style="--font-size: {getFontSize(backContent)}">{backContent}</span
+          >
+          {#if hasMetadata}
+            <div class="metadata">
+              {#if meaning}
+                <p class="meaning">📖 {meaning}</p>
+              {/if}
+              {#if notes}
+                <p class="notes">💡 {notes}</p>
+              {/if}
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
   </div>
-</button>
+{:else}
+  <button
+    class="flash-card"
+    class:flipped={isFlipped}
+    onpointerdown={handleInteraction}
+    onkeydown={handleInteraction}
+    in:fade={{ duration: 200, delay: 200 }}
+    out:fade={{ duration: 200 }}
+  >
+    <div class="card-inner">
+      <div class="card-front">
+        <span class="content" style="font-size: {getFontSize(frontContent)}"
+          >{frontContent}</span
+        >
+      </div>
+      <div class="card-back">
+        <div class="back-content">
+          <span
+            class="main-content"
+            style="--font-size: {getFontSize(backContent)}">{backContent}</span
+          >
+          {#if hasMetadata}
+            <div class="metadata">
+              {#if meaning}
+                <p class="meaning">📖 {meaning}</p>
+              {/if}
+              {#if notes}
+                <p class="notes">💡 {notes}</p>
+              {/if}
+            </div>
+          {/if}
+        </div>
+      </div>
+    </div>
+  </button>
+{/if}
 
 <style>
   .flash-card {
@@ -249,6 +287,92 @@
     transform: rotateY(180deg) scale(1.02);
   }
 
+  /* Dual-side mode styles */
+  .flash-card.dual-side {
+    width: 100%;
+    max-width: 400px;
+    height: 500px;
+    max-height: 60vh;
+    background: transparent;
+    padding: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-wrap: pretty;
+  }
+
+  .dual-side-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(57, 92, 107, 0.25);
+    border: 6px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .dual-side-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .front-section {
+    background: linear-gradient(135deg, #80a4ed 0%, #6b8fd6 100%);
+    color: white;
+  }
+
+  .back-section {
+    background: linear-gradient(135deg, #395c6b 0%, #2a4654 100%);
+    color: white;
+  }
+
+  .section-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  .dual-side-divider {
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .dual-side .content,
+  .dual-side .main-content {
+    font-weight: bold;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .dual-side .back-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .dual-side .metadata {
+    font-size: 0.85rem;
+    max-height: 40%;
+    overflow-y: auto;
+  }
+
   @media (max-width: 720px) {
     .flash-card {
       max-width: 320px;
@@ -267,6 +391,22 @@
 
     .main-content {
       font-size: calc(var(--font-size) * 0.8);
+    }
+
+    .flash-card.dual-side {
+      max-width: 320px;
+      height: 400px;
+      max-height: 50vh;
+    }
+
+    .dual-side-section {
+      padding: 1rem;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      top: 0.4rem;
+      left: 0.75rem;
     }
   }
 </style>

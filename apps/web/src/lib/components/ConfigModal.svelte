@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { configStore, type ShuffleMode, type Direction, type Language } from "$lib/stores/config.svelte";
+  import { configStore, type ShuffleMode, type Direction, type Language, type DisplayMode } from "$lib/stores/config.svelte";
   import {
     downloadExportData,
     importData,
@@ -21,6 +21,7 @@
   let defaultShuffleMode = $state(configStore.defaultShuffleMode);
   let maxShuffleSize = $state(configStore.maxShuffleSize);
   let defaultDirection = $state(configStore.defaultDirection);
+  let displayMode = $state(configStore.displayMode);
   let language = $state(configStore.language);
 
   let showResetConfirm = $state(false);
@@ -40,6 +41,11 @@
     { value: "back-to-front", label: m.direction_back_to_front() },
   ]);
 
+  const displayModes: Array<{ value: DisplayMode; label: string; description: string }> = [
+    { value: "flip", label: "Flip Cards", description: "Classic flip animation - test yourself" },
+    { value: "dual-side", label: "Dual-Side View", description: "See both sides at once - for initial practice" },
+  ];
+
   const languages: Array<{ value: Language; label: string }> = [
     { value: "nb", label: "Norsk (Bokmål)" },
     { value: "en", label: "English" },
@@ -52,6 +58,7 @@
       defaultShuffleMode = configStore.defaultShuffleMode;
       maxShuffleSize = configStore.maxShuffleSize;
       defaultDirection = configStore.defaultDirection;
+      displayMode = configStore.displayMode;
       language = configStore.language;
       importError = null;
       importSuccess = false;
@@ -64,6 +71,7 @@
       defaultShuffleMode,
       maxShuffleSize,
       defaultDirection,
+      displayMode,
       language,
     });
     handleClose();
@@ -195,6 +203,25 @@
                 <option value={dir.value}>{dir.label}</option>
               {/each}
             </select>
+          </div>
+        </section>
+
+        <!-- Display Mode -->
+        <section class="config-section">
+          <h3>👁️ Display Mode</h3>
+          <div class="setting-group">
+            <div class="mode-buttons display-mode-buttons">
+              {#each displayModes as mode}
+                <button
+                  class="display-mode-btn"
+                  class:active={displayMode === mode.value}
+                  onclick={() => (displayMode = mode.value)}
+                >
+                  <span class="mode-label">{mode.label}</span>
+                  <span class="mode-description">{mode.description}</span>
+                </button>
+              {/each}
+            </div>
           </div>
         </section>
 
@@ -474,6 +501,51 @@
 
   .mode-btn .icon {
     font-size: 1.5rem;
+  }
+
+  .display-mode-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .display-mode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 1rem;
+    background: white;
+    border: 2px solid rgba(57, 92, 107, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-heading);
+    text-align: left;
+  }
+
+  .display-mode-btn:hover {
+    border-color: var(--color-accent);
+    background: rgba(128, 164, 237, 0.1);
+  }
+
+  .display-mode-btn.active {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 12px rgba(57, 92, 107, 0.2);
+  }
+
+  .mode-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .mode-description {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-family: var(--font-body);
   }
 
   .data-buttons {

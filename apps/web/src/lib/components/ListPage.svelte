@@ -38,12 +38,14 @@
   let enableSmartShuffle = $state(configStore.enableSmartShuffle);
   let shuffleMode = $state<ShuffleMode>(configStore.defaultShuffleMode);
   let maxShuffleSize = $state(configStore.maxShuffleSize);
+  let displayMode = $state(configStore.displayMode);
 
   // Update local state when config changes
   $effect(() => {
     enableSmartShuffle = configStore.enableSmartShuffle;
     shuffleMode = configStore.defaultShuffleMode;
     maxShuffleSize = configStore.maxShuffleSize;
+    displayMode = configStore.displayMode;
   });
 
   // Custom cards type guard
@@ -205,12 +207,14 @@
             {meaning}
             {notes}
             bind:isFlipped
+            {displayMode}
           />
         {:else}
           <FlashCard
             character={frontContent}
             romanization={backContent}
             bind:isFlipped
+            {displayMode}
           />
         {/if}
       {/key}
