@@ -3,6 +3,7 @@
 	import { setLocale, getLocale } from "$lib/paraglide/runtime";
 	import { onMount } from "svelte";
 	import { configStore } from "$lib/stores/config.svelte";
+	import { dev } from '$app/environment';
 
 	let { children, data } = $props();
 
@@ -39,6 +40,13 @@
 				setLocale(storedLanguage, { reload: false });
 				localeKey++;
 			}
+		}
+
+		// Register service worker only in production mode
+		if (!dev && 'serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').catch((error) => {
+				console.error('Service worker registration failed:', error);
+			});
 		}
 	});
 
