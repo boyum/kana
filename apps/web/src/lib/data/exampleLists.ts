@@ -1,3 +1,12 @@
+/**
+ * @deprecated This file contains hardcoded example lists used ONLY for database population.
+ *
+ * DO NOT import this file directly in the application code.
+ * Instead, use `getExampleLists()` from "$lib/utils/db-storage" to fetch example lists from the database.
+ *
+ * This file is kept only for the populate-example-lists.ts script to seed the database.
+ */
+
 import type { CustomList } from "$lib/types/customLists";
 import { createEmptyPerformanceMetrics } from "$lib/utils/performance";
 import { generateId } from "$lib/utils/storage";

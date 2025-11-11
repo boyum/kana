@@ -140,7 +140,7 @@ export async function getCustomListFromDb(
   userId?: string,
 ): Promise<CustomList | null> {
   try {
-    let query = supabaseAdmin
+    const query = supabaseAdmin
       .from("lists")
       .select("*")
       .eq("id", id)

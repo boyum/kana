@@ -4,8 +4,12 @@
   import type { CustomList } from "$lib/types/customLists";
   import { getAllCustomLists, addList } from "$lib/utils/storage";
   import ImportableList from "$lib/components/ImportableList.svelte";
-  import { exampleLists } from "$lib/data/exampleLists.js";
   import BackButton from "$lib/components/BackButton.svelte";
+  import type { PageServerData } from "./$types";
+
+  export let data: PageServerData;
+
+  $: exampleLists = data.exampleLists;
 
   let importedListNames: Set<string> = new Set();
   let searchQuery = "";
