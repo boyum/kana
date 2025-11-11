@@ -1,4 +1,5 @@
-import type { ProgressStats, PracticeSession } from '$lib/types/progress';
+import type { ProgressStats, PracticeSession } from "$lib/types/progress";
+import { SvelteURLSearchParams } from "svelte/reactivity";
 
 class ProgressStore {
   stats = $state<ProgressStats | null>(null);
@@ -12,20 +13,24 @@ class ProgressStore {
     this.error = null;
 
     try {
-      const params = new URLSearchParams();
-      if (listId) params.set('listId', listId);
-      params.set('days', days.toString());
+      const params = new SvelteURLSearchParams();
+      if (listId) {
+        params.set("listId", listId);
+      }
+      params.set("days", days.toString());
 
-      const response = await fetch(`/api/progress/stats?${params}`);
+      const response = await fetch(`/api/progress/stats?${params}`, {
+        credentials: 'same-origin',
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch progress statistics');
+        throw new Error("Failed to fetch progress statistics");
       }
 
       this.stats = await response.json();
     } catch (err) {
-      this.error = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error fetching progress stats:', err);
+      this.error = err instanceof Error ? err.message : "Unknown error";
+      console.error("Error fetching progress stats:", err);
     } finally {
       this.loading = false;
     }
@@ -37,30 +42,36 @@ class ProgressStore {
 
     try {
       const params = new URLSearchParams();
-      if (listId) params.set('listId', listId);
-      params.set('limit', limit.toString());
+      if (listId) params.set("listId", listId);
+      params.set("limit", limit.toString());
 
-      const response = await fetch(`/api/progress/sessions?${params}`);
+      const response = await fetch(`/api/progress/sessions?${params}`, {
+        credentials: 'same-origin',
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch sessions');
+        throw new Error("Failed to fetch sessions");
       }
 
       const data = await response.json();
       this.sessions = data.sessions;
     } catch (err) {
-      this.error = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error fetching sessions:', err);
+      this.error = err instanceof Error ? err.message : "Unknown error";
+      console.error("Error fetching sessions:", err);
     } finally {
       this.loading = false;
     }
   }
 
-  async startSession(listId: string, sessionType: 'practice' | 'test' | 'review' = 'practice') {
+  async startSession(
+    listId: string,
+    sessionType: "practice" | "test" | "review" = "practice",
+  ) {
     try {
-      const response = await fetch('/api/progress/sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/progress/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'same-origin',
         body: JSON.stringify({
           list_id: listId,
           session_type: sessionType,
@@ -68,15 +79,15 @@ class ProgressStore {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to start session');
+        throw new Error("Failed to start session");
       }
 
       const data = await response.json();
       this.currentSession = data.session;
       return data.session;
     } catch (err) {
-      this.error = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error starting session:', err);
+      this.error = err instanceof Error ? err.message : "Unknown error";
+      console.error("Error starting session:", err);
       throw err;
     }
   }
@@ -92,12 +103,13 @@ class ProgressStore {
       incorrect_answers: number;
       skipped_cards: number;
       average_response_time_ms: number;
-    }
+    },
   ) {
     try {
-      const response = await fetch('/api/progress/sessions', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/progress/sessions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'same-origin',
         body: JSON.stringify({
           session_id: sessionId,
           ...stats,
@@ -106,15 +118,15 @@ class ProgressStore {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to complete session');
+        throw new Error("Failed to complete session");
       }
 
       const data = await response.json();
       this.currentSession = null;
       return data.session;
     } catch (err) {
-      this.error = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error completing session:', err);
+      this.error = err instanceof Error ? err.message : "Unknown error";
+      console.error("Error completing session:", err);
       throw err;
     }
   }
@@ -124,12 +136,13 @@ class ProgressStore {
     cardId: string,
     wasCorrect: boolean,
     responseTimeMs?: number,
-    wasSkipped: boolean = false
+    wasSkipped: boolean = false,
   ) {
     try {
-      const response = await fetch('/api/progress/attempts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/progress/attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'same-origin',
         body: JSON.stringify({
           session_id: sessionId,
           card_id: cardId,
@@ -140,12 +153,12 @@ class ProgressStore {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to record attempt');
+        throw new Error("Failed to record attempt");
       }
 
       return await response.json();
     } catch (err) {
-      console.error('Error recording attempt:', err);
+      console.error("Error recording attempt:", err);
       // Don't throw - we don't want to interrupt the user's practice session
       // if recording fails
     }

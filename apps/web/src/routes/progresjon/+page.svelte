@@ -6,12 +6,21 @@
   import StreakDisplay from '$lib/components/StreakDisplay.svelte';
   import SessionHistory from '$lib/components/SessionHistory.svelte';
   import * as m from '$lib/paraglide/messages';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
 
   let selectedPeriod = $state(30); // days
   const periods = [7, 14, 30, 90];
 
   onMount(() => {
-    loadData();
+    // Initialize store with preloaded data
+    if (data.initialStats) {
+      progressStore.stats = data.initialStats;
+    }
+    if (data.initialSessions) {
+      progressStore.sessions = data.initialSessions;
+    }
   });
 
   async function loadData() {
