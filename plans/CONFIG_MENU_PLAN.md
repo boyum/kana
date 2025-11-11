@@ -53,7 +53,6 @@ A modal-based configuration menu accessible from the homepage via a cog wheel ic
 {
   enableSmartShuffle: boolean; // Default: true
   defaultShuffleMode: ShuffleMode; // Default: "balanced"
-  maxShuffleSize: number; // Default: 25, Options: [10, 25, 50, 100]
 }
 ```
 

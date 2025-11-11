@@ -205,7 +205,6 @@ weight = 1 + (masteryLevel / 100) * 0.8;
   - `balanced`: Current algorithm (1.0 - 1.8x weighting)
   - `mastery-focused`: Higher weights (1.0 - 2.5x) - more repetition of known cards
   - `challenge-first`: Lower weights (0.5 - 1.2x) - focus on difficult cards
-- `maxShuffleSize: number` - Maximum cards in one shuffled session (default: 25)
 
 ### User Experience
 

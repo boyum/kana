@@ -37,14 +37,12 @@
   // Get default values from config store
   let enableSmartShuffle = $state(configStore.enableSmartShuffle);
   let shuffleMode = $state<ShuffleMode>(configStore.defaultShuffleMode);
-  let maxShuffleSize = $state(configStore.maxShuffleSize);
   let displayMode = $state(configStore.displayMode);
 
   // Update local state when config changes
   $effect(() => {
     enableSmartShuffle = configStore.enableSmartShuffle;
     shuffleMode = configStore.defaultShuffleMode;
-    maxShuffleSize = configStore.maxShuffleSize;
     displayMode = configStore.displayMode;
   });
 
@@ -63,7 +61,6 @@
       shuffledCards = performSmartShuffle(cards, {
         enableSmartShuffle,
         shuffleMode,
-        maxShuffleSize,
       });
     } else {
       shuffledCards = [...cards].sort(() => Math.random() - 0.5);

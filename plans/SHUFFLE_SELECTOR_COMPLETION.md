@@ -138,7 +138,6 @@ $: {
     shuffledCards = performSmartShuffle(cards, {
       enableSmartShuffle: true,
       shuffleMode,
-      maxShuffleSize: 25,
     });
   } else {
     shuffledCards = [...cards].sort(() => Math.random() - 0.5);

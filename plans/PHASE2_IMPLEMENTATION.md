@@ -105,7 +105,6 @@ Complete Smart Shuffle implementation with:
 interface SmartShuffleConfig {
   enableSmartShuffle: boolean;
   shuffleMode: "balanced" | "mastery-focused" | "challenge-first";
-  maxShuffleSize: number; // 25 default
 }
 
 interface ShuffleSessionStats {
@@ -179,7 +178,6 @@ Potential enhancement for session tracking (Phase 2 extension):
   const shuffleConfig: SmartShuffleConfig = {
     enableSmartShuffle: true,
     shuffleMode: "balanced",
-    maxShuffleSize: 25,
   };
 
   // Perform smart shuffle
@@ -248,7 +246,6 @@ Potential enhancement for session tracking (Phase 2 extension):
 
 3. **Check statistics:**
    - Verify card appearance counts match weights
-   - Verify session size doesn't exceed maxShuffleSize
    - Verify unique card count is accurate
 
 ### Unit Tests to Write

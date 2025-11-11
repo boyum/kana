@@ -13,7 +13,6 @@ export interface AppConfig {
   // Smart Shuffle Settings
   enableSmartShuffle: boolean;
   defaultShuffleMode: ShuffleMode;
-  maxShuffleSize: number;
 
   // Default Direction
   defaultDirection: Direction;
@@ -38,7 +37,6 @@ const STORAGE_KEY = "kana_app_config";
 const DEFAULT_CONFIG: AppConfig = {
   enableSmartShuffle: true,
   defaultShuffleMode: "balanced",
-  maxShuffleSize: 25,
   defaultDirection: "front-to-back",
   displayMode: "flip",
   language: "nb",
@@ -145,10 +143,6 @@ class ConfigStore {
 
   get defaultShuffleMode(): ShuffleMode {
     return this.config.defaultShuffleMode;
-  }
-
-  get maxShuffleSize(): number {
-    return this.config.maxShuffleSize;
   }
 
   get defaultDirection(): Direction {

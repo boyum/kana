@@ -166,7 +166,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -179,7 +178,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -192,36 +190,10 @@ describe("Smart shuffle with combined lists", () => {
       expect(hasListOnecards || hasList2cards || hasList3cards).toBe(true);
     });
 
-    it("should respect maxShuffleSize with combined lists", () => {
-      const config: SmartShuffleConfig = {
-        enableSmartShuffle: true,
-        shuffleMode: "balanced",
-        maxShuffleSize: 10,
-      };
-
-      const shuffled = performSmartShuffle(combinedCards, config);
-
-      expect(shuffled.length).toBeLessThanOrEqual(10);
-    });
-
-    it("should handle small maxShuffleSize with many lists", () => {
-      const config: SmartShuffleConfig = {
-        enableSmartShuffle: true,
-        shuffleMode: "balanced",
-        maxShuffleSize: 3,
-      };
-
-      const shuffled = performSmartShuffle(combinedCards, config);
-
-      expect(shuffled.length).toBeLessThanOrEqual(3);
-      expect(shuffled.length).toBeGreaterThan(0);
-    });
-
     it("should work with challenge-first mode across lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "challenge-first",
-        maxShuffleSize: 20,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -238,7 +210,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "mastery-focused",
-        maxShuffleSize: 20,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -257,7 +228,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -274,7 +244,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -282,16 +251,15 @@ describe("Smart shuffle with combined lists", () => {
 
       // Should have appearance data for each unique card
       expect(stats.cardAppearances.length).toBeGreaterThan(0);
-      expect(
-        stats.cardAppearances.every(c => c.appearanceCount >= 1),
-      ).toBe(true);
+      expect(stats.cardAppearances.every(c => c.appearanceCount >= 1)).toBe(
+        true,
+      );
     });
 
     it("should calculate mastery distribution across combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -312,7 +280,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -331,7 +298,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "mastery-focused",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -351,7 +317,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -374,7 +339,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(uniformCards, config);
@@ -402,7 +366,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 20,
       };
 
       const shuffled = performSmartShuffle(manyListsCards, config);
@@ -417,7 +380,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(fewCards, config);
@@ -425,25 +387,10 @@ describe("Smart shuffle with combined lists", () => {
       expect(shuffled.length).toBeGreaterThan(0);
     });
 
-    it("should handle maxShuffleSize larger than total cards", () => {
-      const config: SmartShuffleConfig = {
-        enableSmartShuffle: true,
-        shuffleMode: "balanced",
-        maxShuffleSize: 100, // Much larger than 6 cards
-      };
-
-      const shuffled = performSmartShuffle(combinedCards, config);
-
-      // Should include all or weighted duplicates up to reasonable limit
-      expect(shuffled.length).toBeGreaterThan(0);
-      expect(shuffled.length).toBeLessThanOrEqual(100);
-    });
-
     it("should work with smart shuffle disabled", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: false,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -459,7 +406,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled1 = performSmartShuffle(combinedCards, config);
@@ -479,7 +425,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled1 = performSmartShuffle(combinedCards, config);
@@ -513,7 +458,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combinedCards, config);
@@ -547,7 +491,6 @@ describe("Smart shuffle with combined lists", () => {
       const config: SmartShuffleConfig = {
         enableSmartShuffle: true,
         shuffleMode: "balanced",
-        maxShuffleSize: 25,
       };
 
       const shuffled = performSmartShuffle(combined, config);

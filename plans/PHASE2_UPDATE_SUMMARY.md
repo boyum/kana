@@ -127,7 +127,6 @@ import type { SmartShuffleConfig } from "$lib/utils/smartShuffle";
 const config: SmartShuffleConfig = {
   enableSmartShuffle: true,
   shuffleMode: "balanced",
-  maxShuffleSize: 25,
 };
 
 // Perform shuffle

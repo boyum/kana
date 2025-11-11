@@ -16,7 +16,6 @@ export type ShuffleMode = "balanced" | "mastery-focused" | "challenge-first";
 export interface SmartShuffleConfig {
   enableSmartShuffle: boolean;
   shuffleMode: ShuffleMode;
-  maxShuffleSize: number; // Maximum cards in one shuffled session
 }
 
 /**
@@ -34,7 +33,6 @@ export interface ShuffledCard {
 export const DEFAULT_SMART_SHUFFLE_CONFIG: SmartShuffleConfig = {
   enableSmartShuffle: true,
   shuffleMode: "balanced",
-  maxShuffleSize: 25,
 };
 
 /**
@@ -115,11 +113,11 @@ export function createWeightedCardPool(
 
 /**
  * Perform smart shuffle on a list of cards
- * Returns shuffled cards with duplicates allowed, up to maxShuffleSize
+ * Returns shuffled cards with duplicates allowed
  *
  * @param cards - Cards to shuffle
  * @param config - Smart shuffle configuration
- * @returns Shuffled array with duplicates, capped at maxShuffleSize
+ * @returns Shuffled array with duplicates
  */
 export function performSmartShuffle(
   cards: CustomFlashCard[],
@@ -135,8 +133,7 @@ export function performSmartShuffle(
   // Shuffle the weighted pool
   const shuffledPool = fisherYatesShuffle(weightedPool);
 
-  // Extract cards from pool and cap at maxShuffleSize
-  return shuffledPool.slice(0, config.maxShuffleSize).map(item => item.card);
+  return shuffledPool.map(item => item.card);
 }
 
 /**

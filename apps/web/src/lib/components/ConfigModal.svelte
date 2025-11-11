@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { configStore, type ShuffleMode, type Direction, type Language, type DisplayMode } from "$lib/stores/config.svelte";
+  import {
+    configStore,
+    type ShuffleMode,
+    type Direction,
+    type Language,
+    type DisplayMode,
+  } from "$lib/stores/config.svelte";
   import {
     downloadExportData,
     importData,
@@ -19,7 +25,6 @@
   // Local state for form (only synced on save)
   let enableSmartShuffle = $state(configStore.enableSmartShuffle);
   let defaultShuffleMode = $state(configStore.defaultShuffleMode);
-  let maxShuffleSize = $state(configStore.maxShuffleSize);
   let defaultDirection = $state(configStore.defaultDirection);
   let displayMode = $state(configStore.displayMode);
   let language = $state(configStore.language);
@@ -28,22 +33,42 @@
   let importError = $state<string | null>(null);
   let importSuccess = $state(false);
 
-  const shuffleModes = $derived<Array<{ value: ShuffleMode; label: string; icon: string }>>([
+  const shuffleModes = $derived<
+    Array<{ value: ShuffleMode; label: string; icon: string }>
+  >([
     { value: "balanced", label: m.shuffle_mode_balanced(), icon: "⚖️" },
-    { value: "mastery-focused", label: m.shuffle_mode_mastery_focused(), icon: "🎯" },
-    { value: "challenge-first", label: m.shuffle_mode_challenge_first(), icon: "🔥" },
+    {
+      value: "mastery-focused",
+      label: m.shuffle_mode_mastery_focused(),
+      icon: "🎯",
+    },
+    {
+      value: "challenge-first",
+      label: m.shuffle_mode_challenge_first(),
+      icon: "🔥",
+    },
   ]);
-
-  const maxSizes = [10, 25, 50, 100];
 
   const directions = $derived<Array<{ value: Direction; label: string }>>([
     { value: "front-to-back", label: m.direction_front_to_back() },
     { value: "back-to-front", label: m.direction_back_to_front() },
   ]);
 
-  const displayModes: Array<{ value: DisplayMode; label: string; description: string }> = [
-    { value: "flip", label: "Flip Cards", description: "Classic flip animation - test yourself" },
-    { value: "dual-side", label: "Dual-Side View", description: "See both sides at once - for initial practice" },
+  const displayModes: Array<{
+    value: DisplayMode;
+    label: string;
+    description: string;
+  }> = [
+    {
+      value: "flip",
+      label: "Flip Cards",
+      description: "Classic flip animation - test yourself",
+    },
+    {
+      value: "dual-side",
+      label: "Dual-Side View",
+      description: "See both sides at once - for initial practice",
+    },
   ];
 
   const languages: Array<{ value: Language; label: string }> = [
@@ -56,7 +81,6 @@
     if (isOpen) {
       enableSmartShuffle = configStore.enableSmartShuffle;
       defaultShuffleMode = configStore.defaultShuffleMode;
-      maxShuffleSize = configStore.maxShuffleSize;
       defaultDirection = configStore.defaultDirection;
       displayMode = configStore.displayMode;
       language = configStore.language;
@@ -69,7 +93,6 @@
     configStore.updateConfig({
       enableSmartShuffle,
       defaultShuffleMode,
-      maxShuffleSize,
       defaultDirection,
       displayMode,
       language,
@@ -151,7 +174,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="config-title">⚙️ {m.settings_title()}</h2>
-        <button class="close-btn" onclick={handleClose} aria-label={m.close_settings()}>
+        <button
+          class="close-btn"
+          onclick={handleClose}
+          aria-label={m.close_settings()}
+        >
           ✕
         </button>
       </div>
@@ -181,15 +208,6 @@
                 {/each}
               </div>
             </div>
-
-            <div class="setting-group">
-              <label class="setting-label" for="max-size">{m.max_cards_per_session()}:</label>
-              <select id="max-size" bind:value={maxShuffleSize}>
-                {#each maxSizes as size}
-                  <option value={size}>{m.cards_count({ count: size })}</option>
-                {/each}
-              </select>
-            </div>
           {/if}
         </section>
 
@@ -197,7 +215,9 @@
         <section class="config-section">
           <h3>🔄 {m.direction_section_title()}</h3>
           <div class="setting-group">
-            <label class="setting-label" for="direction">{m.default_direction()}:</label>
+            <label class="setting-label" for="direction"
+              >{m.default_direction()}:</label
+            >
             <select id="direction" bind:value={defaultDirection}>
               {#each directions as dir}
                 <option value={dir.value}>{dir.label}</option>
@@ -257,7 +277,10 @@
             </label>
 
             {#if !showResetConfirm}
-              <button class="data-btn danger" onclick={() => (showResetConfirm = true)}>
+              <button
+                class="data-btn danger"
+                onclick={() => (showResetConfirm = true)}
+              >
                 🗑️ {m.reset_all_data()}
               </button>
             {:else}
@@ -267,7 +290,10 @@
                   <button class="data-btn danger" onclick={handleResetConfirm}>
                     {m.yes_reset()}
                   </button>
-                  <button class="data-btn" onclick={() => (showResetConfirm = false)}>
+                  <button
+                    class="data-btn"
+                    onclick={() => (showResetConfirm = false)}
+                  >
                     {m.cancel()}
                   </button>
                 </div>
@@ -284,9 +310,17 @@
           {/if}
 
           <div class="storage-info">
-            <p>{m.storage_used({ used: formatBytes(storageInfo.used), total: formatBytes(storageInfo.total) })}</p>
+            <p>
+              {m.storage_used({
+                used: formatBytes(storageInfo.used),
+                total: formatBytes(storageInfo.total),
+              })}
+            </p>
             <div class="storage-bar">
-              <div class="storage-fill" style="width: {Math.min(storageInfo.percentage, 100)}%"></div>
+              <div
+                class="storage-fill"
+                style="width: {Math.min(storageInfo.percentage, 100)}%"
+              ></div>
             </div>
           </div>
         </section>

@@ -15,8 +15,6 @@
   "shuffle_mode_balanced": "Balanced",
   "shuffle_mode_mastery_focused": "Mastery-focused",
   "shuffle_mode_challenge_first": "Challenge-first",
-  "max_cards_per_session": "Max cards per session",
-  "cards_count": "{count} cards",
   "direction_section_title": "Direction",
   "default_direction": "Default direction",
   "direction_front_to_back": "Front → Back",

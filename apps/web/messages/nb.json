@@ -15,8 +15,6 @@
   "shuffle_mode_balanced": "Balansert",
   "shuffle_mode_mastery_focused": "Mestringsfokusert",
   "shuffle_mode_challenge_first": "Utfordrende først",
-  "max_cards_per_session": "Maks kort per økt",
-  "cards_count": "{count} kort",
   "direction_section_title": "Retning",
   "default_direction": "Standard retning",
   "direction_front_to_back": "Forside → Bakside",
