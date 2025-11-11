@@ -16,6 +16,7 @@
     saveCustomList,
   } from "$lib/utils/storage";
   import { onMount } from "svelte";
+  import * as m from "$lib/paraglide/messages";
 
   let lists: CustomList[] = $state([]);
   let searchQuery = $state("");
@@ -89,7 +90,7 @@
 
   function practiceSelectedLists() {
     if (selectedListIds.size < 2) {
-      alert("Velg minst 2 lister for å øve");
+      alert(m.select_at_least_2_lists());
       return;
     }
     const ids = Array.from(selectedListIds).join(",");
@@ -105,12 +106,12 @@
     const list = lists.find(l => l.id === listId);
     if (!list) return;
 
-    if (confirm(`Er du sikker på at du vil slette "${list.name}"?`)) {
+    if (confirm(`${m.confirm_delete_list()} "${list.name}"?`)) {
       try {
         deleteCustomList(listId);
         loadLists();
       } catch (error) {
-        alert("Kunne ikke slette liste");
+        alert(m.could_not_delete_list());
       }
     }
   }
@@ -119,14 +120,14 @@
     const list = lists.find(l => l.id === listId);
     if (!list) return;
 
-    const newName = prompt("Navn på ny liste:", `${list.name} (kopi)`);
+    const newName = prompt(m.new_list_name(), `${list.name} ${m.copy_suffix()}`);
     if (!newName) return;
 
     try {
       duplicateCustomList(listId, newName);
       loadLists();
     } catch (error) {
-      alert("Kunne ikke duplisere liste");
+      alert(m.could_not_duplicate_list());
     }
   }
 
@@ -143,7 +144,7 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      alert("Kunne ikke eksportere liste");
+      alert(m.could_not_export_list());
     }
   }
 
@@ -197,7 +198,7 @@
       }, 2000);
     } catch (error) {
       importError =
-        error instanceof Error ? error.message : "Kunne ikke importere liste";
+        error instanceof Error ? error.message : m.could_not_import_list();
     } finally {
       isImporting = false;
     }
@@ -220,13 +221,13 @@
 </script>
 
 <svelte:head>
-  <title>Egendefinerte lister</title>
+  <title>{m.custom_lists_page_title()}</title>
 </svelte:head>
 
 <div class="container">
   <header>
     <BackButton />
-    <h1>✨ Egendefinerte lister</h1>
+    <h1>✨ {m.custom_lists_title()}</h1>
   </header>
 
   <div class="toolbar">
@@ -235,7 +236,7 @@
       onpointerdown={createInteractionHandler(createNewList)}
       onkeydown={createInteractionHandler(createNewList)}
     >
-      ➕ Opprett ny liste
+      ➕ {m.create_new_list()}
     </button>
     <a
       href="/importer"
@@ -243,7 +244,7 @@
       class="import-btn"
       onpointerdown={e => handleLinkClick(e, "/importer", goto)}
     >
-      📚 Importer lister
+      📚 {m.import_lists()}
     </a>
     {#if lists.length >= 2}
       <button
@@ -251,20 +252,20 @@
         onpointerdown={createInteractionHandler(toggleMultiSelectMode)}
         onkeydown={createInteractionHandler(toggleMultiSelectMode)}
       >
-        {multiSelectMode ? "✖️ Avbryt" : "☑️ Velg flere"}
+        {multiSelectMode ? `✖️ ${m.cancel()}` : `☑️ ${m.select_multiple()}`}
       </button>
     {/if}
   </div>
 
   {#if lists.length > 0}
     <div class="search-bar">
-      <label for="search" class="visually-hidden">Søk etter lister</label>
+      <label for="search" class="visually-hidden">{m.search_lists_placeholder()}</label>
       <input
         id="search"
         type="text"
         bind:value={searchQuery}
         class="search-input"
-        placeholder="🔍 Søk etter lister"
+        placeholder="🔍 {m.search_lists_placeholder()}"
       />
     </div>
   {/if}
@@ -272,13 +273,13 @@
   {#if filteredLists.length === 0 && lists.length === 0}
     <div class="empty-state">
       <p class="empty-icon">📚</p>
-      <p class="empty-text">Du har ingen egendefinerte lister ennå</p>
-      <p class="empty-hint">Opprett din første liste for å komme i gang!</p>
+      <p class="empty-text">{m.no_custom_lists_yet()}</p>
+      <p class="empty-hint">{m.create_first_list_hint()}</p>
     </div>
   {:else if filteredLists.length === 0}
     <div class="empty-state">
       <p class="empty-icon">🔍</p>
-      <p class="empty-text">Ingen lister funnet</p>
+      <p class="empty-text">{m.no_lists_found()}</p>
     </div>
   {:else}
     <CustomListComponent
@@ -298,14 +299,14 @@
     <div class="multi-select-actions">
       <div class="action-content">
         <span class="selected-count">
-          {selectedListIds.size} lister valgt
+          {selectedListIds.size} {m.lists_selected()}
         </span>
         <button
           class="practice-selected-btn"
           onpointerdown={createInteractionHandler(practiceSelectedLists)}
           onkeydown={createInteractionHandler(practiceSelectedLists)}
         >
-          🎯 Øv valgte lister
+          🎯 {m.practice_selected_lists()}
         </button>
       </div>
     </div>
@@ -337,7 +338,7 @@
       onkeydown={e => e.stopPropagation()}
       role="document"
     >
-      <h2>📥 Legg til en ny liste</h2>
+      <h2>📥 {m.add_new_list()}</h2>
 
       <ImportableList
         list={listFromSearchParam}
@@ -351,7 +352,7 @@
       {/if}
 
       {#if importSuccess}
-        <p class="success-message">✅ Liste importert!</p>
+        <p class="success-message">✅ {m.list_imported()}</p>
       {/if}
     </form>
   </div>

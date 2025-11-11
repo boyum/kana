@@ -7,13 +7,14 @@
   import type { CustomList } from "$lib/types/customLists";
   import { handleLinkClick } from "$lib/utils/interaction";
   import BackButton from "$lib/components/BackButton.svelte";
+  import * as m from "$lib/paraglide/messages";
 
   let listId: string = "";
   let list: CustomList | null = null;
 
   onMount(() => {
     if (!$page.params.listId) {
-      alert("Ugyldig liste-ID");
+      alert(m.invalid_list_id());
       goto("/egendefinert");
       return;
     }
@@ -22,7 +23,7 @@
     list = getCustomList(listId);
 
     if (!list) {
-      alert("Liste ikke funnet");
+      alert(m.list_not_found());
       goto("/egendefinert");
     }
   });
@@ -38,19 +39,19 @@
 </script>
 
 <svelte:head>
-  <title>Rediger liste</title>
+  <title>{m.edit_list()}</title>
 </svelte:head>
 
 <div class="container">
   <header>
     <BackButton url="/egendefinert" />
-    <h1>✏️ Rediger liste</h1>
+    <h1>✏️ {m.edit_list()}</h1>
   </header>
 
   {#if list}
     <ListEditor {list} onSave={handleSave} onCancel={handleCancel} />
   {:else}
-    <p class="loading">Laster...</p>
+    <p class="loading">{m.loading()}</p>
   {/if}
 </div>
 

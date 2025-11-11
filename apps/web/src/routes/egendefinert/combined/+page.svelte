@@ -4,6 +4,7 @@
 	import ListPage from '$lib/components/ListPage.svelte';
 	import { getCustomList } from '$lib/utils/storage';
 	import type { CustomList, CustomFlashCard } from '$lib/types/customLists';
+	import * as m from '$lib/paraglide/messages';
 
 	let combinedCards: CustomFlashCard[] = $state([]);
 	let combinedTitle = $state('');
@@ -25,7 +26,7 @@
 			const idsParam = urlParams.get('ids');
 
 			if (!idsParam) {
-				error = 'Ingen lister valgt';
+				error = m.no_lists_selected();
 				goto('/egendefinert');
 				return;
 			}
@@ -33,7 +34,7 @@
 			const listIds = idsParam.split(',').filter(id => id.trim());
 
 			if (listIds.length < 2) {
-				error = 'Velg minst 2 lister';
+				error = m.select_at_least_2();
 				goto('/egendefinert');
 				return;
 			}
@@ -51,7 +52,7 @@
 			}
 
 			if (lists.length === 0) {
-				error = 'Ingen gyldige lister funnet';
+				error = m.no_valid_lists_found();
 				goto('/egendefinert');
 				return;
 			}
@@ -78,19 +79,19 @@
 			isLoading = false;
 		} catch (err) {
 			console.error('Failed to load combined lists:', err);
-			error = 'Kunne ikke laste lister';
+			error = m.could_not_load_lists();
 			setTimeout(() => goto('/egendefinert'), 2000);
 		}
 	}
 </script>
 
 <svelte:head>
-	<title>{combinedTitle || 'Kombinerte lister'}</title>
+	<title>{combinedTitle || m.combined_lists()}</title>
 </svelte:head>
 
 {#if isLoading}
 	<div class="loading">
-		<p>Laster lister...</p>
+		<p>{m.loading_lists()}</p>
 	</div>
 {:else if error}
 	<div class="error">
@@ -101,7 +102,7 @@
 		title={combinedTitle}
 		cards={combinedCards}
 		backUrl="/egendefinert"
-		backText="← Tilbake"
+		backText={`← ${m.back()}`}
 		initialDirection={direction}
 	/>
 {/if}

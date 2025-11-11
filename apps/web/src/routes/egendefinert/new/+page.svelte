@@ -4,6 +4,7 @@
   import { saveCustomList } from "$lib/utils/storage";
   import type { CustomList } from "$lib/types/customLists";
   import BackButton from "$lib/components/BackButton.svelte";
+  import * as m from "$lib/paraglide/messages";
 
   function handleSave(list: CustomList) {
     saveCustomList(list);
@@ -16,13 +17,13 @@
 </script>
 
 <svelte:head>
-  <title>Opprett ny liste</title>
+  <title>{m.create_new_list()}</title>
 </svelte:head>
 
 <div class="container">
   <header>
     <BackButton url="/egendefinert" />
-    <h1>➕ Opprett ny liste</h1>
+    <h1>➕ {m.create_new_list()}</h1>
   </header>
 
   <ListEditor list={null} onSave={handleSave} onCancel={handleCancel} />
