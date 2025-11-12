@@ -13,7 +13,7 @@
 </svelte:head>
 
 <div class="top-actions">
-  <a
+  <!-- <a
     href="/progresjon"
     rel="prefetch"
     class="progress-button"
@@ -21,7 +21,7 @@
     aria-label={m.progress_title()}
   >
     📊
-  </a>
+  </a> -->
   <button
     class="config-button"
     onclick={() => (isConfigOpen = true)}
