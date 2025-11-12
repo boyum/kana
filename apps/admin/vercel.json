@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && npm run build -- --filter=@kana/admin",
+  "installCommand": "cd ../.. && npm install",
+  "outputDirectory": ".svelte-kit/output"
+}
