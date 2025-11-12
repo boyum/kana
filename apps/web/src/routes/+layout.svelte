@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import '../app.css';
 	import { setLocale, getLocale } from "$lib/paraglide/runtime";

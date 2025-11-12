@@ -1,7 +1,13 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomFlashCard } from "$lib/types/customLists";
 
-  export let previewCards: CustomFlashCard[];
+  interface Props {
+    previewCards: CustomFlashCard[];
+  }
+
+  let { previewCards }: Props = $props();
 </script>
 
 {#if previewCards.length > 0}

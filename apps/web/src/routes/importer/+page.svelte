@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -7,17 +9,21 @@
   import BackButton from "$lib/components/BackButton.svelte";
   import type { PageServerData } from "./$types";
 
-  export let data: PageServerData;
+  interface Props {
+    data: PageServerData;
+  }
 
-  $: exampleLists = data.exampleLists;
+  let { data }: Props = $props();
 
-  let importedListNames: Set<string> = new Set();
-  let searchQuery = "";
-  let showImportDialog = false;
-  let selectedListForImport: CustomList | null = null;
-  let successMessage = "";
-  let errorMessage = "";
-  let isImporting = false;
+  let exampleLists = $derived(data.exampleLists);
+
+  let importedListNames: Set<string> = $state(new Set());
+  let searchQuery = $state("");
+  let showImportDialog = $state(false);
+  let selectedListForImport: CustomList | null = $state(null);
+  let successMessage = $state("");
+  let errorMessage = $state("");
+  let isImporting = $state(false);
 
   onMount(() => {
     updateImportedListNames();
@@ -157,13 +163,19 @@
   {/if}
 
   {#if showImportDialog && selectedListForImport}
-    <div class="modal-overlay" role="presentation" on:click={cancelImport}>
+    <div class="modal-overlay" role="presentation" onclick={cancelImport}>
       <div
         class="modal-content"
         role="alertdialog"
         aria-modal="true"
         tabindex="0"
-        on:keydown|self={e => e.key === "Escape" && cancelImport()}
+        onkeydown={e => {
+          if (e.key === "Escape") {
+            cancelImport();
+          }
+
+          e.stopPropagation();
+        }}
       >
         <h2>Importer "{selectedListForImport.name}"?</h2>
         <p class="modal-info">
@@ -177,14 +189,14 @@
         <div class="modal-actions">
           <button
             class="cancel-btn"
-            on:click={cancelImport}
+            onclick={cancelImport}
             disabled={isImporting}
           >
             Avbryt
           </button>
           <button
             class="confirm-btn"
-            on:click={confirmImport}
+            onclick={confirmImport}
             disabled={isImporting}
           >
             {isImporting ? "Importerer..." : "Importer"}
@@ -201,7 +213,7 @@
   {/if}
 
   <section class="footer-section">
-    <button class="my-lists-btn" on:click={goToCustomLists}>
+    <button class="my-lists-btn" onclick={goToCustomLists}>
       → Gå til mine lister
     </button>
   </section>

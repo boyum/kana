@@ -1,18 +1,24 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  export let onPointerDown: ((event: PointerEvent) => void) | null = null;
-  export let onClick: ((event: MouseEvent) => void) | null = null;
-  export let children: Snippet;
-  export let url: string;
+  interface Props {
+    onPointerDown?: ((event: PointerEvent) => void) | null;
+    onClick?: ((event: MouseEvent) => void) | null;
+    children: Snippet;
+    url: string;
+  }
+
+  let { onPointerDown = null, onClick = null, children, url }: Props = $props();
 </script>
 
 <a
   href={url}
   type="button"
   class="button"
-  on:pointerdown={onPointerDown}
-  on:click={onClick}
+  onpointerdown={onPointerDown}
+  onclick={onClick}
 >
   {@render children()}
 </a>

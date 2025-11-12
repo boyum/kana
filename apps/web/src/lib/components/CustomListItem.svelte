@@ -1,19 +1,34 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomList } from "$lib/types/customLists";
 
-  export let list: CustomList;
+  interface Props {
+    list: CustomList;
+    onPractice: (listId: string) => void;
+    onEdit: (listId: string) => void;
+    onShare: (listId: string) => void;
+    onDuplicate: (listId: string) => void;
+    onExport: (listId: string) => void;
+    onDelete: (listId: string) => void;
+    multiSelectMode?: boolean;
+    isSelected?: boolean;
+  }
 
-  export let onPractice: (listId: string) => void;
-  export let onEdit: (listId: string) => void;
-  export let onShare: (listId: string) => void;
-  export let onDuplicate: (listId: string) => void;
-  export let onExport: (listId: string) => void;
-  export let onDelete: (listId: string) => void;
+  let {
+    list,
+    onPractice,
+    onEdit,
+    onShare,
+    onDuplicate,
+    onExport,
+    onDelete,
+    multiSelectMode = false,
+    isSelected = false
+  }: Props = $props();
 
-  export let multiSelectMode: boolean = false;
-  export let isSelected: boolean = false;
-
-  let showDialog = false;
+  let showDialog = $state(false);
+  let dialogElement = $state<HTMLDialogElement>();
 
   // Unified interaction handlers
   function createInteractionHandler(callback: () => void) {
@@ -43,13 +58,13 @@
     showDialog = false;
   }
 
-  let dialogElement: HTMLDialogElement;
-
-  $: if (showDialog && dialogElement) {
-    dialogElement.showModal();
-  } else if (!showDialog && dialogElement) {
-    dialogElement.close();
-  }
+  $effect(() => {
+    if (showDialog && dialogElement) {
+      dialogElement.showModal();
+    } else if (!showDialog && dialogElement) {
+      dialogElement.close();
+    }
+  });
 </script>
 
 <div class="list-card" class:selected={isSelected && multiSelectMode}>

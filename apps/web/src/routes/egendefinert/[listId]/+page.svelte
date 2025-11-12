@@ -1,18 +1,26 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import ListPage from '$lib/components/ListPage.svelte';
 	import { getCustomList } from '$lib/utils/storage';
 	import type { CustomList } from '$lib/types/customLists';
-	
-	export let data: { listId: string };
-	
-	let list: CustomList | null = null;
-	let direction: 'front-to-back' | 'back-to-front' = 'front-to-back';
-	
-	$: if (data.listId) {
-		loadList();
+
+	interface Props {
+		data: { listId: string };
 	}
+
+	let { data }: Props = $props();
+
+	let list = $state<CustomList | null>(null);
+	let direction = $state<'front-to-back' | 'back-to-front'>('front-to-back');
+
+	$effect(() => {
+		if (data.listId) {
+			loadList();
+		}
+	});
 	
 	function loadList() {
 		list = getCustomList(data.listId);

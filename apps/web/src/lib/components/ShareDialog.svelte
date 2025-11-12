@@ -1,16 +1,22 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomList } from "$lib/types/customLists";
   import { generateShareToken, generateShareUrl } from "$lib/utils/sharing";
   import { onMount } from "svelte";
 
-  export let list: CustomList;
-  export let onClose: () => void;
+  interface Props {
+    list: CustomList;
+    onClose: () => void;
+  }
 
-  let shareToken = "";
-  let shareUrl = "";
-  let isGenerating = true;
-  let copySuccess = false;
-  let copyUrlSuccess = false;
+  let { list, onClose }: Props = $props();
+
+  let shareToken = $state("");
+  let shareUrl = $state("");
+  let isGenerating = $state(true);
+  let copySuccess = $state(false);
+  let copyUrlSuccess = $state(false);
 
   onMount(async () => {
     await generateTokens();

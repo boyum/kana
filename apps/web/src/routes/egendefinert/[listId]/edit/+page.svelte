@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -9,8 +11,8 @@
   import BackButton from "$lib/components/BackButton.svelte";
   import * as m from "$lib/paraglide/messages";
 
-  let listId: string = "";
-  let list: CustomList | null = null;
+  let listId = $state("");
+  let list = $state<CustomList | null>(null);
 
   onMount(() => {
     if (!$page.params.listId) {

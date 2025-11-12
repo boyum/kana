@@ -1,18 +1,24 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  export let onPointerDown: ((event: PointerEvent) => void) | null = null;
-  export let onKeyDown: ((event: KeyboardEvent) => void) | null = null;
-  export let onClick: ((event: MouseEvent) => void) | null = null;
-  export let children: Snippet;
+  interface Props {
+    onPointerDown?: ((event: PointerEvent) => void) | null;
+    onKeyDown?: ((event: KeyboardEvent) => void) | null;
+    onClick?: ((event: MouseEvent) => void) | null;
+    children: Snippet;
+  }
+
+  let { onPointerDown = null, onKeyDown = null, onClick = null, children }: Props = $props();
 </script>
 
 <button
   type="button"
   class="button"
-  on:pointerdown={onPointerDown}
-  on:click={onClick}
-  on:keydown={onKeyDown}
+  onpointerdown={onPointerDown}
+  onclick={onClick}
+  onkeydown={onKeyDown}
 >
   {@render children()}
 </button>

@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import FlashCard from "$lib/components/FlashCard.svelte";
   import type { CustomFlashCard } from "$lib/types/customLists";
@@ -221,8 +223,8 @@
       <button
         type="button"
         class="nav-btn"
-        on:pointerdown={createInteractionHandler(previousCard)}
-        on:keydown={createInteractionHandler(previousCard)}
+        onpointerdown={createInteractionHandler(previousCard)}
+        onkeydown={createInteractionHandler(previousCard)}
         disabled={currentIndex === 0}
       >
         ← Forrige
@@ -231,10 +233,10 @@
       <button
         type="button"
         class="nav-btn"
-        on:pointerdown={createInteractionHandler(
+        onpointerdown={createInteractionHandler(
           currentIndex === shuffledCards.length - 1 ? restart : nextCard,
         )}
-        on:keydown={createInteractionHandler(
+        onkeydown={createInteractionHandler(
           currentIndex === shuffledCards.length - 1 ? restart : nextCard,
         )}
       >

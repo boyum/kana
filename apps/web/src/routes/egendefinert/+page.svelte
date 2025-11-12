@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto, replaceState } from "$app/navigation";
   import BackButton from "$lib/components/BackButton.svelte";

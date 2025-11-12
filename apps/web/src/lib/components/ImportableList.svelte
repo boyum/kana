@@ -1,11 +1,17 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomList } from "$lib/types/customLists";
   import ListPreview from "./ListPreview.svelte";
 
-  export let list: CustomList;
-  export let isImported: boolean = false;
-  export let onImport: (list: CustomList) => void;
-  export let onCancel: () => void = () => {};
+  interface Props {
+    list: CustomList;
+    isImported?: boolean;
+    onImport: (list: CustomList) => void;
+    onCancel?: () => void;
+  }
+
+  let { list, isImported = false, onImport, onCancel = () => {} }: Props = $props();
 
   const previewCards = list.cards.slice(0, 6);
 

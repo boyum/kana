@@ -1,24 +1,30 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomList, CustomFlashCard } from "$lib/types/customLists";
   import { createEmptyPerformanceMetrics } from "$lib/utils/performance";
   import { generateId } from "$lib/utils/storage";
   import { onMount } from "svelte";
 
-  export let list: CustomList | null = null; // null for new list
-  export let onSave: (list: CustomList) => void;
-  export let onCancel: () => void;
+  interface Props {
+    list?: CustomList | null;
+    onSave: (list: CustomList) => void;
+    onCancel: () => void;
+  }
+
+  let { list = null, onSave, onCancel }: Props = $props();
 
   // Initialize or use existing list
-  let listName = list?.name || "";
-  let cards: CustomFlashCard[] = list?.cards.map(c => ({ ...c })) || [];
+  let listName = $state(list?.name || "");
+  let cards = $state<CustomFlashCard[]>(list?.cards.map(c => ({ ...c })) || []);
 
-  let showBulkImport = false;
-  let bulkImportText = "";
-  let bulkImportError = "";
+  let showBulkImport = $state(false);
+  let bulkImportText = $state("");
+  let bulkImportError = $state("");
 
-  let showQuickAdd = false;
-  let quickAddText = "";
-  let quickAddError = "";
+  let showQuickAdd = $state(false);
+  let quickAddText = $state("");
+  let quickAddError = $state("");
 
   function addCard() {
     cards = [

@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomFlashCard } from "$lib/types/customLists";
   import {
@@ -7,33 +9,37 @@
     formatTime,
   } from "$lib/utils/performance";
 
-  export let cards: CustomFlashCard[] = [];
-  export let showSessionStats: boolean = true;
+  interface Props {
+    cards?: CustomFlashCard[];
+    showSessionStats?: boolean;
+  }
+
+  let { cards = [], showSessionStats = true }: Props = $props();
 
   // Calculate stats
-  $: totalViews = cards.reduce((sum, card) => sum + card.performance.viewCount, 0);
-  $: totalFlips = cards.reduce((sum, card) => sum + card.performance.flipCount, 0);
-  $: totalCorrect = cards.reduce((sum, card) => sum + card.performance.correctCount, 0);
-  $: averageResponseTime = Math.round(
+  let totalViews = $derived(cards.reduce((sum, card) => sum + card.performance.viewCount, 0));
+  let totalFlips = $derived(cards.reduce((sum, card) => sum + card.performance.flipCount, 0));
+  let totalCorrect = $derived(cards.reduce((sum, card) => sum + card.performance.correctCount, 0));
+  let averageResponseTime = $derived(Math.round(
     cards.reduce((sum, card) => sum + card.performance.totalResponseTimeMs, 0) /
       Math.max(1, totalViews)
-  );
-  $: overallSuccessRate = totalViews === 0 ? 0 : Math.round((totalCorrect / totalViews) * 100);
+  ));
+  let overallSuccessRate = $derived(totalViews === 0 ? 0 : Math.round((totalCorrect / totalViews) * 100));
 
   // Count difficulties
-  $: difficulties = {
+  let difficulties = $derived({
     new: cards.filter(c => getCardDifficulty(c.performance) === "new").length,
     easy: cards.filter(c => getCardDifficulty(c.performance) === "easy").length,
     medium: cards.filter(c => getCardDifficulty(c.performance) === "medium").length,
     hard: cards.filter(c => getCardDifficulty(c.performance) === "hard").length,
-  };
+  });
 
   // Find masteries
-  $: masteredCards = cards.filter(c => c.performance.masteryLevel >= 80).length;
-  $: mostDifficultCards = cards
+  let masteredCards = $derived(cards.filter(c => c.performance.masteryLevel >= 80).length);
+  let mostDifficultCards = $derived(cards
     .sort((a, b) => b.performance.masteryLevel - a.performance.masteryLevel)
     .slice(-3)
-    .reverse();
+    .reverse());
 
   function getDifficultyColor(difficulty: string): string {
     switch (difficulty) {

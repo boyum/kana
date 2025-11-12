@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { PracticeSession } from '$lib/types/progress';
 

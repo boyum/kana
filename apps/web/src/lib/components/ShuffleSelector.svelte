@@ -1,8 +1,14 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { ShuffleMode } from "$lib/utils/smartShuffle";
 
-  export let shuffleMode: ShuffleMode = "balanced";
-  export let enableSmartShuffle: boolean = true;
+  interface Props {
+    shuffleMode?: ShuffleMode;
+    enableSmartShuffle?: boolean;
+  }
+
+  let { shuffleMode = $bindable("balanced"), enableSmartShuffle = $bindable(true) }: Props = $props();
 
   const shuffleModes: Array<{
     value: ShuffleMode;

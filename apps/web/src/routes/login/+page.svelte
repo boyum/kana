@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { authStore } from "$lib/stores/auth.svelte";
   import { goto } from "$app/navigation";

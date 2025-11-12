@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { MasteryDistribution } from '$lib/types/progress';
   import * as m from '$lib/paraglide/messages';

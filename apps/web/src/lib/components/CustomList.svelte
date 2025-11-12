@@ -1,18 +1,32 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import type { CustomList } from "$lib/types/customLists";
   import CustomListItem from "$lib/components/CustomListItem.svelte";
 
-  export let lists: CustomList[] = [];
+  interface Props {
+    lists?: CustomList[];
+    onPractice: (listId: string) => void;
+    onEdit: (listId: string) => void;
+    onShare: (listId: string) => void;
+    onDuplicate: (listId: string) => void;
+    onExport: (listId: string) => void;
+    onDelete: (listId: string) => void;
+    multiSelectMode?: boolean;
+    selectedListIds?: Set<string>;
+  }
 
-  export let onPractice: (listId: string) => void;
-  export let onEdit: (listId: string) => void;
-  export let onShare: (listId: string) => void;
-  export let onDuplicate: (listId: string) => void;
-  export let onExport: (listId: string) => void;
-  export let onDelete: (listId: string) => void;
-
-  export let multiSelectMode: boolean = false;
-  export let selectedListIds: Set<string> = new Set();
+  let {
+    lists = [],
+    onPractice,
+    onEdit,
+    onShare,
+    onDuplicate,
+    onExport,
+    onDelete,
+    multiSelectMode = false,
+    selectedListIds = new Set()
+  }: Props = $props();
 </script>
 
 <div class="lists-grid">

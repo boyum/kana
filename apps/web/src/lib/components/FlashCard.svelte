@@ -1,19 +1,7 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { fade } from "svelte/transition";
-
-  // Support both old and new props
-  export let character: string = "";
-  export let romanization: string = "";
-  export let front: string = "";
-  export let back: string = "";
-  export let meaning: string = "";
-  export let notes: string = "";
-  export let isFlipped: boolean = false;
-  export let cardId: string = ""; // For tracking which card this is
-  export let onPerformanceRecorded:
-    | ((data: CardPerformanceData) => void)
-    | undefined = undefined;
-  export let displayMode: "flip" | "dual-side" = "flip"; // Display mode
 
   // Performance tracking
   interface CardPerformanceData {
@@ -23,14 +11,40 @@
     wasCorrect: boolean;
   }
 
+  interface Props {
+    character?: string;
+    romanization?: string;
+    front?: string;
+    back?: string;
+    meaning?: string;
+    notes?: string;
+    isFlipped?: boolean;
+    cardId?: string;
+    onPerformanceRecorded?: ((data: CardPerformanceData) => void) | undefined;
+    displayMode?: "flip" | "dual-side";
+  }
+
+  let {
+    character = "",
+    romanization = "",
+    front = "",
+    back = "",
+    meaning = "",
+    notes = "",
+    isFlipped = $bindable(false),
+    cardId = "",
+    onPerformanceRecorded = undefined,
+    displayMode = "flip"
+  }: Props = $props();
+
   let cardShowTime: number = 0;
   let flipCountThisSession: number = 0;
   let performanceRecorded: boolean = false;
 
   // Use front/back if provided, otherwise fall back to character/romanization
-  $: frontContent = front || character;
-  $: backContent = back || romanization;
-  $: hasMetadata = meaning || notes;
+  let frontContent = $derived(front || character);
+  let backContent = $derived(back || romanization);
+  let hasMetadata = $derived(meaning || notes);
 
   // Record when card is shown
   function onCardShown() {
