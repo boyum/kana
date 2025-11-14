@@ -16,6 +16,7 @@
     formatBytes,
   } from "$lib/utils/configStorage";
   import * as m from "$lib/paraglide/messages";
+  import { onMount } from "svelte";
 
   interface Props {
     isOpen?: boolean;
@@ -79,7 +80,7 @@
   ];
 
   // Load current config when modal opens
-  $effect(() => {
+  onMount(() => {
     if (isOpen) {
       enableSmartShuffle = configStore.enableSmartShuffle;
       defaultShuffleMode = configStore.defaultShuffleMode;

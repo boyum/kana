@@ -2,6 +2,7 @@
 
 <script lang="ts">
   import type { CustomList } from "$lib/types/customLists";
+  import { onMount } from "svelte";
 
   interface Props {
     list: CustomList;
@@ -58,7 +59,7 @@
     showDialog = false;
   }
 
-  $effect(() => {
+  onMount(() => {
     if (showDialog && dialogElement) {
       dialogElement.showModal();
     } else if (!showDialog && dialogElement) {

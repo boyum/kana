@@ -5,6 +5,7 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/components/Button.svelte";
   import * as m from "$lib/paraglide/messages";
+  import { onMount } from "svelte";
 
   let loading = $state(false);
   let error = $state<string | null>(null);
@@ -33,7 +34,7 @@
   }
 
   // Redirect if already authenticated
-  $effect(() => {
+  onMount(() => {
     if (authStore.isAuthenticated && !authStore.loading) {
       goto("/");
     }
