@@ -16,7 +16,7 @@
 	let list = $state<CustomList | null>(null);
 	let direction = $state<'front-to-back' | 'back-to-front'>('front-to-back');
 
-	$effect(() => {
+	onMount(() => {
 		if (data.listId) {
 			loadList();
 		}

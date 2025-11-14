@@ -38,3 +38,4 @@ src/lib/paraglide
 
 *storybook.log
 storybook-static
+.env*.local
